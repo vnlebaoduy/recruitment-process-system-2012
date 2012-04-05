@@ -3,9 +3,39 @@
 <ui:composition 
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="./templates/rpsTemplate.xhtml">
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html">
 
     <ui:define name="content-box">
+        <div id="messages" style="display: none"> <!-- Messages are shown when a link with these attributes are clicked: href="#messages" rel="modal"  -->
+
+            <h3>Change your password</h3>
+
+            <p>
+                <strong>Attention</strong> by Admin<br />
+		In the first time using the system, you should be changed default password to protect your account.
+            </p>
+
+            <h:form>
+
+                <h4>New Password</h4>
+
+                <fieldset>
+                    <h:inputText value="#{accountMB.newPass}" styleClass="text-input"/>
+                </fieldset>
+
+                <h4>Confirm Password</h4>
+                <fieldset>
+                    <h:inputText value="#{accountMB.newPass}" styleClass="text-input"/>
+                </fieldset>
+                <br/>
+                <fieldset>
+                    <h:commandButton value="Save Changes" styleClass="button" action="#{accountMB.changePass}"/>
+                </fieldset>
+
+            </h:form>
+
+        </div> <!-- End #messages -->
         <div class="content-box-header">
 
             <h3>Content box</h3>
