@@ -23,7 +23,7 @@ public abstract class AbstractService {
 
     
     public AbstractService(){
-        String persistenceUnitName = "DemoJPAPU";
+        String persistenceUnitName = "RecruitmentProcessSystemPU";
         EntityManagerFactory factory = Persistence.createEntityManagerFactory(persistenceUnitName);
         em = factory.createEntityManager();
     }
