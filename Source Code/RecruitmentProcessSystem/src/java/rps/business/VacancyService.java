@@ -4,6 +4,7 @@
  */
 package rps.business;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import rps.dataaccess.FindResult;
@@ -80,14 +81,20 @@ public class VacancyService extends AbstractService {
         return newID;
     }
 
-    public Vacancy getVacancyByStatus(){
-        int status =1;
-        Vacancy objVacancy = new Vacancy();
-        List<Vacancy> list = vacancyDA.findAll();
-        status = objVacancy.getStatus();
-        if(status!=1){
-             return (Vacancy) list;
+    public List<Vacancy> getAvailableVacancies() {
+        return vacancyDA.findAbsolutely("status", 0);
+    }
+
+    public List<Applicant> getApplicantHired(String vacancyID) {
+        List<Applicant> list = new ArrayList<Applicant>();
+        Vacancy vacancy = vacancyDA.find(vacancyID);
+        if (vacancy != null) {
+            for (Applicant app : vacancy.getApplicantList()) {
+                if(app.getStatus()==1){//Applicant hired - status = 1
+                    list.add(app);
+                }
+            }
         }
-        return null;
+        return list;
     }
 }
