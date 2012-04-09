@@ -4,28 +4,43 @@
  */
 package rps.managedBean;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import org.primefaces.event.CloseEvent;
 import rps.business.AccountService;
+import rps.entities.Account;
 
 /**
  *
  * @author user
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class AccountMB {
 
-    private String userName;
+    private Account account;
     private String password;
-    private String newPass;
+    private String confirm;
 
-    public String getNewPass() {
-        return newPass;
+    public Account getAccount() {
+        if (account == null) {
+            account = new Account();
+        }
+        return account;
     }
 
-    public void setNewPass(String newPass) {
-        this.newPass = newPass;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public String getConfirm() {
+        return confirm;
+    }
+
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
     }
 
     public String getPassword() {
@@ -36,13 +51,6 @@ public class AccountMB {
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
     private AccountService accountService;
 
     /** Creates a new instance of AccountMB */
@@ -52,20 +60,57 @@ public class AccountMB {
 
     public String validate() {
         String redirect = "";
-        if (accountService.validate(userName, password)) {
+        Account acc = accountService.getAccount(account.getUserName(), account.getPassword());
+        if (acc != null) {
+            this.setAccount(acc);
             redirect = "info.xhtml?faces-redirect=true";
-            if (accountService.isChangePassword(userName)) {
-                redirect = "info.xhtml#message";
-            }
         } else {
-            //throw new ValidatorException(new FacesMessage("Username or password is incorrect."));
+            FacesMessage msg = new FacesMessage("Username or password is incorrect.");
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
             redirect = "login.xhtml";
         }
         return redirect;
     }
 
     public String changePass() {
-        accountService.changePassword(userName, password, newPass);
+        try {
+            accountService.beginTransaction();
+            this.setAccount(accountService.updateAccount(account.getUserName(), password));
+            accountService.commitTransaction();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Form closed", "Your password has been changed");
+
+            facesContext.addMessage(null, message);
+        } catch (Exception ex) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "An error occured", ex.getMessage());
+
+            facesContext.addMessage(null, message);
+        }
         return "info.xhtml";
+    }
+
+    public void handleClose(CloseEvent event) {
+        if (!account.getIsChangedPassword()) {
+            accountService.beginTransaction();
+            this.setAccount(accountService.updateAccount(account.getUserName(), true));
+            accountService.commitTransaction();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Form closed", "Your password has not been changed");
+
+            facesContext.addMessage(null, message);
+        }
+    }
+
+    public void validatePassword() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesMessage message = new FacesMessage();
+        facesContext.addMessage("confirmPassword", message);
+
+        
     }
 }
