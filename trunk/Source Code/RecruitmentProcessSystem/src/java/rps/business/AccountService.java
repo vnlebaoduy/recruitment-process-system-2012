@@ -5,6 +5,7 @@
 package rps.business;
 
 import rps.dataaccess.AccountDA;
+import rps.dataaccess.FindResult;
 import rps.entities.Account;
 
 /**
@@ -19,27 +20,35 @@ public class AccountService extends AbstractService {
         accountDA = new AccountDA(getEntityManager());
     }
 
-    public boolean validate(String userName, String password) {
-        Account account = accountDA.find(userName);
-        if (account == null) {
-            return false;
+    public Account getAccount(String userName, String password) {
+        FindResult<Account> result = accountDA.findAbsolutely(new String[]{"userName", "password"}, new String[]{userName, password}, null, null, -1, -1);
+        if (result.size() > 0) {
+            return result.get(0);
         }
-        if (!account.getPassword().equals(password)) {
-            return false;
-        }
-        return true;
+        return null;
     }
 
-    public void changePassword(String userName, String oldPassword, String newPassword) {
-        if(validate(userName, newPassword)){
-            Account account = accountDA.find(userName);
-            account.setPassword(newPassword);
+    public Account updateAccount(String userName, String password) {
+        Account account = accountDA.find(userName);
+        if (account != null) {
+            account.setPassword(password);
             account.setIsChangedPassword(Boolean.TRUE);
             accountDA.edit(account);
         }
+        return account;
+    }
+    
+    public Account updateAccount(String userName, boolean isChanged){
+        Account account = accountDA.find(userName);
+        if (account != null) {
+            account.setIsChangedPassword(isChanged);
+            accountDA.edit(account);
+        }
+        return account;
     }
 
-    public boolean isChangePassword(String userName){
+    public boolean isChangePassword(String userName) {
         return accountDA.find(userName).getIsChangedPassword();
     }
+
 }
