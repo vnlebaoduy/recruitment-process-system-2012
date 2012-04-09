@@ -21,19 +21,16 @@
 
             <div id="login-content">
                 <h:form>
-                    <div class="notification information png_bg">
-                        <div>
-                            <h:messages title="Username or password is incorrect." />
-                        </div>
-                    </div>
+                    <h:messages styleClass="notification information png_bg" />
+                    
                     <p>
                         <label>Username</label>
-                        <h:inputText value="#{accountMB.userName}" styleClass="text-input"/>
+                        <h:inputText value="#{accountMB.account.userName}" styleClass="text-input"/>
                     </p>
                     <div class="clear"></div>
                     <p>
                         <label>Password</label>
-                        <h:inputSecret value="#{accountMB.password}" styleClass="text-input"/>
+                        <h:inputSecret value="#{accountMB.account.password}" styleClass="text-input"/>
                     </p>
                     <div class="clear"></div>
                     <p id="remember-password">
