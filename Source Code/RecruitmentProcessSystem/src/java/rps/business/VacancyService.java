@@ -97,4 +97,8 @@ public class VacancyService extends AbstractService {
         }
         return list;
     }
+
+    public Vacancy getVacancyByID(String id){
+        return vacancyDA.find(id);
+    }
 }
