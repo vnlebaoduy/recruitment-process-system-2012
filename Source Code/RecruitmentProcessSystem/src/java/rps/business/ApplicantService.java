@@ -100,6 +100,8 @@ public class ApplicantService extends AbstractService {
         }
         return false;
     }
-
+ public List<Applicant> getListApplicant(){
+        return applicantDA.findAll();
+    }
 
 }
