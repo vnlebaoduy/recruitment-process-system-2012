@@ -4,6 +4,7 @@
  */
 package rps.business;
 
+import java.util.List;
 import rps.dataaccess.EmployeeDA;
 import rps.entities.Employee;
 
@@ -21,5 +22,8 @@ public class EmployeeService extends AbstractService {
 
     public Employee getEmployeeInfo(String id){
         return employeeDA.find(id);
+    }
+	public List<Employee> getLstEmpl() {
+        return employeeDA.findAll();
     }
 }
