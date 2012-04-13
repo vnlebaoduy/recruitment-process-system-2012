@@ -34,6 +34,8 @@ import rps.entities.Vacancy;
 public class ApplicantMB implements Serializable {
 
     private Applicant applicant;
+    private List<Applicant> lstApplicant;
+    private String applicantID;
 
     public Applicant getApplicant() {
         if (applicant == null) {
@@ -43,8 +45,24 @@ public class ApplicantMB implements Serializable {
         return applicant;
     }
 
+    public List<Applicant> getLstApplicant() {
+        return lstApplicant;
+    }
+
+    public void setLstApplicant(List<Applicant> lstApplicant) {
+        this.lstApplicant = lstApplicant;
+    }
+
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public String getApplicantID() {
+        return applicantID;
+    }
+
+    public void setApplicantID(String applicantID) {
+        this.applicantID = applicantID;
     }
     private ApplicantService applicantService;
     private VacancyService vacancyService;
@@ -53,6 +71,12 @@ public class ApplicantMB implements Serializable {
     public ApplicantMB() {
         applicantService = new ApplicantService();
         vacancyService = new VacancyService();
+    }
+
+    public String search() {
+        applicantService = new ApplicantService();
+        lstApplicant = applicantService.getListApplicantByID(applicantID);
+        return null;
     }
 
     public String add() {
@@ -300,7 +324,7 @@ public class ApplicantMB implements Serializable {
         return null;
     }
 
-    public void saveListenner(){
+    public void saveListenner() {
         this.getApplicant().setVacancyList(listDropped);
         int size = this.getApplicant().getVacancyList().size();
         if (size > 0) {

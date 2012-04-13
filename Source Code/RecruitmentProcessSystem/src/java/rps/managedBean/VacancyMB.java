@@ -21,7 +21,7 @@ import rps.entities.Vacancy;
 @ManagedBean
 @RequestScoped
 public class VacancyMB {
-private String vacancyID;
+    private String vacancyID;
     private String title;
     private Date createdDate;
     private Integer status;
@@ -43,7 +43,31 @@ private String vacancyID;
     private Date deadline;
     private List<Applicant> applicantList;
     private Department department;
+    private List<Vacancy> lstVacancy;
 
+
+    public String search() {
+        vacancyService = new VacancyService();
+        lstVacancy = vacancyService.getListVacancyByID(vacancyID);
+        return null;
+    }
+
+
+    public List<Vacancy> getLstVacancy() {
+        return lstVacancy;
+    }
+
+    public void setLstVacancy(List<Vacancy> lstVacancy) {
+        this.lstVacancy = lstVacancy;
+    }
+
+    public VacancyService getVacancyService() {
+        return vacancyService;
+    }
+
+    public void setVacancyService(VacancyService vacancyService) {
+        this.vacancyService = vacancyService;
+    }
     public List<Applicant> getApplicantList() {
         return applicantList;
     }

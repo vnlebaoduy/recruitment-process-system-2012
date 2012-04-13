@@ -100,8 +100,14 @@ public class ApplicantService extends AbstractService {
         }
         return false;
     }
- public List<Applicant> getListApplicant(){
+    public List<Applicant> getListApplicant(){
         return applicantDA.findAll();
+    }
+    public List<Applicant> getListApplicantByID(String idAppl){
+        if(idAppl.equals("")){
+            return applicantDA.findAll();
+        }
+        return applicantDA.findAbsolutely("applicantID", idAppl);
     }
 
 }

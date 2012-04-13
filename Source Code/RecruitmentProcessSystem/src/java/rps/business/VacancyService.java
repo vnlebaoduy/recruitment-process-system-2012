@@ -101,4 +101,10 @@ public class VacancyService extends AbstractService {
     public Vacancy getVacancyByID(String id){
         return vacancyDA.find(id);
     }
+    public List<Vacancy> getListVacancyByID(String idVacancy){
+        if(idVacancy.equals("")){
+            return vacancyDA.findAll();
+        }
+        return vacancyDA.findAbsolutely("vacancyID", idVacancy);
+    }
 }
