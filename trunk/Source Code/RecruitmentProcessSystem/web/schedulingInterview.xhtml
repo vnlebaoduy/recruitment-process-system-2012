@@ -39,17 +39,31 @@
                               <h:outputLabel value="Start time : "></h:outputLabel>
                           </td>
                           <td>
-                              <p:calendar pattern="dd/MM/yyyy HH:mm" value="#{schedulingInterviewMB.startedTime}"></p:calendar>
+                              <p:calendar pattern="dd/MM/yyyy HH:mm" id="startTime" value="#{schedulingInterviewMB.startedTime}" required="true">
+                              </p:calendar>
                           </td>
                       </tr>
+                       <tr>
+                           <td></td>
+                           <td>
+                               <h:message for="startTime"></h:message>
+                           </td>
+                       </tr>
                        <tr>
                            <td>
                               <h:outputLabel value="End time : "></h:outputLabel>
                           </td>
                           <td>
-                              <p:calendar pattern="dd/MM/yyyy HH:mm"  value="#{schedulingInterviewMB.endedTime}"></p:calendar>
+                              <p:calendar pattern="dd/MM/yyyy HH:mm" id="endTime" value="#{schedulingInterviewMB.endedTime}" required="true">
+                              </p:calendar>
                           </td>
                       </tr>
+                       <tr>
+                           <td></td>
+                           <td>
+                               <h:message for="endTime"></h:message>
+                           </td>
+                       </tr>
                        <tr>
                            <td colspan="2">
                                <h:outputLabel value="#{schedulingInterviewMB.errors}" style="color: red"></h:outputLabel>

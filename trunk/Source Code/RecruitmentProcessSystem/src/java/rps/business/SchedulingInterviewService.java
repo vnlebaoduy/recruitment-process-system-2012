@@ -34,24 +34,32 @@ public class SchedulingInterviewService extends AbstractService {
         schedulingInterviewDA.create(addEntity);
         return addEntity;
     }
-
     public Boolean checkHour(Date startTime, Date endTime) {
         Boolean flag = true;
         List<SchedulingInterview> lstSchedulingInterview = new ArrayList<SchedulingInterview>();
         SchedulingInterview entity;
         lstSchedulingInterview = schedulingInterviewDA.findAll();
+        Date timeNow = new Date();
+        if (startTime.after(endTime)) {
+            flag = false;
+        }
+        if(startTime.before(timeNow)||endTime.before(timeNow)){
+             flag = false;
+        }
         for (int count = 0; count < lstSchedulingInterview.size(); count++) {
             entity = lstSchedulingInterview.get(count);
-            if (entity.getStartedTime().equals(startTime)) {
+            if (startTime.after(entity.getStartedTime()) && startTime.before(entity.getEndedTime())) {
                 flag = false;
+                break;
             }
-            if (entity.getEndedTime().after(startTime)) {
+            if(startTime.after(entity.getStartedTime())&&endTime.before(entity.getEndedTime())){
                 flag = false;
+                break;
             }
-        }
-        if (startTime.before(endTime)) {
-            flag = false;
-        } else if (true) {
+            if(startTime.before(entity.getStartedTime())&&endTime.before(entity.getEndedTime())){
+             flag = false;
+                break;
+            }
         }
         return flag;
     }

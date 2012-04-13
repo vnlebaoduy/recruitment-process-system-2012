@@ -31,7 +31,7 @@ public class SchedulingInterviewMB {
     public SchedulingInterviewMB() {
         schedulingInterviewService = new SchedulingInterviewService();
     }
-
+    
     public String createScheduleInterview() {
         schedulingInterviewService = new SchedulingInterviewService();
         Boolean flag = checkHour(startedTime, endedTime, schedulingInterviewService);
@@ -157,6 +157,13 @@ public class SchedulingInterviewMB {
         this.lstSlItemEmpl = lstSlItemEmpl;
 
 
+    }
+    public SchedulingInterviewService getSchedulingInterviewService() {
+        return schedulingInterviewService;
+    }
+
+    public void setSchedulingInterviewService(SchedulingInterviewService schedulingInterviewService) {
+        this.schedulingInterviewService = schedulingInterviewService;
     }
     private List<SelectItem> lstSlItemEmpl;
     private List<SelectItem> lstSlItemApplicant;
