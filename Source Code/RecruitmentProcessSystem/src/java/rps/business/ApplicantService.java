@@ -109,5 +109,4 @@ public class ApplicantService extends AbstractService {
         }
         return applicantDA.findAbsolutely("applicantID", idAppl);
     }
-
 }
