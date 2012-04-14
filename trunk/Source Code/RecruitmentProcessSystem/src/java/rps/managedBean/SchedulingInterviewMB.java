@@ -7,8 +7,10 @@ package rps.managedBean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import rps.business.ApplicantService;
 import rps.business.EmployeeService;
@@ -22,7 +24,7 @@ import rps.entities.SchedulingInterview;
  * @author Bach Luong
  */
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class SchedulingInterviewMB {
 
     private SchedulingInterviewService schedulingInterviewService;
@@ -31,7 +33,7 @@ public class SchedulingInterviewMB {
     public SchedulingInterviewMB() {
         schedulingInterviewService = new SchedulingInterviewService();
     }
-    
+
     public String createScheduleInterview() {
         schedulingInterviewService = new SchedulingInterviewService();
         Boolean flag = checkHour(startedTime, endedTime, schedulingInterviewService);
@@ -113,7 +115,8 @@ public class SchedulingInterviewMB {
     public void setStatus(Integer status) {
         this.status = status;
     }
-     public String getErrors() {
+
+    public String getErrors() {
         return errors;
     }
 
@@ -158,6 +161,7 @@ public class SchedulingInterviewMB {
 
 
     }
+
     public SchedulingInterviewService getSchedulingInterviewService() {
         return schedulingInterviewService;
     }
@@ -175,4 +179,70 @@ public class SchedulingInterviewMB {
     private String employeeID;
     private String applicantID;
     private String errors;
+    private SchedulingInterview schedule;
+
+    public SchedulingInterview getSchedule() {
+        if (schedule == null) {
+            schedule = new SchedulingInterview();
+        }
+        return schedule;
+    }
+
+    public void setSchedule(SchedulingInterview schedule) {
+        this.schedule = schedule;
+    }
+
+    public int numberInterviews(Object obj) {
+        try {
+            Date date = (Date) obj;
+            if (date != null) {
+                return schedulingInterviewService.getSchedulingInterviews(date).size();
+            }
+            return -1;
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+            return -1;
+        }
+    }
+    private List<SchedulingInterview> lstInterviews;
+    private Date selectedDate;
+
+    public Date getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(Date selectedDate) {
+        this.selectedDate = selectedDate;
+    }
+
+    public List<SchedulingInterview> getLstInterviews() {
+        if (lstInterviews == null) {
+            lstInterviews = new ArrayList<SchedulingInterview>();
+        }
+        return lstInterviews;
+    }
+
+    public void displayInterviews(Object obj) {
+        try {
+            Date date = (Date) obj;
+            if (date != null) {
+                lstInterviews = schedulingInterviewService.getSchedulingInterviews(date);
+                this.setSelectedDate(date);
+            } else {
+                lstInterviews = new ArrayList<SchedulingInterview>();
+            }
+        } catch (Exception ex) {
+//            FacesMessage message = new FacesMessage(
+//                    FacesMessage.SEVERITY_ERROR,
+//                    "An error occured",
+//                    ex.getMessage());
+//            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+        }
+    }
 }

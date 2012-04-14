@@ -81,20 +81,6 @@ public class ApplicantMB implements Serializable {
 
     public String add() {
         try {
-//            FacesMessage msg = new FacesMessage();
-//            msg.setSummary("");
-//            if (applicant.getEmail() != null) {
-//                if (!applicant.getEmail().matches("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")) {
-//                    msg.setSummary("Email is wrong format.");
-//                    FacesContext.getCurrentInstance().addMessage("email", msg);
-//                } else if (applicantService.isEmailExisted(applicant.getEmail())) {
-//                    msg.setSummary("This email is already existed.");
-//                    FacesContext.getCurrentInstance().addMessage("email", msg);
-//                }
-//            }
-//            if (!msg.getSummary().equals("")) {
-//                return null;
-//            }
             if (applicant.getSalaryRequirement() == null) {
                 applicant.setSalaryRequirement(0.0);
             }
@@ -113,6 +99,9 @@ public class ApplicantMB implements Serializable {
                     "Create new successfull", "Click <a href='applicants.xhtml'>here</a> to view all applicants");
             facesContext.addMessage(null, message);
             applicant = null;
+            listAvailable = null;
+            listDropped = null;
+            numberVacancies = "";
         } catch (Exception ex) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
@@ -122,18 +111,6 @@ public class ApplicantMB implements Serializable {
         return null;
     }
 
-//    public String attachVacancy() {
-//        try {
-//            applicantService.beginTransaction();
-//            applicantService.attachVacancy(applicant.getApplicantID(), applicant.getVacancyList());
-//            applicantService.commitTransaction();
-//        } catch (Exception ex) {
-//            FacesMessage msg = new FacesMessage(ex.getMessage());
-//            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-//            FacesContext.getCurrentInstance().addMessage(null, msg);
-//        }
-//        return null;
-//    }
     public List<Vacancy> getAvailaleVacancies() {
         try {
             return vacancyService.getAvailableVacancies();
@@ -288,22 +265,23 @@ public class ApplicantMB implements Serializable {
 
         listDropped.add(vacancy);
         listAvailable.remove(vacancy);
+        saveListenner();
     }
 
-    public String attachVacancy(String obj) {
+    public void attachVacancy(String obj) {
         Vacancy vacancy = vacancyService.getVacancyByID(obj);
 
         listDropped.add(vacancy);
         listAvailable.remove(vacancy);
-        return null;
+        saveListenner();
     }
 
-    public String detachVacancy(String obj) {
+    public void detachVacancy(String obj) {
         Vacancy vacancy = vacancyService.getVacancyByID(obj);
 
         listAvailable.add(vacancy);
         listDropped.remove(vacancy);
-        return null;
+        saveListenner();
     }
     private String numberVacancies;
 
@@ -311,27 +289,14 @@ public class ApplicantMB implements Serializable {
         return numberVacancies;
     }
 
-    public String saveChanges() {
-        applicant.setVacancyList(listDropped);
-        int size = applicant.getVacancyList().size();
-        if (size > 0) {
-            if (size == 1) {
-                numberVacancies = "1 vacancy attached for new applicant";
-            } else {
-                numberVacancies = size + " vacancies attached for new applicant";
-            }
-        }
-        return null;
-    }
-
     public void saveListenner() {
         this.getApplicant().setVacancyList(listDropped);
         int size = this.getApplicant().getVacancyList().size();
         if (size > 0) {
             if (size == 1) {
-                numberVacancies = "1 vacancy attached for new applicant";
+                numberVacancies = "   ( 1 vacancy attached for new applicant )";
             } else {
-                numberVacancies = size + " vacancies attached for new applicant";
+                numberVacancies = "   ( " + size + " vacancies attached for new applicant )";
             }
         }
     }
