@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" sticky="true" globalOnly="true" showDetail="true"/>
+        <p:dialog id="messages" header="Attention Dialog" widgetVar="dlg" modal="true" resizable="false" >
+            <h3>Change your password</h3>
+            <p>
+                <strong>Attention</strong> by Admin<br />
+		In the first time using the system, you should be changed default password to protect your account.
+            </p>
+            <h:form>
+                <h4>New Password</h4>
+                <fieldset>
+                    <p:password id="txtPassword" value="#{accountMB.password}"
+                                styleClass="text-input" feedback="true"
+                                required="true"
+                                requiredMessage="Password is required"
+                                validatorMessage="Password must have at least 6 characters">
+                        <f:validateLength minimum="6" />
+                    </p:password>
+                    <h:message styleClass="input-notification error png_bg" for="txtPassword" id="messageForPassword"/>
+                   
+                </fieldset>
+                <h4>Confirm Password</h4>
+                <fieldset>
+                    <p:password id="confirmPassword" value="#{accountMB.confirm}"
+                                styleClass="text-input" feedback="true"
+                                match="txtPassword"
+                                />
+                    <h:message styleClass="input-notification error png_bg" for="confirmPassword" id="messageForConfirmPassword"/>
+                </fieldset>
+                <br/>
+                <fieldset>
+                    <h:commandButton value="Save Changes" styleClass="button" action="#{accountMB.changePass}"/>
+                </fieldset>
+            </h:form>
+            <p:ajax event="close" update="growl" listener="#{accountMB.handleClose}"/>
+        </p:dialog><!-- End #messages -->
+
+        <script type="text/javascript" >
+            $(document).ready(function () {
+              var param = '#{sessionScope.accountMB.account.isChangedPassword}';
+              if(param == "false")
+                dlg.show();
+            });
+        </script>
+
+        <div class="content-box column-left">
+            <div class="content-box-header">
+                <h3>My Information</h3>
+            </div> <!-- End .content-box-header -->
+
+            <div class="content-box-content">
+                <div class="tab-content default-tab">
+                    
+                </div> <!-- End #tab3 -->
+            </div> <!-- End .content-box-content -->
+        </div> <!-- End .content-box -->
+
+        <div class="content-box column-right closed-box">
+            <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
+                <h3>Content box right</h3>
+            </div> <!-- End .content-box-header -->
+
+            <div class="content-box-content">
+                <div class="tab-content default-tab">
+                    <h4>This box is closed by default</h4>
+                    <p>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta lectus. Maecenas dignissim enim quis ipsum mattis aliquet. Maecenas id velit et elit gravida bibendum. Duis nec rutrum lorem. Donec egestas metus a risus euismod ultricies. Maecenas lacinia orci at neque commodo commodo.
+                    </p>
+                </div> <!-- End #tab3 -->
+            </div> <!-- End .content-box-content -->
+        </div> <!-- End .content-box -->
+    </ui:define>
+
+</ui:composition>

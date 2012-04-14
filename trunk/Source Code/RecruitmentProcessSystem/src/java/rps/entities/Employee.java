@@ -66,10 +66,10 @@ public class Employee implements Serializable {
     private String address;
     @Column(name = "Position")
     private String position;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private List<Schedule> scheduleList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "employee")
     private Account account;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
-    private List<SchedulingInterview> schedulingInterviewList;
     @JoinColumn(name = "DepartmentID", referencedColumnName = "DepartmentID")
     @ManyToOne(optional = false)
     private Department department;
@@ -160,20 +160,20 @@ public class Employee implements Serializable {
         this.position = position;
     }
 
+    public List<Schedule> getScheduleList() {
+        return scheduleList;
+    }
+
+    public void setScheduleList(List<Schedule> scheduleList) {
+        this.scheduleList = scheduleList;
+    }
+
     public Account getAccount() {
         return account;
     }
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    public List<SchedulingInterview> getSchedulingInterviewList() {
-        return schedulingInterviewList;
-    }
-
-    public void setSchedulingInterviewList(List<SchedulingInterview> schedulingInterviewList) {
-        this.schedulingInterviewList = schedulingInterviewList;
     }
 
     public Department getDepartment() {
