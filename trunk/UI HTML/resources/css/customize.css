@@ -1,0 +1,250 @@
+/* 
+    Document   : customize
+    Created on : Apr 12, 2012, 1:36:13 PM
+    Author     : user
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+/***** VACANCY *****/
+div#vacancy{
+    height: 50px;
+    width:100%;
+    position:relative;
+}
+
+div#vacancy img{
+    height:48px;
+    width:48px;
+    float:left;
+    margin:4px auto 4px auto;
+}
+
+div#vacancy div#content{
+    margin: 5px 5px 5px 5px;
+    float:left;
+}
+
+div#vacancy div#content h4{
+    font-size: 14px;
+}
+
+div#vacancy div#content p{
+    line-height:15px;
+    padding: 0px 2px 2px 2px;
+}
+
+div#vacancy input{
+    margin:10px auto 10px auto;
+    float:right;
+}
+
+/***** CUSTOMIZE PRIMEFACES *****/
+form span input[type="text"]{
+    padding: 6px;
+    font-size: 13px;
+    background: #fff url('../images/bg-form-field.gif') top left repeat-x;
+    border: 1px solid #d5d5d5;
+    color: #333;
+    width: 50% !important;
+}
+
+fieldset.ui-widget-content{
+    border:none;
+}
+
+/***** SCHEDULE *****/
+div#calendar_wrap {
+    width: 924px;
+    margin: 10px auto;
+    overflow: hidden;
+    text-align: left;
+}
+
+div#calendar_wrap .title_bar {
+    font-weight: bold;
+    color: #1C1C1C;
+    text-align: center;
+    border:1px solid #fff;
+    margin-bottom:15px;
+}
+
+div#calendar_wrap .title_bar .previous { 
+    float: left;
+    display: block;
+    width: 25px;
+    height: 20px;
+    background: url(../images/icons/previous_month.gif) left top no-repeat;
+    margin-top:10px;
+    margin-left:10px;
+}
+
+div#calendar_wrap .title_bar .next { 
+    float: right;
+    display: block;
+    width: 25px;
+    height: 20px;
+    background: url(../images/icons/next_month.gif) right top no-repeat;
+    margin-top:10px;
+    margin-right:10px;
+}
+
+div#calendar_wrap .title_bar .month {
+    width: 800px;
+    margin:10px auto;
+    padding-bottom:0 !important;
+    padding-bottom:10px;
+}
+
+div#calendar_wrap .title_bar h2 { 
+    font-size: 16px;
+}
+
+div.cal_day {
+    position: relative;
+    float: left;
+    margin: 0 4px 4px 0 !important;
+    margin:0 4px -24px 0;
+    width: 128px;
+    height: 95px;
+    background: url('../images/day.png') top no-repeat;
+}
+div.cal_day .day_heading {
+    position: relative;
+    float: left;
+    width: 40px;
+    height: 16px;
+    padding: 6px;
+    text-transform: uppercase;
+    font: 14px Arial;
+    color: #FFF;
+}
+
+div.cal_day .day_count {
+    position: relative;
+    float: right;
+    width: 64px;
+    text-align: right;
+    height: 16px;
+    padding: 6px;
+    font: 11px Arial, sans-serif;
+    color: #FFF;
+}
+
+div.cal_day .day_number {
+    width: 100%;
+    font: 52px Arial;
+    font-weight: bold;
+    color: #2b2b2b;
+    height:95px;
+    text-align: center;
+    z-index:999;
+    clear:left;
+}
+
+div.cal_day .day_number.today {
+    color: #08c;
+}
+
+.last_month, .next_month {
+    filter:alpha(opacity=20);
+    -moz-opacity:0.2;
+    -khtml-opacity: 0.2;
+    opacity: 0.2;
+}
+
+div.cal_day .day_count span.event {
+    width:55px;
+    margin-top: -1px;
+    padding:2px 0 !important;
+    padding:1px 0 1px;
+    display:inline-block;
+    text-align:center;
+    background-color: #000;
+    opacity:0.4;
+    filter:alpha(opacity=40);
+    -moz-border-radius: 8px;
+    -webkit-border-radius:8px;
+}
+
+div.content-box-header .schedule{
+    float:right;
+    margin: 3px 15px;
+}
+
+/***** EVENT DIALOG *****/
+div.border{
+    border-top: 1px dotted #CCC;
+}
+
+div.event{
+    padding: 15px 0px 15px 0px;
+    position:relative;
+}
+
+div.other{
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
+div.event div.cal_day{
+    line-height:150px;
+}
+
+div.event div.event_content{
+    margin-left: 140px;
+}
+
+div.event div.event_content p{
+    line-height:1em;
+}
+
+div.event div.event_content a{
+    margin-left:200px;
+}
+
+div.event div.event_content a {
+    color: #57a000;
+    text-decoration: none;
+}
+div.event div.event_content a:hover {
+    color: #000;
+}
+div.event div.event_content a:active {
+    color: #777;
+}
+div.event div.event_content a:focus { 
+    outline: 1px;
+}
+
+/***** TBALE (LUONGBV) *****/
+.order-table{
+    border-collapse:collapse;
+    border: 1px;
+}
+
+.order-table-header{
+    text-align:center;
+    background:none repeat scroll 0 0 #E5E5E5;
+    border-bottom:1px solid #BBBBBB;
+    padding:16px;
+}
+
+.order-table-odd-row{
+    text-align:center;
+    background:none repeat scroll 0 0 #FFFFFFF;
+    border-top:1px solid #BBBBBB;
+}
+
+.order-table-even-row{
+    text-align:center;
+    background:none repeat scroll 0 0 #F9F9F9;
+    border-top:1px solid #BBBBBB;
+}
