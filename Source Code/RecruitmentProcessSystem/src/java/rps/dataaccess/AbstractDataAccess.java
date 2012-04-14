@@ -175,6 +175,17 @@ public abstract class AbstractDataAccess<T> {
     }
 
     public FindResult<T> findRelatively(
+            String propertyName, Object propertyValue) {
+        return findRelatively(
+                new String[]{propertyName},
+                new Object[]{propertyValue},
+                null,
+                null,
+                -1,
+                -1);
+    }
+
+    public FindResult<T> findRelatively(
             String[] propertyNames, Object[] propertyValues,
             String[] propertyOrderNames, String[] propertyOrderDirections,
             int fromIndex, int toIndex) {
