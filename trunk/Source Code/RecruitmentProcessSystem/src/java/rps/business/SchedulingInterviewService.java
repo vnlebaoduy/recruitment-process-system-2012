@@ -61,6 +61,20 @@ public class SchedulingInterviewService extends AbstractService {
                 break;
             }
         }
+        if (startTime.after(endTime)) {
+            flag = false;
+        } else if (true) {
+        }
         return flag;
+    }
+
+    public List<SchedulingInterview> getSchedulingInterviews(Date date){
+        //return schedulingInterviewDA.findRelatively("startedTime", date);
+        return schedulingInterviewDA.searchSchedule(date);
+    }
+
+    public List<SchedulingInterview> getSchedulingInterviews(Date date, int status){
+        return schedulingInterviewDA.findAbsolutely(new String[]{"startedTime, status"},
+                new Object[]{date, status}, null, null, -1, -1);
     }
 }
