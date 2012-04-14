@@ -14,10 +14,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import rps.business.ApplicantService;
 import rps.business.EmployeeService;
-import rps.business.SchedulingInterviewService;
+import rps.business.ScheduleService;
 import rps.entities.Applicant;
 import rps.entities.Employee;
-import rps.entities.SchedulingInterview;
+import rps.entities.Schedule;
 
 /**
  *
@@ -25,38 +25,38 @@ import rps.entities.SchedulingInterview;
  */
 @ManagedBean
 @RequestScoped
-public class SchedulingInterviewMB {
+public class ScheduleMB {
 
-    private SchedulingInterviewService schedulingInterviewService;
+    private ScheduleService scheduleService;
 
-    /** Creates a new instance of SchedulingInterviewMB */
-    public SchedulingInterviewMB() {
-        schedulingInterviewService = new SchedulingInterviewService();
+    /** Creates a new instance of ScheduleMB */
+    public ScheduleMB() {
+        scheduleService = new ScheduleService();
     }
 
     public String createScheduleInterview() {
-        schedulingInterviewService = new SchedulingInterviewService();
-        Boolean flag = checkHour(startedTime, endedTime, schedulingInterviewService);
+        scheduleService = new ScheduleService();
+        Boolean flag = checkHour(startedTime, endedTime, scheduleService);
         if (flag == false) {
             errors = "Datetime không hợp lệ!";
             return null;
         }
         Employee empl = new Employee(this.getEmployeeID());
         Applicant appl = new Applicant(this.getApplicantID());
-        SchedulingInterview addEntity = new SchedulingInterview();
+        Schedule addEntity = new Schedule();
         addEntity.setEmployee(empl);
         addEntity.setApplicant(appl);
         addEntity.setStartedTime(this.getStartedTime());
         addEntity.setEndedTime(this.getEndedTime());
-        schedulingInterviewService.beginTransaction();
-        schedulingInterviewService.addSchedulingInterview(addEntity);
-        schedulingInterviewService.commitTransaction();
-        return "schedulingInterview.xhtml";
+        scheduleService.beginTransaction();
+        scheduleService.addSchedule(addEntity);
+        scheduleService.commitTransaction();
+        return "Schedule.xhtml";
     }
 
-    public Boolean checkHour(Date startTime, Date endTime, SchedulingInterviewService schedulingInterviewService) {
+    public Boolean checkHour(Date startTime, Date endTime, ScheduleService ScheduleService) {
         Boolean flag = false;
-        flag = schedulingInterviewService.checkHour(startTime, endTime);
+        flag = ScheduleService.checkHour(startTime, endTime);
         return flag;
     }
 
@@ -162,12 +162,12 @@ public class SchedulingInterviewMB {
 
     }
 
-    public SchedulingInterviewService getSchedulingInterviewService() {
-        return schedulingInterviewService;
+    public ScheduleService getScheduleService() {
+        return scheduleService;
     }
 
-    public void setSchedulingInterviewService(SchedulingInterviewService schedulingInterviewService) {
-        this.schedulingInterviewService = schedulingInterviewService;
+    public void setScheduleService(ScheduleService ScheduleService) {
+        this.scheduleService = ScheduleService;
     }
     private List<SelectItem> lstSlItemEmpl;
     private List<SelectItem> lstSlItemApplicant;
@@ -179,16 +179,16 @@ public class SchedulingInterviewMB {
     private String employeeID;
     private String applicantID;
     private String errors;
-    private SchedulingInterview schedule;
+    private Schedule schedule;
 
-    public SchedulingInterview getSchedule() {
+    public Schedule getSchedule() {
         if (schedule == null) {
-            schedule = new SchedulingInterview();
+            schedule = new Schedule();
         }
         return schedule;
     }
 
-    public void setSchedule(SchedulingInterview schedule) {
+    public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
     }
 
@@ -196,9 +196,9 @@ public class SchedulingInterviewMB {
         try {
             Date date = (Date) obj;
             if (date != null) {
-                return schedulingInterviewService.getSchedulingInterviews(date).size();
+                return scheduleService.getSchedules(date).size();
             }
-            return -1;
+            return 0;
         } catch (Exception ex) {
             FacesMessage message = new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
@@ -209,7 +209,71 @@ public class SchedulingInterviewMB {
             return -1;
         }
     }
-    private List<SchedulingInterview> lstInterviews;
+
+    public int getNumberInterviewsOnDay() {
+        try {
+            if (this.getSelectedDate() != null) {
+                return scheduleService.getSchedules(this.getSelectedDate()).size();
+            }
+            return 0;
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int numberVacancies(Object obj) {
+        try {
+            Applicant app = (Applicant) obj;
+            if (app != null) {
+                return app.getVacancyList().size();
+            }
+            return 0;
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+            return -1;
+        }
+    }
+
+    public String statusValue(Object obj) {
+        try {
+            int status = (Integer) obj;
+            String value = "";
+            switch (status) {
+                case 0:
+                    value = "Not in progress";
+                    break;
+                case 100:
+                    value = "Selected";
+                    break;
+                case -100:
+                    value = "Rejected";
+                    break;
+                default:
+                    break;
+            }
+            return value;
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    private List<Schedule> lstInterviews;
     private Date selectedDate;
 
     public Date getSelectedDate() {
@@ -220,9 +284,9 @@ public class SchedulingInterviewMB {
         this.selectedDate = selectedDate;
     }
 
-    public List<SchedulingInterview> getLstInterviews() {
+    public List<Schedule> getLstInterviews() {
         if (lstInterviews == null) {
-            lstInterviews = new ArrayList<SchedulingInterview>();
+            lstInterviews = new ArrayList<Schedule>();
         }
         return lstInterviews;
     }
@@ -231,17 +295,17 @@ public class SchedulingInterviewMB {
         try {
             Date date = (Date) obj;
             if (date != null) {
-                lstInterviews = schedulingInterviewService.getSchedulingInterviews(date);
+                lstInterviews = scheduleService.getSchedules(date);
                 this.setSelectedDate(date);
             } else {
-                lstInterviews = new ArrayList<SchedulingInterview>();
+                lstInterviews = new ArrayList<Schedule>();
             }
         } catch (Exception ex) {
-//            FacesMessage message = new FacesMessage(
-//                    FacesMessage.SEVERITY_ERROR,
-//                    "An error occured",
-//                    ex.getMessage());
-//            FacesContext.getCurrentInstance().addMessage(null, message);
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
             ex.printStackTrace();
         }
     }

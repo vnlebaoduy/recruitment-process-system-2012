@@ -1,0 +1,91 @@
+ <ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <h:form id="form2">
+        <p:dialog
+            id="message"
+            header="Event Dialog"
+            widgetVar="dlg"
+            modal="true"
+            resizable="false"
+            width="400" >
+            <h3>#{calendarMB.titleFormat(scheduleMB.selectedDate)}</h3>
+            <h:panelGroup rendered="#{scheduleMB.numberInterviewsOnDay==1
+                                      || scheduleMB.numberInterviewsOnDay==0}">
+                <p>
+                    <strong>There are currently
+                        #{scheduleMB.numberInterviewsOnDay}
+                        event scheduled.</strong>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{scheduleMB.numberInterviewsOnDay>1}">
+                <p>
+                    <strong>There are currently
+                        #{scheduleMB.numberInterviewsOnDay}
+                        events scheduled.</strong>
+                </p>
+            </h:panelGroup>
+
+            <ui:repeat value="#{scheduleMB.lstInterviews}" var="interview">
+                <h:panelGroup rendered="#{accountMB.account.employee == interview.employee}">
+                    <div class="border">
+                        <div class="event">
+                            <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
+                                #{interview.employee.employeeID}</h3>
+                            <div class="cal_day">
+                                <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
+                                <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                            </div>
+                            <div class="event_content">
+                                <p><strong>Time: </strong>
+                                    #{calendarMB.timeFormat(interview.startedTime)}
+                                    to #{calendarMB.timeFormat(interview.endedTime)}</p>
+                                <p><strong>Applicant name: </strong> #{interview.applicant.firstName} #{interview.applicant.lastName}</p>
+                                <h:panelGroup
+                                    rendered="#{scheduleMB.numberVacancies(interview.applicant)==1
+                                                || scheduleMB.numberVacancies(interview.applicant)==0}">
+                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancy</p>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{scheduleMB.numberVacancies(interview.applicant)>1}">
+                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancies</p>
+                                </h:panelGroup>
+                                <p><strong>Status: </strong> #{scheduleMB.statusValue(interview.status)}</p>
+                                <p:commandLink action="#{calendarMB.mySchedule}" ajax="false" value="More"/>
+                            </div>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{accountMB.account.employee != interview.employee}">
+                    <div class="border">
+                        <div class="event other">
+                            <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
+                                #{interview.employee.employeeID}</h3>
+                            <div class="cal_day">
+                                <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
+                                <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                            </div>
+                            <div class="event_content">
+                                <p><strong>Time: </strong>
+                                    #{calendarMB.timeFormat(interview.startedTime)}
+                                    to #{calendarMB.timeFormat(interview.endedTime)}</p>
+                                <p><strong>Applicant name: </strong> #{interview.applicant.firstName} #{interview.applicant.lastName}</p>
+                                <h:panelGroup
+                                    rendered="#{scheduleMB.numberVacancies(interview.applicant)==1
+                                                || scheduleMB.numberVacancies(interview.applicant)==0}">
+                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancy</p>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{scheduleMB.numberVacancies(interview.applicant)>1}">
+                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancies</p>
+                                </h:panelGroup>
+                                <p><strong>Status: </strong> #{scheduleMB.statusValue(interview.status)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </ui:repeat>
+        </p:dialog>
+    </h:form>
+</ui:composition>

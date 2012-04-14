@@ -4,7 +4,6 @@
  */
 package rps.dataaccess;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,28 +13,27 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import rps.entities.Account;
 import rps.entities.Applicant;
 import rps.entities.Employee;
-import rps.entities.SchedulingInterview;
+import rps.entities.Schedule;
 
 /**
  *
  * @author Bach Luong
  */
-public class SchedulingInterviewDA extends AbstractDataAccess<SchedulingInterview> {
+public class ScheduleDA extends AbstractDataAccess<Schedule> {
 
-    public SchedulingInterviewDA(EntityManager em) {
-        super(SchedulingInterview.class, em);
+    public ScheduleDA(EntityManager em) {
+        super(Schedule.class, em);
     }
 
-    public FindResult<SchedulingInterview> searchSchedule(Employee employee,
+    public FindResult<Schedule> searchSchedule(Employee employee,
             Applicant applicant, Date startedTime, Date endedTime, Integer[] status,
             int fromIndex, int toIndex) {
 
-        FindResult<SchedulingInterview> results;
+        FindResult<Schedule> results;
         CriteriaBuilder cb;
-        CriteriaQuery<SchedulingInterview> cq;
+        CriteriaQuery<Schedule> cq;
         CriteriaQuery<Long> countCq;
         Root root;
         Predicate predicate;
@@ -43,14 +41,14 @@ public class SchedulingInterviewDA extends AbstractDataAccess<SchedulingIntervie
         //Create CriteraBuilder
         cb = getEntityManager().getCriteriaBuilder();
         //Create CriteraQuery
-        cq = cb.createQuery(SchedulingInterview.class);
+        cq = cb.createQuery(Schedule.class);
         countCq = cb.createQuery(Long.class);
         //Create results
-        results = new FindResult<SchedulingInterview>();
+        results = new FindResult<Schedule>();
         results.setFromIndex(fromIndex);
         results.setToIndex(toIndex);
         //Create root
-        root = cq.from(SchedulingInterview.class);
+        root = cq.from(Schedule.class);
 
         //Create Predicate
         List<Predicate> predicates = new ArrayList<Predicate>();
@@ -101,11 +99,11 @@ public class SchedulingInterviewDA extends AbstractDataAccess<SchedulingIntervie
         return results;
     }
 
-    public FindResult<SchedulingInterview> searchSchedule(Date date) {
+    public FindResult<Schedule> searchSchedule(Date date) {
 
-        FindResult<SchedulingInterview> results;
+        FindResult<Schedule> results;
         CriteriaBuilder cb;
-        CriteriaQuery<SchedulingInterview> cq;
+        CriteriaQuery<Schedule> cq;
         CriteriaQuery<Long> countCq;
         Root root;
         Predicate predicate;
@@ -113,12 +111,12 @@ public class SchedulingInterviewDA extends AbstractDataAccess<SchedulingIntervie
         //Create CriteraBuilder
         cb = getEntityManager().getCriteriaBuilder();
         //Create CriteraQuery
-        cq = cb.createQuery(SchedulingInterview.class);
+        cq = cb.createQuery(Schedule.class);
         countCq = cb.createQuery(Long.class);
         //Create results
-        results = new FindResult<SchedulingInterview>();
+        results = new FindResult<Schedule>();
         //Create root
-        root = cq.from(SchedulingInterview.class);
+        root = cq.from(Schedule.class);
 
         //Create Predicate
         List<Predicate> predicates = new ArrayList<Predicate>();

@@ -10,7 +10,7 @@ import java.util.List;
 import rps.dataaccess.ApplicantDA;
 import rps.dataaccess.FindResult;
 import rps.entities.Applicant;
-import rps.entities.SchedulingInterview;
+import rps.entities.Schedule;
 import rps.entities.Vacancy;
 
 /**
@@ -39,7 +39,7 @@ public class ApplicantService extends AbstractService {
 
     public Applicant addApplicant(String firstName, String lastName, boolean gender, Date dob,
             String phone, String email, String address, Double salary, String language, int year,
-            String degree, String skill, String award, List<Vacancy> vacancy, List<SchedulingInterview> schedule) {
+            String degree, String skill, String award, List<Vacancy> vacancy, List<Schedule> schedule) {
 
         Applicant applicant = new Applicant();
         applicant.setApplicantID(generateID());
@@ -57,7 +57,7 @@ public class ApplicantService extends AbstractService {
         applicant.setSkill(skill);
         applicant.setAward(award);
         applicant.setVacancyList(vacancy);
-        applicant.setSchedulingInterviewList(schedule);
+        applicant.setScheduleList(schedule);
         applicant.setStatus(0);
         applicant.setCreatedDate(Calendar.getInstance().getTime());
 
@@ -100,11 +100,13 @@ public class ApplicantService extends AbstractService {
         }
         return false;
     }
-    public List<Applicant> getListApplicant(){
+
+    public List<Applicant> getListApplicant() {
         return applicantDA.findAll();
     }
-    public List<Applicant> getListApplicantByID(String idAppl){
-        if(idAppl.equals("")){
+
+    public List<Applicant> getListApplicantByID(String idAppl) {
+        if (idAppl.equals("")) {
             return applicantDA.findAll();
         }
         return applicantDA.findAbsolutely("applicantID", idAppl);

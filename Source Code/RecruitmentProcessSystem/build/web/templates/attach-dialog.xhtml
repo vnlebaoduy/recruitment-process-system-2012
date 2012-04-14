@@ -1,0 +1,99 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <p:dialog
+        id="messages"
+        header="Attach Dialog"
+        widgetVar="dlg"
+        modal="true"
+        resizable="false"
+        width="960" >
+
+        <h:form id="form2">
+            <div class="content-box column-right">
+                <div class="content-box-header">
+                    <h3>Available Vacancies</h3>
+                </div> <!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <h:dataTable id="availaleVacancies" value="#{applicantMB.listAvailable}" var="vacancy" style="width: 100%">
+                            <h:column>
+                                <p:panel id="pnl" header="#{vacancy.title}" style="margin-bottom: 10px; display: table; width: 100%">
+                                    <div id="vacancy">
+                                        <img alt=""  src="resources/images/new.png"/>
+                                        <div id="content">
+                                            <h4>#{vacancy.title}</h4>
+                                            <p>Department: #{vacancy.department.name}</p>
+                                            <p class="number_vac">Hired: #{applicantMB.numberApplicantHired(vacancy.vacancyID)}/#{vacancy.numberRequirement}</p>
+                                        </div>
+                                        <h:commandButton
+                                            id="attachButton"
+                                            image="resources/images/icons/accept.png"
+                                            value="Attach"
+                                            actionListener="#{applicantMB.attachVacancy(vacancy.vacancyID)}"
+                                            >
+                                            <f:ajax execute="@this" render="@form :form1:attach-number"/>
+
+                                        </h:commandButton>
+                                    </div>
+                                </p:panel>
+
+                                <p:draggable for="pnl" revert="true"
+                                             handle=".ui-panel-titlebar" stack=".ui-panel"/>
+                            </h:column>
+                        </h:dataTable>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+
+            <div class="content-box column-left">
+                <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
+                    <h3>Applicant Vacancies</h3>
+                </div> <!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <p:fieldset id="selectedVacancies">
+                            <p:outputPanel id="dropArea">
+                                <h:outputText value="!!!Drop here!!!"
+                                              rendered="#{empty applicantMB.listDropped}"
+                                              style="font-size:24px;" />
+                                <h:dataTable
+                                    value="#{applicantMB.listDropped}"
+                                    var="vacancy2" style="width: 100%"
+                                    rendered="#{not empty applicantMB.listDropped}">
+                                    <h:column>
+                                        <p:panel id="pnl2" header="#{vacancy2.title}" style="margin-bottom: 10px; display: table; width: 100%">
+                                            <div id="vacancy">
+                                                <img alt=""  src="resources/images/new.png"/>
+                                                <div id="content">
+                                                    <h4>#{vacancy2.title}</h4>
+                                                    <p>Department: #{vacancy2.department.name}</p>
+                                                    <p class="number_vac">Hired: #{applicantMB.numberApplicantHired(vacancy2.vacancyID)}/#{vacancy2.numberRequirement}</p>
+                                                </div>
+                                                <h:commandButton id="detachButton"
+                                                                 image="resources/images/icons/delete.png"
+                                                                 value="Detach"
+                                                                 actionListener="#{applicantMB.detachVacancy(vacancy2.vacancyID)}">
+                                                    <f:ajax execute="@this" render="@form :form1:attach-number"/>
+                                                </h:commandButton>
+                                            </div>
+                                        </p:panel>
+                                    </h:column>
+                                </h:dataTable>
+                            </p:outputPanel>
+                        </p:fieldset>
+                        <p:droppable for="selectedVacancies" tolerance="touch"
+                                     activeStyleClass="ui-state-highlight" datasource="availaleVacancies">
+                            <p:ajax listener="#{applicantMB.onVacancyDrop}" update="dropArea availaleVacancies :form1:attach-number" />
+                        </p:droppable>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+        </h:form>
+    </p:dialog>
+</ui:composition>

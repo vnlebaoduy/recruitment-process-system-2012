@@ -94,7 +94,7 @@ public class Applicant implements Serializable {
     @ManyToMany
     private List<Vacancy> vacancyList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicant")
-    private List<SchedulingInterview> schedulingInterviewList;
+    private List<Schedule> scheduleList;
 
     public Applicant() {
     }
@@ -246,12 +246,12 @@ public class Applicant implements Serializable {
         this.vacancyList = vacancyList;
     }
 
-    public List<SchedulingInterview> getSchedulingInterviewList() {
-        return schedulingInterviewList;
+    public List<Schedule> getScheduleList() {
+        return scheduleList;
     }
 
-    public void setSchedulingInterviewList(List<SchedulingInterview> schedulingInterviewList) {
-        this.schedulingInterviewList = schedulingInterviewList;
+    public void setScheduleList(List<Schedule> scheduleList) {
+        this.scheduleList = scheduleList;
     }
 
     @Override

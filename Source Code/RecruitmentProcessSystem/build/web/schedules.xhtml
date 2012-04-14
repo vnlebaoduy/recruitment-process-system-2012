@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"/>
+        <h:form id="form1">
+            <div class="content-box"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>Schedule all interviews</h3>
+                    <p><h:commandButton styleClass="schedule button"
+                                        value="My Schedule"
+                                        action="#{calendarMB.mySchedule}"/></p>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content" style="margin: 0px auto;">
+                    <div class="default-tab">
+                        <div id="calendar_wrap">
+                            <div class="title_bar">
+                                <h:commandLink actionListener="#{calendarMB.backMonth}">
+                                    <div class="previous"></div>
+                                    <f:ajax execute="@this" render="@form :growl"/>
+                                </h:commandLink>
+                                <h:commandLink actionListener="#{calendarMB.nextMonth}">
+                                    <div class="next"></div>
+                                    <f:ajax execute="@this" render="@form :growl"/>
+                                </h:commandLink>
+                                <h2 class="month">#{calendarMB.monthYearFormat(calendarMB.date)}</h2>
+                            </div>
+                            <ui:repeat value="#{calendarMB.dates}" var="date">
+                                <p:commandLink title="#{calendarMB.titleFormat(date)}"
+                                               actionListener="#{scheduleMB.displayInterviews(date)}"
+                                               oncomplete="dlg.show();"
+                                               update=":form2">
+
+                                    <h:panelGroup rendered="#{!calendarMB.lastMonth(date)}">
+                                        <div class="cal_day">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
+                                            <h:panelGroup rendered="#{scheduleMB.numberInterviews(date)==1}">
+                                                <div class="day_count">
+                                                    <span class="event">1 Event</span>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{scheduleMB.numberInterviews(date)>1}">
+                                                <div class="day_count">
+                                                    <span class="event">#{scheduleMB.numberInterviews(date)} Events</span>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{calendarMB.today(date)}">
+                                                <div class="day_number today">#{calendarMB.dayFormat(date)}</div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{!calendarMB.today(date)}">
+                                                <div class="day_number">#{calendarMB.dayFormat(date)}</div>
+                                            </h:panelGroup>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{calendarMB.lastMonth(date)}">
+                                        <div class="cal_day last_month">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
+                                            <h:panelGroup rendered="#{numEvent>0}">
+                                                <div class="day_count">
+                                                    <span class="event">#{numEvent}</span>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{calendarMB.today(date)}">
+                                                <div class="day_number today">#{calendarMB.dayFormat(date)}</div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{!calendarMB.today(date)}">
+                                                <div class="day_number">#{calendarMB.dayFormat(date)}</div>
+                                            </h:panelGroup>
+                                        </div>
+                                    </h:panelGroup>
+                                </p:commandLink>
+                            </ui:repeat>
+                        </div>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+        </h:form>
+        <ui:include src="templates/event-dialog.xhtml"/>
+    </ui:define>
+
+</ui:composition>
