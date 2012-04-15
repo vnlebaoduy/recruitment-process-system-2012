@@ -5,6 +5,7 @@
 package rps.business;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import rps.dataaccess.FindResult;
@@ -29,16 +30,15 @@ public class VacancyService extends AbstractService {
         return vacancyDA.findAbsolutely("title", title);
     }
 
-    public Vacancy insertVacancy(String title, Department deparment, Date createdDate, int status, int numberRequirement,
+    public Vacancy insertVacancy(String title, Department deparment, int numberRequirement,
             String position, String workingPlace, String workType, double minimumSalary, double maximumSalary, String description, String skillRequirement,
             String entitlement, int minimumAge, int maximumAge, boolean gender, String degree, int yearOfExperience, String probationaryPeriod,
-            Date deadline, List<Applicant> applicantList) {
+            Date deadline) {
         Vacancy objEntity = new Vacancy();
         objEntity.setVacancyID(generateID());
         objEntity.setTitle(title);
         objEntity.setDepartment(deparment);
-        objEntity.setCreatedDate(createdDate);
-        objEntity.setStatus(status);
+        objEntity.setStatus(0);
         objEntity.setNumberRequirement(numberRequirement);
         objEntity.setPosition(position);
         objEntity.setWorkingPlace(workingPlace);
@@ -55,7 +55,7 @@ public class VacancyService extends AbstractService {
         objEntity.setYearOfExperience(yearOfExperience);
         objEntity.setProbationaryPeriod(probationaryPeriod);
         objEntity.setDeadline(deadline);
-        objEntity.setApplicantList(applicantList);
+        objEntity.setCreatedDate(Calendar.getInstance().getTime());
         vacancyDA.create(objEntity);
         return objEntity;
     }
@@ -98,7 +98,7 @@ public class VacancyService extends AbstractService {
         return list;
     }
 
-    public Vacancy getVacancyByID(String id){
+    public Vacancy getDetailVacancy(String id){
         return vacancyDA.find(id);
     }
     public List<Vacancy> getListVacancyByID(String idVacancy){
@@ -106,5 +106,36 @@ public class VacancyService extends AbstractService {
             return vacancyDA.findAll();
         }
         return vacancyDA.findAbsolutely("vacancyID", idVacancy);
+    }
+
+    public Vacancy editVacancy(String id,String title, Department deparment, int numberRequirement,int status,
+            String position, String workingPlace, String workType, double minimumSalary, double maximumSalary,
+            String description, String skillRequirement,String entitlement,
+            int minimumAge, int maximumAge, boolean gender, String degree, int yearOfExperience, String probationaryPeriod,
+            Date deadline,Date createDate) {
+        Vacancy objEntity = getDetailVacancy(id);
+        objEntity.setVacancyID(generateID());
+        objEntity.setTitle(title);
+        objEntity.setDepartment(deparment);
+        objEntity.setStatus(status);
+        objEntity.setNumberRequirement(numberRequirement);
+        objEntity.setPosition(position);
+        objEntity.setWorkingPlace(workingPlace);
+        objEntity.setWorkType(workType);
+        objEntity.setMinimumSalary(minimumSalary);
+        objEntity.setMaximumSalary(maximumSalary);
+        objEntity.setDescription(description);
+        objEntity.setSkillRequirement(skillRequirement);
+        objEntity.setEntitlement(entitlement);
+        objEntity.setMinimumAge(minimumAge);
+        objEntity.setMaximumAge(maximumAge);
+        objEntity.setGender(gender);
+        objEntity.setDegree(degree);
+        objEntity.setYearOfExperience(yearOfExperience);
+        objEntity.setProbationaryPeriod(probationaryPeriod);
+        objEntity.setDeadline(deadline);
+        objEntity.setCreatedDate(createDate);
+        vacancyDA.edit(objEntity);
+        return objEntity;
     }
 }
