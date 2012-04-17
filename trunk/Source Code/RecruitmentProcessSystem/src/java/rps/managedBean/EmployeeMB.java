@@ -34,5 +34,12 @@ public class EmployeeMB {
     public EmployeeMB() {
         employeeService = new EmployeeService();
     }
-    
+
+    public String gender(Object obj) {
+        Employee em = (Employee) obj;
+        if (em != null && em.getGender()) {
+            return "Male";
+        }
+        return "Female";
+    }
 }

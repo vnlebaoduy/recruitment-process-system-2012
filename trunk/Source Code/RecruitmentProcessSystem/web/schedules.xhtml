@@ -42,7 +42,7 @@
                                                update=":form2">
 
                                     <h:panelGroup rendered="#{!calendarMB.lastMonth(date)}">
-                                        <div class="cal_day">
+                                        <div class="cal_day day_red">
                                             <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
                                             <h:panelGroup rendered="#{scheduleMB.numberInterviews(date)==1}">
                                                 <div class="day_count">
@@ -63,7 +63,7 @@
                                         </div>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{calendarMB.lastMonth(date)}">
-                                        <div class="cal_day last_month">
+                                        <div class="cal_day day_red last_month">
                                             <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
                                             <h:panelGroup rendered="#{numEvent>0}">
                                                 <div class="day_count">
@@ -85,7 +85,7 @@
                 </div> <!-- End .content-box-content -->
             </div> <!-- End .content-box -->
         </h:form>
-        <ui:include src="templates/event-dialog.xhtml"/>
+        <ui:include src="dialogs/event-dialog.xhtml"/>
     </ui:define>
 
 </ui:composition>

@@ -10,75 +10,128 @@
 
     <ui:define name="content">
         <p:growl id="growl" sticky="true" globalOnly="true" showDetail="true"/>
-        <p:dialog id="messages" header="Attention Dialog" widgetVar="dlg" modal="true" resizable="false" >
-            <h3>Change your password</h3>
-            <p>
-                <strong>Attention</strong> by Admin<br />
-		In the first time using the system, you should be changed default password to protect your account.
-            </p>
-            <h:form>
-                <h4>New Password</h4>
-                <fieldset>
-                    <p:password id="txtPassword" value="#{accountMB.password}"
-                                styleClass="text-input" feedback="true"
-                                required="true"
-                                requiredMessage="Password is required"
-                                validatorMessage="Password must have at least 6 characters">
-                        <f:validateLength minimum="6" />
-                    </p:password>
-                    <h:message styleClass="input-notification error png_bg" for="txtPassword" id="messageForPassword"/>
-                   
-                </fieldset>
-                <h4>Confirm Password</h4>
-                <fieldset>
-                    <p:password id="confirmPassword" value="#{accountMB.confirm}"
-                                styleClass="text-input" feedback="true"
-                                match="txtPassword"
-                                />
-                    <h:message styleClass="input-notification error png_bg" for="confirmPassword" id="messageForConfirmPassword"/>
-                </fieldset>
-                <br/>
-                <fieldset>
-                    <h:commandButton value="Save Changes" styleClass="button" action="#{accountMB.changePass}"/>
-                </fieldset>
-            </h:form>
-            <p:ajax event="close" update="growl" listener="#{accountMB.handleClose}"/>
-        </p:dialog><!-- End #messages -->
+        <ui:include src="dialogs/password-dialog.xhtml"/>
+        <ui:include src="dialogs/schedule-dialog.xhtml"/>
+        <h:form id="frm-schedule">
+            <div class="content-box column-left">
+                <div class="content-box-header">
+                    <h3>My Schedule</h3>
+                </div> <!-- End .content-box-header -->
 
-        <script type="text/javascript" >
-            $(document).ready(function () {
-              var param = '#{sessionScope.accountMB.account.isChangedPassword}';
-              if(param == "false")
-                dlg.show();
-            });
-        </script>
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <p>
+                            <strong>#{scheduleMB.msgNumber}</strong>
+                        </p>
+                        <ui:repeat value="#{scheduleMB.myCurrentSchedule}" var="schedule">
+                            <div class="border">
+                                <div class="event">
+                                    <div class="title">
+                                        <h3>#{calendarMB.titleFormat(schedule.startedTime)}</h3>
+                                        <h:commandButton image="resources/images/icons/edit.png"
+                                                         actionListener="#{scheduleMB.progressStatus}"
+                                                         onclick="dlg_schedule.show();">
+                                            <f:param name="edit" value="#{schedule.scheduleID}" />
+                                            <f:ajax execute="@this" render=":frm-progress-schedule"/>
+                                        </h:commandButton>
+                                    </div>
+                                    <div class="event_body">
+                                        <div class="middle">
+                                            <h:panelGroup rendered="#{schedule.status == 0}">
+                                                <div class="cal_day day_red">
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{schedule.status == 100}">
+                                                <div class="cal_day day_green">
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{schedule.status == -100}">
+                                                <div class="cal_day day_blue">
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                </div>
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="event_content">
+                                            <p><strong>Time: </strong>
+                                                #{calendarMB.timeFormat(schedule.startedTime)}
+                                                to #{calendarMB.timeFormat(schedule.endedTime)}</p>
+                                            <p><strong>Applicant name: </strong>
+                                                #{schedule.applicant.firstName} #{schedule.applicant.lastName}</p>
+                                            <h:panelGroup
+                                                rendered="#{scheduleMB.numberVacancies(schedule.applicant)==1
+                                                            || scheduleMB.numberVacancies(schedule.applicant)==0}">
+                                                <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(schedule.applicant)} vacancy</p>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{scheduleMB.numberVacancies(schedule.applicant)>1}">
+                                                <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(schedule.applicant)} vacancies</p>
+                                            </h:panelGroup>
+                                            <p><strong>Status: </strong> #{scheduleMB.statusValue(schedule.status)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+        </h:form>
 
-        <div class="content-box column-left">
-            <div class="content-box-header">
-                <h3>My Information</h3>
-            </div> <!-- End .content-box-header -->
-
-            <div class="content-box-content">
-                <div class="tab-content default-tab">
-                    
-                </div> <!-- End #tab3 -->
-            </div> <!-- End .content-box-content -->
-        </div> <!-- End .content-box -->
-
-        <div class="content-box column-right closed-box">
+        <div class="content-box column-right">
             <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
-                <h3>Content box right</h3>
+                <h3>My Information</h3>
+                <h:commandButton image="resources/images/icons/edit.png"
+                                 />
             </div> <!-- End .content-box-header -->
 
             <div class="content-box-content">
                 <div class="tab-content default-tab">
-                    <h4>This box is closed by default</h4>
-                    <p>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta lectus. Maecenas dignissim enim quis ipsum mattis aliquet. Maecenas id velit et elit gravida bibendum. Duis nec rutrum lorem. Donec egestas metus a risus euismod ultricies. Maecenas lacinia orci at neque commodo commodo.
-                    </p>
+                    <h:panelGroup rendered="#{not accountMB.account.employee.gender}">
+                        <div class="female"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{accountMB.account.employee.gender}">
+                        <div class="male"/>
+                    </h:panelGroup>
+                    <div class="personal-info">
+                        <h4>#{accountMB.account.employee.firstName} #{accountMB.account.employee.lastName}
+                            - #{accountMB.account.employee.employeeID}</h4>
+                        <p>
+                            <strong>Gender: </strong>#{employeeMB.gender(accountMB.account.employee)}
+                        </p>
+                        <p>
+                            <strong>Date Of Birth: </strong>
+                            #{calendarMB.titleFormat(accountMB.account.employee.dob)}
+                        </p>
+                    </div>
+                    <div class="contact-info">
+                        <p>
+                            <strong>Phone Number: </strong>#{accountMB.account.employee.phoneNumber}
+                        </p>
+                        <p>
+                            <strong>Email: </strong>#{accountMB.account.employee.email}
+                        </p>
+                        <p>
+                            <strong>Address: </strong>#{accountMB.account.employee.address}
+                        </p>
+                    </div>
+                    <div class="work-info">
+                        <p>
+                            <strong>Position: </strong>#{accountMB.account.employee.position}
+                        </p>
+                        <p>
+                            <strong>Department: </strong>#{accountMB.account.employee.department.name}
+                        </p>
+                        <p>
+                            <strong>Account: </strong>#{accountMB.account.userName}&nbsp;&nbsp;&nbsp;-
+                            &nbsp;&nbsp;&nbsp;<a href="#">change password</a>
+                        </p>
+                    </div>
                 </div> <!-- End #tab3 -->
             </div> <!-- End .content-box-content -->
         </div> <!-- End .content-box -->
     </ui:define>
-
 </ui:composition>

@@ -1,4 +1,4 @@
- <ui:composition
+<ui:composition
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:p="http://primefaces.org/ui"
@@ -35,9 +35,11 @@
                         <div class="event">
                             <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
                                 #{interview.employee.employeeID}</h3>
-                            <div class="cal_day">
-                                <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
-                                <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                            <div class="middle">
+                                <div class="cal_day day_red">
+                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
+                                    <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                                </div>
                             </div>
                             <div class="event_content">
                                 <p><strong>Time: </strong>
@@ -63,9 +65,11 @@
                         <div class="event other">
                             <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
                                 #{interview.employee.employeeID}</h3>
-                            <div class="cal_day">
-                                <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
-                                <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                            <div class="middle">
+                                <div class="cal_day day_red">
+                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
+                                    <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
+                                </div>
                             </div>
                             <div class="event_content">
                                 <p><strong>Time: </strong>

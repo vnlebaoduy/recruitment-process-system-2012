@@ -11,6 +11,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import rps.business.DepartmentService;
@@ -240,6 +241,8 @@ public class VacancyMB {
         return "vacancy.xhtml?faces-redirect=true&id=" + this.getVacancy().getVacancyID();
     }
 
+
+
     public String getVacancyID() {
         return vacancyID;
     }
@@ -250,7 +253,11 @@ public class VacancyMB {
 
     public String editVacancy() {
         if (!validateInput()) {
-            return null;
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    "An error occured");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
 
         vacancyService = new VacancyService();
