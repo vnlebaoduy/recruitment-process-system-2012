@@ -35,37 +35,39 @@ public class ScheduleService extends AbstractService {
         return addEntity;
     }
 
-    public Boolean checkHour(Date startTime, Date endTime) {
-        Boolean flag = true;
+    public String checkHour(Date startTime, Date endTime, String emplID, String applID) {
+        String flag = "";
         List<Schedule> lstSchedule = new ArrayList<Schedule>();
         Schedule entity;
         lstSchedule = scheduleDA.findAll();
         Date timeNow = new Date();
         if (startTime.after(endTime)) {
-            flag = false;
+            flag = "Thời gian bắt đầu phải trước thời gian kết thúc phỏng vấn";
         }
         if (startTime.before(timeNow) || endTime.before(timeNow)) {
-            flag = false;
+            flag = "Thời gian phỏng vấn không thể trước hoặc bằng với thời gian hiện tại";
+        }
+        if(!(startTime.getDay() == endTime.getDay())){
+        flag = "Thời gian phỏng vấn phải trong cùng 1 ngày";
         }
         for (int count = 0; count < lstSchedule.size(); count++) {
             entity = lstSchedule.get(count);
-            if (startTime.after(entity.getStartedTime()) && startTime.before(entity.getEndedTime())) {
-                flag = false;
-                break;
-            }
-            if (startTime.after(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
-                flag = false;
-                break;
-            }
-            if (startTime.before(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
-                flag = false;
-                break;
-            }
+            if ((emplID.equals(entity.getEmployee().getEmployeeID()) && applID.equals(entity.getApplicant().getApplicantID()))||(emplID.equals(entity.getEmployee().getEmployeeID()))||(applID.equals(entity.getApplicant().getApplicantID()))) {
+                if (startTime.after(entity.getStartedTime()) && startTime.before(entity.getEndedTime())) {
+                    flag = "Employee hoặc Vacancy đã được lên lịch trùng với thời gian bắt đầu này";
+                    break;
+                }
+                if (startTime.after(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
+                    flag = "Employee hoặc Vacancy đã được lên lịch trong khoảng thời gian bắt đầu và kết thúc này";
+                    break;
+                }
+                if (startTime.before(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
+                    flag = "Employee hoặc Vacancy đã được lên lịch trong khoảng thời gian bắt đầu và kết thúc này";
+                    break;
+                }
+            } 
         }
-        if (startTime.after(endTime)) {
-            flag = false;
-        } else if (true) {
-        }
+
         return flag;
     }
 

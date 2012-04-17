@@ -90,7 +90,7 @@ public class VacancyService extends AbstractService {
         Vacancy vacancy = vacancyDA.find(vacancyID);
         if (vacancy != null) {
             for (Applicant app : vacancy.getApplicantList()) {
-                if(app.getStatus()==1){//Applicant hired - status = 1
+                if (app.getStatus() == 1) {//Applicant hired - status = 1
                     list.add(app);
                 }
             }
@@ -98,21 +98,26 @@ public class VacancyService extends AbstractService {
         return list;
     }
 
-    public Vacancy getDetailVacancy(String id){
+    public Vacancy getDetailVacancy(String id) {
         return vacancyDA.find(id);
     }
-    public List<Vacancy> getListVacancyByID(String idVacancy){
-        if(idVacancy.equals("")){
+
+    public List<Vacancy> getListVacancyByID(String idVacancy) {
+        if (idVacancy.equals("")) {
             return vacancyDA.findAll();
         }
         return vacancyDA.findAbsolutely("vacancyID", idVacancy);
     }
 
-    public Vacancy editVacancy(String id,String title, Department deparment, int numberRequirement,int status,
+    public List<Vacancy> getAll() {
+        return vacancyDA.findAll();
+    }
+
+    public Vacancy editVacancy(String id, String title, Department deparment, int numberRequirement, int status,
             String position, String workingPlace, String workType, double minimumSalary, double maximumSalary,
-            String description, String skillRequirement,String entitlement,
+            String description, String skillRequirement, String entitlement,
             int minimumAge, int maximumAge, boolean gender, String degree, int yearOfExperience, String probationaryPeriod,
-            Date deadline,Date createDate) {
+            Date deadline, Date createDate) {
         Vacancy objEntity = getDetailVacancy(id);
         objEntity.setVacancyID(generateID());
         objEntity.setTitle(title);

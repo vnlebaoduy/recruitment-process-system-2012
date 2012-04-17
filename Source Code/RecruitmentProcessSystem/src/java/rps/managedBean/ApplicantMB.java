@@ -36,7 +36,28 @@ public class ApplicantMB implements Serializable {
     private Applicant applicant;
     private List<Applicant> lstApplicant;
     private String applicantID;
+     private List<Applicant> lstNewApplicant;
 
+    public List<Applicant> getLstNewApplicant() {
+         applicantService = new ApplicantService();
+        List<Applicant> lstAllApplicant = applicantService.getListApplicant();
+        Applicant tempObj;
+        for (int x = 0; x < lstAllApplicant.size() - 1; x++) {
+            for (int y = x + 1; y < lstAllApplicant.size(); y++) {
+                if (lstAllApplicant.get(x).getCreatedDate().before(lstAllApplicant.get(y).getCreatedDate())) {
+                    tempObj = lstAllApplicant.get(x);
+                    lstAllApplicant.set(x, lstAllApplicant.get(y));
+                    lstAllApplicant.set(y, tempObj);
+                }
+            }
+        }
+        return lstAllApplicant.subList(lstAllApplicant.size() - 4, lstAllApplicant.size() - 1);
+        
+    }
+
+    public void setLstNewApplicant(List<Applicant> lstNewApplicant) {
+        this.lstNewApplicant = lstNewApplicant;
+    }
     public Applicant getApplicant() {
         if (applicant == null) {
             applicant = new Applicant();
@@ -79,6 +100,14 @@ public class ApplicantMB implements Serializable {
         return null;
     }
 
+    public String addNew() {
+        return "applicant.xhtml";
+    }
+
+    public String editAppl(Object appl){
+    String applID = (String) appl;
+    return "applicant.xhtml?faces-redirect=true&ID="+applID;
+    }
     public String add() {
         try {
             if (applicant.getSalaryRequirement() == null) {
@@ -267,10 +296,9 @@ public class ApplicantMB implements Serializable {
         listAvailable.remove(vacancy);
         saveListenner();
     }
-
+/*
     public void attachVacancy(String obj) {
         Vacancy vacancy = vacancyService.getVacancyByID(obj);
-
         listDropped.add(vacancy);
         listAvailable.remove(vacancy);
         saveListenner();
@@ -278,11 +306,12 @@ public class ApplicantMB implements Serializable {
 
     public void detachVacancy(String obj) {
         Vacancy vacancy = vacancyService.getVacancyByID(obj);
-
         listAvailable.add(vacancy);
         listDropped.remove(vacancy);
         saveListenner();
     }
+ * 
+ */
     private String numberVacancies;
 
     public String getNumberVacancies() {

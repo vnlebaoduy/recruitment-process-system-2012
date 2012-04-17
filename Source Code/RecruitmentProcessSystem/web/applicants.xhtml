@@ -6,9 +6,52 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
-
     <ui:define name="content">
-        <h:form>
+            <div class="content-box" style="width: 700px">
+                 <div class="content-box-header">
+                    <h3>Search Applicant</h3>
+                </div>
+             <h:dataTable var="row" styleClass="order-table"
+                                 headerClass="order-table-header"
+                                 rowClasses="order-table-odd-row,order-table-even-row"
+                                 value="#{applicantMB.lstNewApplicant}" style="width: 660px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="Applicant Name"></h:outputLabel>
+                            </f:facet>
+                            #{row.firstName} #{row.lastName}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="DOB"></h:outputLabel>
+                            </f:facet>
+                            #{row.dob}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="Phone Number"></h:outputLabel>
+                            </f:facet>
+                            #{row.phoneNumber}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="Email"></h:outputLabel>
+                            </f:facet>
+                            #{row.email}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputLabel value="Address"></h:outputLabel>
+                            </f:facet>
+                            #{row.address}
+                        </h:column>
+                        <h:column>
+                            <h:commandButton action="#{applicantMB.editAppl(row.applicantID)}" value="Sửa">
+                            </h:commandButton>
+                        </h:column>
+                    </h:dataTable>
+        </div>
+            <h:form>
 
             <div class="content-box" style="width: 700px"><!-- Start Content Box -->
                 <div class="content-box-header">
@@ -75,8 +118,10 @@
                             </h:commandButton>
                         </h:column>
                     </h:dataTable>
+
                 </div>
             </div>
         </h:form>
+        
     </ui:define>
 </ui:composition>

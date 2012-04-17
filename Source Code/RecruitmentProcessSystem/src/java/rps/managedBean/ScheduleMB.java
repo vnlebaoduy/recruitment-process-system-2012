@@ -36,9 +36,9 @@ public class ScheduleMB {
 
     public String createScheduleInterview() {
         scheduleService = new ScheduleService();
-        Boolean flag = checkHour(startedTime, endedTime, scheduleService);
-        if (flag == false) {
-            errors = "Datetime không hợp lệ!";
+        String flag = checkConditions(startedTime, endedTime, scheduleService, employeeID, applicantID);
+        if (!flag.equals("")) {
+            errors = flag;
             return null;
         }
         Employee empl = new Employee(this.getEmployeeID());
@@ -54,9 +54,9 @@ public class ScheduleMB {
         return "Schedule.xhtml";
     }
 
-    public Boolean checkHour(Date startTime, Date endTime, ScheduleService ScheduleService) {
-        Boolean flag = false;
-        flag = ScheduleService.checkHour(startTime, endTime);
+    public String checkConditions(Date startTime, Date endTime, ScheduleService ScheduleService, String emplID, String applID) {
+        String flag = "";
+        flag = ScheduleService.checkHour(startTime, endTime, emplID, applID);
         return flag;
     }
 

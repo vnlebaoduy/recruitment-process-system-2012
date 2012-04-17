@@ -30,6 +30,16 @@ public class VacancyMB {
     private String vacancyID;
     private Department department;
     private List<Vacancy> lstVacancy;
+    private List<Vacancy> lstMostApplyVacancy;
+    private List<Vacancy> lstNewApplyVacancy;
+    private VacancyService vacancyService;
+    private DepartmentService departmentService;
+
+    /** Creates a new instance of VacancyMB */
+    public VacancyMB() {
+        vacancyService = new VacancyService();
+        departmentService = new DepartmentService();
+    }
 
     public String search() {
         vacancyService = new VacancyService();
@@ -90,14 +100,6 @@ public class VacancyMB {
     public void setVacancy(Vacancy vacancy) {
         this.vacancy = vacancy;
     }
-    private VacancyService vacancyService;
-    private DepartmentService departmentService;
-
-    /** Creates a new instance of VacancyMB */
-    public VacancyMB() {
-        vacancyService = new VacancyService();
-        departmentService = new DepartmentService();
-    }
 
     public String searchVacancy() {
         list = vacancyService.searchVacancyByTitle(vacancy.getTitle());
@@ -111,6 +113,11 @@ public class VacancyMB {
 
     public void setList(List<Vacancy> list) {
         this.list = list;
+    }
+
+    public String editAppl(Object appl) {
+        String applID = (String) appl;
+        return "vacancys.xhtml?faces-redirect=true&ID=" + applID;
     }
 
     public String insertVacancy() {
@@ -233,21 +240,70 @@ public class VacancyMB {
         return "vacancy.xhtml?faces-redirect=true&id=" + this.getVacancy().getVacancyID();
     }
 
+    public String getVacancyID() {
+        return vacancyID;
+    }
+
+    public void setVacancyID(String vacancyID) {
+        this.vacancyID = vacancyID;
+    }
+
     public String editVacancy() {
         if (!validateInput()) {
             return null;
         }
+
         vacancyService = new VacancyService();
         vacancyService.beginTransaction();
         department = departmentService.getDeparmentById(id);
         vacancyService.editVacancy(vacancy.getVacancyID(), vacancy.getTitle(), department,
-                vacancy.getNumberRequirement(),vacancy.getStatus(),vacancy.getPosition(),
-                vacancy.getWorkingPlace(),vacancy.getWorkType(),vacancy.getMinimumSalary(),
-                vacancy.getMaximumSalary(),vacancy.getDescription(),vacancy.getSkillRequirement(),
-                vacancy.getEntitlement(),vacancy.getMinimumAge(),vacancy.getMaximumAge(),
-                vacancy.getGender(),vacancy.getDegree(),vacancy.getYearOfExperience(),
-                vacancy.getProbationaryPeriod(),vacancy.getDeadline(),vacancy.getCreatedDate());
+                vacancy.getNumberRequirement(), vacancy.getStatus(), vacancy.getPosition(),
+                vacancy.getWorkingPlace(), vacancy.getWorkType(), vacancy.getMinimumSalary(),
+                vacancy.getMaximumSalary(), vacancy.getDescription(), vacancy.getSkillRequirement(),
+                vacancy.getEntitlement(), vacancy.getMinimumAge(), vacancy.getMaximumAge(),
+                vacancy.getGender(), vacancy.getDegree(), vacancy.getYearOfExperience(),
+                vacancy.getProbationaryPeriod(), vacancy.getDeadline(), vacancy.getCreatedDate());
         vacancyService.commitTransaction();
         return null;
+    }
+
+    public List<Vacancy> getLstMostApplyVacancy() {
+        vacancyService = new VacancyService();
+        List<Vacancy> lstAllVacancy = vacancyService.getAll();
+        Vacancy tempObj;
+        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
+            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
+                if (lstAllVacancy.get(x).getApplicantList().size() > lstAllVacancy.get(y).getApplicantList().size()) {
+                    tempObj = lstAllVacancy.get(x);
+                    lstAllVacancy.set(x, lstAllVacancy.get(y));
+                    lstAllVacancy.set(y, tempObj);
+                }
+            }
+        }
+        return lstAllVacancy.subList(lstAllVacancy.size() - 4, lstAllVacancy.size() - 1);
+    }
+
+    public void setLstMostApplyVacancy(List<Vacancy> lstMostApplyVacancy) {
+        this.lstMostApplyVacancy = lstMostApplyVacancy;
+    }
+
+    public List<Vacancy> getLstNewApplyVacancy() {
+        vacancyService = new VacancyService();
+        List<Vacancy> lstAllVacancy = vacancyService.getAll();
+        Vacancy tempObj;
+        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
+            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
+                if (lstAllVacancy.get(x).getCreatedDate().before(lstAllVacancy.get(y).getCreatedDate())) {
+                    tempObj = lstAllVacancy.get(x);
+                    lstAllVacancy.set(x, lstAllVacancy.get(y));
+                    lstAllVacancy.set(y, tempObj);
+                }
+            }
+        }
+        return lstAllVacancy.subList(lstAllVacancy.size() - 4, lstAllVacancy.size() - 1);
+    }
+
+    public void setLstNewApplyVacancy(List<Vacancy> lstNewApplyVacancy) {
+        this.lstNewApplyVacancy = lstNewApplyVacancy;
     }
 }
