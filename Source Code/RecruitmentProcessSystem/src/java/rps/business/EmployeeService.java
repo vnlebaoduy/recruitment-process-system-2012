@@ -20,10 +20,11 @@ public class EmployeeService extends AbstractService {
         employeeDA = new EmployeeDA(getEntityManager());
     }
 
-    public Employee getEmployeeInfo(String id){
+    public Employee getEmployeeInfo(String id) {
         return employeeDA.find(id);
     }
-	public List<Employee> getLstEmpl() {
+
+    public List<Employee> getLstEmpl() {
         return employeeDA.findAll();
     }
 }

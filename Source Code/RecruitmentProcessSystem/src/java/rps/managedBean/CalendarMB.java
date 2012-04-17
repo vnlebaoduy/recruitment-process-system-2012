@@ -181,9 +181,6 @@ public class CalendarMB implements Serializable{
         }
     }
 
-    public String mySchedule() {
-        return "info.xhtml?faces-redirect=true";
-    }
 
     public void nextMonth() {
         int next = this.getMonth() + 1;

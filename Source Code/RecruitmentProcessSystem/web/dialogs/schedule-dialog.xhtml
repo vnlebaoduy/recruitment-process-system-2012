@@ -1,0 +1,206 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog id="message2"
+              header="Progress Schedule Dialog"
+              widgetVar="dlg_schedule"
+              modal="true"
+              resizable="false"
+              width="960">
+        <h:form id="frm-progress-schedule">
+            <div id="combobox">
+                <p class="p-left">
+                    <label>Status :</label>
+                <h:selectOneMenu id="cbo-status"
+                                 value="#{scheduleMB.selectedSchedule.status}"
+                                 styleClass="text-input medium-input">
+                    <f:selectItem itemLabel="Not In Progress" itemValue="0"/>
+                    <f:selectItem itemLabel="Selected" itemValue="100" />
+                    <f:selectItem itemLabel="Rejected" itemValue="-100" />
+                    <p:ajax process="@this" listener="#{scheduleMB.changeStatus}" update="@form :frm-schedule"/>
+                    <f:param name="id" value="#{scheduleMB.selectedSchedule.scheduleID}"/>
+                </h:selectOneMenu>
+                </p>
+                <p>
+                    <label>Vacancy :</label>
+                <h:selectOneMenu id="cbo-vacancy"
+                                 value="#{scheduleMB.vacancyID}"
+                                 styleClass="text-input cbo-schedule">
+                    <f:selectItems value="#{scheduleMB.selectedSchedule.applicant.vacancyList}"
+                                   var="vacancy"
+                                   itemLabel="#{vacancy.title}"
+                                   itemValue="#{vacancy.vacancyID}"/>
+                     <f:param name="id" value="#{scheduleMB.selectedSchedule.scheduleID}"/>
+                    <p:ajax process="@this" update="@form"/>
+                </h:selectOneMenu>
+                <h:messages />
+                </p>
+            </div>
+            <div class="content-box column-left">
+                <div class="content-box-header">
+                    <h3>Applicant Information</h3>
+                </div> <!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab v-scroll">
+                        <h:panelGroup rendered="#{not scheduleMB.selectedSchedule.applicant.gender}">
+                            <div class="female"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{scheduleMB.selectedSchedule.applicant.gender}">
+                            <div class="male"/>
+                        </h:panelGroup>
+                        <div class="personal-info">
+                            <h4>#{scheduleMB.selectedSchedule.applicant.firstName}
+                                #{scheduleMB.selectedSchedule.applicant.lastName}
+                                - #{scheduleMB.selectedSchedule.applicant.applicantID}</h4>
+                            <p>
+                                <strong>Gender: </strong>
+                                #{applicantMB.gender(scheduleMB.selectedSchedule.applicant)}
+                            </p>
+                            <p>
+                                <strong>Date Of Birth: </strong>
+                                #{calendarMB.titleFormat(scheduleMB.selectedSchedule.applicant.dob)}
+                            </p>
+                        </div>
+                        <div class="contact-info">
+                            <p>
+                                <strong>Phone Number: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.phoneNumber}
+                            </p>
+                            <p>
+                                <strong>Email: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.email}
+                            </p>
+                            <p>
+                                <strong>Address: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.address}
+                            </p>
+                        </div>
+                        <div class="recruitment-info">
+                            <p>
+                                <strong>Salary Requirement: </strong>
+                                $ #{scheduleMB.selectedSchedule.applicant.salaryRequirement}
+                            </p>
+                            <p>
+                                <strong>Language: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.language}
+                            </p>
+                            <p>
+                                <strong>Year Of Experience: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.yearOfExperience}
+                            </p>
+                            <p>
+                                <strong>Degree: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.degree}
+                            </p>
+                            <p>
+                                <strong>Skill: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.skill}
+                            </p>
+                            <p>
+                                <strong>Award: </strong>
+                                #{scheduleMB.selectedSchedule.applicant.award}
+                            </p>
+                        </div>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+            <h:panelGroup id="frm-right">
+                <div class="content-box column-right">
+                    <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
+                        <h3>Vacancy Information</h3>
+                    </div> <!-- End .content-box-header -->
+
+                    <div class="content-box-content">
+                        <div class="tab-content default-tab v-scroll">
+                            <h4 class="vacancy-title">#{scheduleMB.cboVacancy.title} -
+                                #{scheduleMB.cboVacancy.vacancyID}</h4>
+                            <div class="block">
+                                <p>
+                                    <strong>Department: </strong>
+                                    #{scheduleMB.cboVacancy.department.name}
+                                </p>
+                                <p>
+                                    <strong>Number Requirement: </strong>
+                                    #{scheduleMB.cboVacancy.numberRequirement}
+                                </p>
+                                <p>
+                                    <strong>Position: </strong>
+                                    #{scheduleMB.cboVacancy.position}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Working Place: </strong>
+                                    #{scheduleMB.cboVacancy.workingPlace}
+                                </p>
+                                <p>
+                                    <strong>Work Type: </strong>
+                                    #{scheduleMB.cboVacancy.workType}
+                                </p>
+                                <p>
+                                    <strong>Minimum Salary: </strong>
+                                    $ #{scheduleMB.cboVacancy.minimumSalary}
+                                </p>
+                                <p>
+                                    <strong>Maximum Salary: </strong>
+                                    $ #{scheduleMB.cboVacancy.maximumSalary}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Description: </strong>
+                                    #{scheduleMB.cboVacancy.description}
+                                </p>
+                                <p>
+                                    <strong>Skill Requirement: </strong>
+                                    #{scheduleMB.cboVacancy.skillRequirement}
+                                </p>
+                                <p>
+                                    <strong>Entitlement: </strong>
+                                    #{scheduleMB.cboVacancy.entitlement}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Minimum Age: </strong>
+                                    #{scheduleMB.cboVacancy.minimumAge}
+                                </p>
+                                <p>
+                                    <strong>Maximum Age: </strong>
+                                    #{scheduleMB.cboVacancy.maximumAge}
+                                </p>
+                                <p>
+                                    <strong>Gender: </strong>
+                                    #{scheduleMB.cboVacancy.gender}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Degree: </strong>
+                                    #{scheduleMB.cboVacancy.degree}
+                                </p>
+                                <p>
+                                    <strong>Year Of Experience: </strong>
+                                    #{scheduleMB.cboVacancy.yearOfExperience}
+                                </p>
+                                <p>
+                                    <strong>Probationary Period: </strong>
+                                    #{scheduleMB.cboVacancy.probationaryPeriod}
+                                </p>
+                                <p>
+                                    <strong>Deadline: </strong>
+                                    #{calendarMB.dateFormat(scheduleMB.cboVacancy.deadline)}
+                                </p>
+                            </div>
+                        </div> <!-- End #tab3 -->
+                    </div> <!-- End .content-box-content -->
+                </div> <!-- End .content-box -->
+            </h:panelGroup>
+        </h:form>
+    </p:dialog>
+</ui:composition>

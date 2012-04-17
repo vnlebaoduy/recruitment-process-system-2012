@@ -142,4 +142,44 @@ public class ScheduleDA extends AbstractDataAccess<Schedule> {
 
         return results;
     }
+
+    public FindResult<Schedule> getNotRemoveSchedule(Employee employee, int status) {
+
+        FindResult<Schedule> results;
+        CriteriaBuilder cb;
+        CriteriaQuery<Schedule> cq;
+        CriteriaQuery<Long> countCq;
+        Root root;
+        Predicate predicate;
+
+        //Create CriteraBuilder
+        cb = getEntityManager().getCriteriaBuilder();
+        //Create CriteraQuery
+        cq = cb.createQuery(Schedule.class);
+        countCq = cb.createQuery(Long.class);
+        //Create results
+        results = new FindResult<Schedule>();
+        //Create root
+        root = cq.from(Schedule.class);
+
+        //Create Predicate
+        List<Predicate> predicates = new ArrayList<Predicate>();
+        predicates.add(cb.equal(root.get("employee"), employee));
+        predicates.add(
+                cb.notEqual(root.get("status"), status));
+
+        predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        cq.select(root).where(predicate);
+        countCq.select(cb.count(root)).where(predicate);
+
+        Query q = getEntityManager().createQuery(cq);
+        Query countQ = getEntityManager().createQuery(countCq);
+
+        int count = ((Long) countQ.getSingleResult()).intValue();
+
+        results.addAll(q.getResultList());
+        results.setCount(count);
+
+        return results;
+    }
 }

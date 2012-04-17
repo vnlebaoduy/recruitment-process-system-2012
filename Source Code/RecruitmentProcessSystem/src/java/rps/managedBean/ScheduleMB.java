@@ -7,17 +7,22 @@ package rps.managedBean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import rps.business.ApplicantService;
 import rps.business.EmployeeService;
 import rps.business.ScheduleService;
+import rps.business.VacancyService;
 import rps.entities.Applicant;
 import rps.entities.Employee;
 import rps.entities.Schedule;
+import rps.entities.Vacancy;
 
 /**
  *
@@ -309,4 +314,134 @@ public class ScheduleMB {
             ex.printStackTrace();
         }
     }
+    // <editor-fold defaultstate="collapsed" desc="CURRENT SCHEDULE">
+    private List<Schedule> myCurrentSchedule;
+    private int numberMyCurrentSchedule;
+    private String msgNumber;
+
+    public String getMsgNumber() {
+        int num = getNumberMyCurrentSchedule();
+        switch (num) {
+            case 0:
+                msgNumber = "You have not any currently inteview scheduled.";
+                break;
+            case 1:
+                msgNumber = "You have currently 1 inteview scheduled.";
+                break;
+            default:
+                msgNumber = "You have currently " + num + " inteviews scheduled.";
+                break;
+        }
+        return msgNumber;
+    }
+
+    public int getNumberMyCurrentSchedule() {
+        numberMyCurrentSchedule = getMyCurrentSchedule().size();
+        return numberMyCurrentSchedule;
+    }
+
+    public List<Schedule> getMyCurrentSchedule() {
+        if (myCurrentSchedule == null) {
+            try {
+                AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                        getExternalContext().getSessionMap().get("accountMB");
+                myCurrentSchedule = scheduleService.getCurrentSchedules(
+                        bean.getAccount().getEmployee());
+            } catch (Exception ex) {
+                FacesMessage message = new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "An error occured",
+                        ex.getMessage());
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                ex.printStackTrace();
+            }
+        }
+        return myCurrentSchedule;
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="PROGRESS SCHEDULE">
+    private Schedule selectedSchedule;
+
+    public Schedule getSelectedSchedule() {
+        if (selectedSchedule == null) {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String id = params.get("id");
+            selectedSchedule = scheduleService.getSchedule(id);
+            if(selectedSchedule == null){
+                return new Schedule();
+            }
+        }
+        return selectedSchedule;
+    }
+
+    public void progressStatus() {
+        try {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String id = params.get("edit");
+            if (id != null && !id.equals("")) {
+                selectedSchedule = scheduleService.getSchedule(id);
+                this.setCboVacancy(selectedSchedule.getApplicant().
+                        getVacancyList().get(0));
+            }
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+        }
+    }
+    private Vacancy cboVacancy;
+
+    public Vacancy getCboVacancy() {
+        if (cboVacancy == null) {
+            if(vacancyID!=null && !vacancyID.equals("")){
+                VacancyService service = new VacancyService();
+                cboVacancy = service.getDetailVacancy(vacancyID);
+            }
+        }
+        return cboVacancy;
+    }
+
+    public void setCboVacancy(Vacancy cboVacancy) {
+        this.cboVacancy = cboVacancy;
+    }
+
+    private String vacancyID;
+
+    public String getVacancyID() {
+        return vacancyID;
+    }
+
+    public void setVacancyID(String vacancyID) {
+        this.vacancyID = vacancyID;
+    }
+
+
+    public void changeStatus() {
+        try {
+            scheduleService.beginTransaction();
+            scheduleService.updateSchedule(getSelectedSchedule().getScheduleID(),
+                    getSelectedSchedule().getEmployee(),
+                    getSelectedSchedule().getApplicant(),
+                    getSelectedSchedule().getStartedTime(),
+                    getSelectedSchedule().getEndedTime(),
+                    getSelectedSchedule().getStatus());
+            scheduleService.commitTransaction();
+            this.setCboVacancy(selectedSchedule.getApplicant().
+                        getVacancyList().get(0));
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+        }
+    }
+    // </editor-fold>
 }

@@ -298,14 +298,14 @@ public class ApplicantMB implements Serializable {
     }
 /*
     public void attachVacancy(String obj) {
-        Vacancy vacancy = vacancyService.getVacancyByID(obj);
+        Vacancy vacancy = vacancyService.getDetailVacancy(obj);
         listDropped.add(vacancy);
         listAvailable.remove(vacancy);
         saveListenner();
     }
 
     public void detachVacancy(String obj) {
-        Vacancy vacancy = vacancyService.getVacancyByID(obj);
+        Vacancy vacancy = vacancyService.getDetailVacancy(obj);
         listAvailable.add(vacancy);
         listDropped.remove(vacancy);
         saveListenner();
@@ -328,5 +328,45 @@ public class ApplicantMB implements Serializable {
                 numberVacancies = "   ( " + size + " vacancies attached for new applicant )";
             }
         }
+    }
+
+    public String statusValue(Object obj) {
+        try {
+            int status = (Integer) obj;
+            String value = "";
+            switch (status) {
+                case 0:
+                    value = "Not in progress";
+                    break;
+                case 99:
+                    value = "In progress";
+                    break;
+                case 1:
+                    value = "Hired";
+                    break;
+                case -1:
+                    value = "Banded";
+                    break;
+                default:
+                    break;
+            }
+            return value;
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public String gender(Object obj) {
+        Applicant app = (Applicant) obj;
+        if (app != null && app.getGender()) {
+            return "Male";
+        }
+        return "Female";
     }
 }

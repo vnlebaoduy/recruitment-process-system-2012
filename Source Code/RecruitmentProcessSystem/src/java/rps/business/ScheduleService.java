@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import rps.dataaccess.FindResult;
 import rps.dataaccess.ScheduleDA;
+import rps.entities.Applicant;
+import rps.entities.Employee;
 import rps.entities.Schedule;
 
 /**
@@ -77,13 +79,46 @@ public class ScheduleService extends AbstractService {
     }
 
     public List<Schedule> getSchedules(Date date, int status) {
-        return scheduleDA.findAbsolutely(new String[]{"startedTime, status"},
+        return scheduleDA.findAbsolutely(new String[]{"startedTime", "status"},
                 new Object[]{date, status}, null, null, -1, -1);
+    }
+
+    public List<Schedule> getSchedules(Employee employee, int status) {
+        return scheduleDA.findAbsolutely(new String[]{"employee", "status"},
+                new Object[]{employee, status}, null, null, -1, -1);
+    }
+
+    public List<Schedule> getCurrentSchedules(Employee employee) {
+        return scheduleDA.getNotRemoveSchedule(employee, 1);
+    }
+
+    public Schedule getSchedule(String id) {
+        try {
+            return scheduleDA.find(id);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public Schedule updateSchedule(String id, Employee employee,
+            Applicant applicant, Date startedTime, Date endedTime, int status)
+            throws Exception {
+        Schedule schedule = getSchedule(id);
+        if (schedule == null) {
+            throw new Exception("Schedule not found.");
+        }
+        schedule.setEmployee(employee);
+        schedule.setApplicant(applicant);
+        schedule.setStartedTime(startedTime);
+        schedule.setEndedTime(endedTime);
+        schedule.setStatus(status);
+        scheduleDA.edit(schedule);
+        return schedule;
     }
 
     private String generateID() {
         FindResult<Schedule> schedules = scheduleDA.findAbsolutely(null, null, new String[]{"scheduleID"}, new String[]{"DESC"}, 0, 1);
-        String newID = "A";
+        String newID = "S";
         if (schedules.size() > 0) {
             Schedule schedule = schedules.get(0);
             String sId = schedule.getScheduleID();
