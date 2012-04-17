@@ -6,10 +6,70 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
-
     <ui:define name="content">
+        <div class="content-box" style="width: 700px">
+            <h:dataTable var="row" styleClass="order-table"
+                         headerClass="order-table-header"
+                         rowClasses="order-table-odd-row,order-table-even-row"
+                         value="#{vacancyMB.lstMostApplyVacancy}" style="width: 660px">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Vacancy ID"></h:outputLabel>
+                    </f:facet>
+                    #{row.vacancyID}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Department ID"></h:outputLabel>
+                    </f:facet>
+                    #{row.department.departmentID}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Number Requirement"></h:outputLabel>
+                    </f:facet>
+                    #{row.numberRequirement}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Position"></h:outputLabel>
+                    </f:facet>
+                    #{row.position}
+                </h:column>
+            </h:dataTable>
+        </div>
+        <div class="content-box" style="width: 700px">
+            <h:dataTable var="row" styleClass="order-table"
+                         headerClass="order-table-header"
+                         rowClasses="order-table-odd-row,order-table-even-row"
+                         value="#{vacancyMB.lstNewApplyVacancy}" style="width: 660px">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Vacancy ID"></h:outputLabel>
+                    </f:facet>
+                    #{row.vacancyID}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Department ID"></h:outputLabel>
+                    </f:facet>
+                    #{row.department.departmentID}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Number Requirement"></h:outputLabel>
+                    </f:facet>
+                    #{row.numberRequirement}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Position"></h:outputLabel>
+                    </f:facet>
+                    #{row.position}
+                </h:column>
+            </h:dataTable>
+        </div>
         <h:form>
-
             <div class="content-box" style="width: 700px"><!-- Start Content Box -->
                 <div class="content-box-header">
                     <h3>Search Vacancy</h3>
@@ -39,7 +99,7 @@
                     <h:dataTable var="row" styleClass="order-table"
                                  headerClass="order-table-header"
                                  rowClasses="order-table-odd-row,order-table-even-row"
-                                 value="#{vacancyMB.lstMostApplyVacancy}" style="width: 660px">
+                                 value="#{vacancyMB.lstVacancy}" style="width: 660px">
                         <h:column>
                             <f:facet name="header">
                                 <h:outputLabel value="Vacancy ID"></h:outputLabel>
@@ -63,12 +123,6 @@
                                 <h:outputLabel value="Position"></h:outputLabel>
                             </f:facet>
                             #{row.position}
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputLabel value="Skill Requirement"></h:outputLabel>
-                            </f:facet>
-                            #{row.skillRequirement}
                         </h:column>
                     </h:dataTable>
                 </div>
