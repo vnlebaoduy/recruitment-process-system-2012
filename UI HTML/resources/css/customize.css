@@ -13,30 +13,12 @@
 
 /***** VACANCY *****/
 div#vacancy{
-    height: 50px;
     width:100%;
     position:relative;
 }
 
-div#vacancy img{
-    height:48px;
-    width:48px;
-    float:left;
-    margin:4px auto 4px auto;
-}
-
-div#vacancy div#content{
-    margin: 5px 5px 5px 5px;
-    float:left;
-}
-
-div#vacancy div#content h4{
-    font-size: 14px;
-}
-
-div#vacancy div#content p{
-    line-height:15px;
-    padding: 0px 2px 2px 2px;
+div#vacancy table{
+    width: 100%;
 }
 
 div#vacancy input{
@@ -44,6 +26,16 @@ div#vacancy input{
     float:right;
 }
 
+div.attach-scroll{
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 540px;
+}
+
+div.attach-scroll:hover{
+    overflow-y: auto;
+}
 /***** CUSTOMIZE PRIMEFACES *****/
 form span input[type="text"]{
     padding: 6px;
@@ -60,6 +52,12 @@ fieldset.ui-widget-content{
 
 /***** SCHEDULE *****/
 div#calendar_wrap {
+    margin: 10px auto;
+    overflow: hidden;
+    text-align: left;
+}
+
+div.calendar {
     width: 924px;
     margin: 10px auto;
     overflow: hidden;
@@ -112,8 +110,28 @@ div.cal_day {
     margin:0 4px -24px 0;
     width: 128px;
     height: 95px;
-    background: url('../images/day.png') top no-repeat;
 }
+
+div.day_red{
+    background: url('../images/other/day_red.png') top no-repeat;
+}
+
+div.day_blue{
+    background: url('../images/other/day_blue.png') top no-repeat;
+}
+
+div.day_green{
+    background: url('../images/other/day_green.png') top no-repeat;
+}
+
+div.day_gray{
+    background: url('../images/other/day_gray.png') top no-repeat;
+}
+
+div.day_yellow{
+    background: url('../images/other/day_yellow.png') top no-repeat;
+}
+
 div.cal_day .day_heading {
     position: relative;
     float: left;
@@ -177,16 +195,39 @@ div.content-box-header .schedule{
     margin: 3px 15px;
 }
 
+div.middle{
+    padding: 10px 0px 10px 0px;
+    float: left;
+}
+
+div.title{
+    position: relative;
+    width: 100%;
+    height: 32px;
+}
+
+div.title h3{
+    padding: 0px;
+    float:left;
+    line-height: 32px;
+}
+
+div.title input{
+    float: right;
+    padding: 0px 2px;
+}
+div.event_body{
+    position: relative;
+    width: 100%;
+}
 /***** EVENT DIALOG *****/
 div.border{
     border-top: 1px dotted #CCC;
 }
-
 div.event{
     padding: 15px 0px 15px 0px;
     position:relative;
 }
-
 div.other{
     filter:alpha(opacity=50);
     -moz-opacity:0.5;
@@ -224,27 +265,195 @@ div.event div.event_content a:focus {
     outline: 1px;
 }
 
-/***** TBALE (LUONGBV) *****/
-.order-table{
-    border-collapse:collapse;
-    border: 1px;
+/***** EMPLOYEE INFO *****/
+div.content-box-header input{
+    float:right;
+    padding: 3px 15px 3px 0px;
 }
 
-.order-table-header{
-    text-align:center;
-    background:none repeat scroll 0 0 #E5E5E5;
-    border-bottom:1px solid #BBBBBB;
-    padding:16px;
+.female{
+    background: url('../images/other/female.png') no-repeat top left;
+    height: 128px;
+    width: 128px;
+    float:left;
 }
 
-.order-table-odd-row{
-    text-align:center;
-    background:none repeat scroll 0 0 #FFFFFFF;
-    border-top:1px solid #BBBBBB;
+.male{
+    background: url('../images/other/male.png') no-repeat top left;
+    height: 128px;
+    width: 128px;
+    float:left;
 }
 
-.order-table-even-row{
-    text-align:center;
-    background:none repeat scroll 0 0 #F9F9F9;
-    border-top:1px solid #BBBBBB;
+div.personal-info{
+    margin-left:138px;
+    height: 138px;
+}
+
+div.personal-info h4{
+    padding-top: 10px;
+    line-height: 1.6em;
+}
+
+div.contact-info{
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1px dotted #CCC;
+    border-top: 1px dotted #CCC;
+    padding-left:138px;
+    background: url('../images/other/contact.png')no-repeat top left;
+}
+
+div.work-info{
+    padding: 10px 0px 0px 0px;
+    padding-left:138px;
+    background: url('../images/other/work.png')no-repeat top left;
+}
+
+div.recruitment-info{
+    padding: 10px 0px 0px 0px;
+    padding-left:138px;
+    background: url('../images/other/recruitment.png')no-repeat top left;
+}
+/***** PROGRESS SCHEDULE *****/
+div#combobox{
+    position: relative;
+    height: 50px;
+}
+div#combobox p{
+    width: 440px;
+    float:left;
+}
+div#combobox p.p-left{
+    padding-right:45px;
+}
+div#combobox label{
+    display: inline;
+    padding-right: 10px;
+    font-size:14px;
+}
+
+form .cbo-schedule{
+    width: 80% !important;
+}
+
+div.v-scroll{
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 460px;
+}
+
+div.v-scroll:hover{
+    overflow-y: auto;
+}
+
+h4.vacancy-title{
+    padding: 10px 0px 15px 0px;
+    line-height: 1.6em;
+}
+
+div.block{
+    border-top: 1px dotted #CCC;
+    padding: 10px 0px 10px 0px;
+}
+
+/***** MANAGE SCHEDULE *****/
+div.manage {
+    width: 95%;
+}
+
+div.article{
+    height:auto;
+    padding:10px 0px;
+    border-top:1px dotted #CCC;
+    min-height: 100px;
+    position:relative;
+}
+div.article-left{
+    float:left;
+    padding: 5px 0px;
+}
+div.article-main{
+    padding-left: 138px;
+}
+div.article table {
+    width: 100%;
+    border-collapse: collapse;
+}
+div.article table thead th {
+    font-weight: bold;
+    font-size: 15px;
+}
+div.article tbody {
+
+}
+div.article tbody tr {
+    background: #fff;
+}
+
+div.article tbody tr.alt-row {
+    background: #f3f3f3;
+}
+
+div.article table td{
+    vertical-align: middle;
+    padding: 10px;
+    line-height: 1.3em;
+    border-top: 1px solid #ddd;
+}
+div.article table th {
+    padding: 0px 10px 10px 10px;
+    line-height: 1.3em;
+}
+div.article table th:last-child {
+    text-align: center;
+}
+div.article table tfoot td .bulk-actions {
+    padding: 15px 0 5px 0;
+}
+
+div.article table tfoot td .bulk-actions select {
+    padding: 4px;
+    border: 1px solid #ccc;
+}
+
+.status-col{
+    width: 30px;
+}
+.col-2{/* TIME */
+    width: 100px;
+}
+.col-3{/* Interviewer */
+    width: 150px;
+}
+.col-4{/* Vacancy */
+    width: 250px;
+}
+.col-5{/* Applicant */
+    width: 150px;
+}
+.app-status-col{
+    width: 30px;
+}
+.action-col{
+    text-align: center;
+}
+.action-col input{
+    padding: 2px;
+}
+
+/***** ADD INTERVIEW *****/
+div#add-interview label{
+    display: inline;
+}
+
+div#add-interview table td{
+    padding: 5px;
+}
+div#add-interview table td:first-child{
+    width: 100px;
+}
+
+div#add-interview table td p{
+    padding: 5px 0px 5px 0px;
 }
