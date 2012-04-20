@@ -4,8 +4,10 @@
  */
 package rps.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import rps.dataaccess.EmployeeDA;
+import rps.entities.Account;
 import rps.entities.Employee;
 
 /**
@@ -26,5 +28,15 @@ public class EmployeeService extends AbstractService {
 
     public List<Employee> getLstEmpl() {
         return employeeDA.findAll();
+    }
+
+    public List<Employee> getInterviewers() {
+        List<Employee> list = new ArrayList<Employee>();
+        RoleService roleService = new RoleService();
+        List<Account> accounts = roleService.getAccounts("Interviewer");
+        for (Account acc : accounts) {
+            list.add(acc.getEmployee());
+        }
+        return list;
     }
 }

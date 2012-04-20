@@ -4,13 +4,14 @@
  */
 package rps.business;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import rps.dataaccess.ApplicantDA;
 import rps.dataaccess.FindResult;
 import rps.entities.Applicant;
-import rps.entities.Schedule;
+import rps.entities.Interview;
 import rps.entities.Vacancy;
 
 /**
@@ -25,24 +26,35 @@ public class ApplicantService extends AbstractService {
         applicantDA = new ApplicantDA(getEntityManager());
     }
 
-    public Applicant addApplicant(String firstName, String lastName, String email) {
-        Applicant applicant = new Applicant();
-        applicant.setApplicantID(generateID());
-        applicant.setFirstName(firstName);
-        applicant.setLastName(lastName);
-        applicant.setEmail(email);
+    public Applicant addApplicant(String firstName, String lastName, boolean gender, Date dob,
+            String phone, String email, String address, Double salary, String language, int year,
+            String degree, String skill, String award, List<Interview> interviews) {
+        Applicant applicant = setAttributes(generateID(), firstName, lastName, gender,
+                dob, phone, email, address, salary, language, year, degree,
+                skill, award, interviews, 0, Calendar.getInstance().getTime());
 
         applicantDA.create(applicant);
+        return applicant;
+    }
+public Applicant updateApplicant(String id, String firstName, String lastName,
+        boolean gender, Date dob, String phone, String email, String address,
+        Double salary, String language, int year, String degree, String skill,
+        String award, List<Interview> interviews, Date createdDate, int status) {
 
+        Applicant applicant = setAttributes(id, firstName, lastName, gender,
+                dob, phone, email, address, salary, language, year, degree,
+                skill, award, interviews, status, createdDate);
+
+        applicantDA.edit(applicant);
         return applicant;
     }
 
-    public Applicant addApplicant(String firstName, String lastName, boolean gender, Date dob,
-            String phone, String email, String address, Double salary, String language, int year,
-            String degree, String skill, String award, List<Vacancy> vacancy, List<Schedule> schedule) {
-
+    private Applicant setAttributes(String id, String firstName, String lastName,
+            boolean gender, Date dob, String phone, String email, String address,
+            Double salary, String language, int year, String degree, String skill,
+            String award, List<Interview> interviews, int status, Date createdDate) {
         Applicant applicant = new Applicant();
-        applicant.setApplicantID(generateID());
+        applicant.setApplicantID(id);
         applicant.setFirstName(firstName);
         applicant.setLastName(lastName);
         applicant.setGender(gender);
@@ -56,16 +68,11 @@ public class ApplicantService extends AbstractService {
         applicant.setDegree(degree);
         applicant.setSkill(skill);
         applicant.setAward(award);
-        applicant.setVacancyList(vacancy);
-        applicant.setScheduleList(schedule);
-        applicant.setStatus(0);
-        applicant.setCreatedDate(Calendar.getInstance().getTime());
-
-        applicantDA.create(applicant);
-
+        applicant.setInterviewList(interviews);
+        applicant.setStatus(status);
+        applicant.setCreatedDate(createdDate);
         return applicant;
     }
-
     private String generateID() {
         FindResult<Applicant> applicants = applicantDA.findAbsolutely(null, null, new String[]{"applicantID"}, new String[]{"DESC"}, 0, 1);
         String newID = "A";
@@ -87,12 +94,15 @@ public class ApplicantService extends AbstractService {
         return newID;
     }
 
-    public void attachVacancy(String id, List<Vacancy> vacancies) {
-        Applicant applicant = applicantDA.find(id);
-        applicant.setVacancyList(vacancies);
-        applicantDA.edit(applicant);
+    public Applicant getApplicant(String id) {
+        return applicantDA.find(id);
     }
 
+//    public void attachVacancy(String id, List<Vacancy> vacancies) {
+//        Applicant applicant = applicantDA.find(id);
+//        applicant.setVacancyList(vacancies);
+//        applicantDA.edit(applicant);
+//    }
     public boolean isEmailExisted(String email) {
         FindResult result = applicantDA.findAbsolutely("email", email);
         if (result.size() > 0) {
@@ -105,10 +115,28 @@ public class ApplicantService extends AbstractService {
         return applicantDA.findAll();
     }
 
-    public List<Applicant> getListApplicantByID(String idAppl) {
-        if (idAppl.equals("")) {
-            return applicantDA.findAll();
+//    public List<Applicant> getListApplicantByID(String idAppl) {
+//        if (idAppl.equals("")) {
+//            return applicantDA.findAll();
+//        }
+//        return applicantDA.findAbsolutely("applicantID", idAppl);
+//    }
+//
+    public List<Applicant> getApplicantByStatus(int status) {
+        return applicantDA.findAbsolutely("status", status);
+    }
+
+    public List<Interview> attachVacancies(Applicant applicant, List<Vacancy> list) {
+        List<Interview> interviews = new ArrayList<Interview>();
+        if (!list.isEmpty()) {
+            InterviewService interviewService = new InterviewService();
+            for (Vacancy vacancy : list) {
+                interviewService.beginTransaction();
+                Interview interview = interviewService.addInterview(applicant, vacancy);
+                interviewService.commitTransaction();
+                interviews.add(interview);
+            }
         }
-        return applicantDA.findAbsolutely("applicantID", idAppl);
+        return interviews;
     }
 }

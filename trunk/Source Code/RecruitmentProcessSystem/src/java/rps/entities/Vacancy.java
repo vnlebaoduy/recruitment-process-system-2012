@@ -9,14 +9,15 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -96,11 +97,11 @@ public class Vacancy implements Serializable {
     @Column(name = "Deadline")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
-    @ManyToMany(mappedBy = "vacancyList")
-    private List<Applicant> applicantList;
     @JoinColumn(name = "DepartmentID", referencedColumnName = "DepartmentID")
     @ManyToOne(optional = false)
     private Department department;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vacancy")
+    private List<Interview> interviewList;
 
     public Vacancy() {
     }
@@ -274,20 +275,20 @@ public class Vacancy implements Serializable {
         this.deadline = deadline;
     }
 
-    public List<Applicant> getApplicantList() {
-        return applicantList;
-    }
-
-    public void setApplicantList(List<Applicant> applicantList) {
-        this.applicantList = applicantList;
-    }
-
     public Department getDepartment() {
         return department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public List<Interview> getInterviewList() {
+        return interviewList;
+    }
+
+    public void setInterviewList(List<Interview> interviewList) {
+        this.interviewList = interviewList;
     }
 
     @Override

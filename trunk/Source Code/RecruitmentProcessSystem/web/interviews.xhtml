@@ -11,19 +11,21 @@
 
     <ui:define name="content">
         <p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"/>
-        <h:form id="form1">
+        <ui:include src="dialogs/event-dialog.xhtml"/>
+        <h:form id="frm-interviews">
             <div class="content-box"><!-- Start Content Box -->
                 <div class="content-box-header">
                     <h3>Schedule all interviews</h3>
-                    <p><h:commandButton styleClass="schedule button"
-                                        value="My Schedule"
-                                        action="#{calendarMB.mySchedule}"/></p>
+                    <p><h:outputLink value="info.xhtml">
+                            <h:commandButton styleClass="schedule button"
+                                             value="My Schedule"/>
+                        </h:outputLink></p>
                     <div class="clear"></div>
                 </div>
 
                 <div class="content-box-content" style="margin: 0px auto;">
                     <div class="default-tab">
-                        <div id="calendar_wrap">
+                        <div id="calendar_wrap" class="calendar">
                             <div class="title_bar">
                                 <h:commandLink actionListener="#{calendarMB.backMonth}">
                                     <div class="previous"></div>
@@ -37,21 +39,16 @@
                             </div>
                             <ui:repeat value="#{calendarMB.dates}" var="date">
                                 <p:commandLink title="#{calendarMB.titleFormat(date)}"
-                                               actionListener="#{scheduleMB.displayInterviews(date)}"
+                                               actionListener="#{interviewBean.displayInterviews(date)}"
                                                oncomplete="dlg.show();"
-                                               update=":form2">
+                                               update=":frm-event">
 
                                     <h:panelGroup rendered="#{!calendarMB.lastMonth(date)}">
                                         <div class="cal_day day_red">
                                             <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
-                                            <h:panelGroup rendered="#{scheduleMB.numberInterviews(date)==1}">
+                                            <h:panelGroup rendered="#{interviewBean.msgEvent(date)!=''}">
                                                 <div class="day_count">
-                                                    <span class="event">1 Event</span>
-                                                </div>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{scheduleMB.numberInterviews(date)>1}">
-                                                <div class="day_count">
-                                                    <span class="event">#{scheduleMB.numberInterviews(date)} Events</span>
+                                                    <span class="event">#{interviewBean.msgEvent(date)}</span>
                                                 </div>
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{calendarMB.today(date)}">
@@ -65,9 +62,9 @@
                                     <h:panelGroup rendered="#{calendarMB.lastMonth(date)}">
                                         <div class="cal_day day_red last_month">
                                             <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
-                                            <h:panelGroup rendered="#{numEvent>0}">
+                                            <h:panelGroup rendered="#{interviewBean.msgEvent(date)!=''}">
                                                 <div class="day_count">
-                                                    <span class="event">#{numEvent}</span>
+                                                    <span class="event">#{interviewBean.msgEvent(date)}</span>
                                                 </div>
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{calendarMB.today(date)}">
@@ -85,7 +82,6 @@
                 </div> <!-- End .content-box-content -->
             </div> <!-- End .content-box -->
         </h:form>
-        <ui:include src="dialogs/event-dialog.xhtml"/>
     </ui:define>
 
 </ui:composition>

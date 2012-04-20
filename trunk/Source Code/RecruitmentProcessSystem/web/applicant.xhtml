@@ -10,8 +10,8 @@
 
     <ui:define name="content">
         <p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"/>
-
-        <h:form id="form1">
+        <ui:include src="dialogs/attach-dialog.xhtml"/>
+        <h:form id="frm-applicant">
             <div class="content-box column-left">
                 <div class="content-box-header">
                     <h3>Personal Information</h3>
@@ -27,7 +27,7 @@
                             </p>
                             <p>
                                 <label>First Name</label>
-                                <h:inputText value="#{applicantMB.applicant.firstName}" 
+                                <h:inputText value="#{applicantBean.applicant.firstName}"
                                              styleClass="text-input medium-input" id="firstName"
                                              required="true"
                                              requiredMessage="You must enter first name."/>
@@ -39,7 +39,7 @@
                             </p>
                             <p>
                                 <label>Last Name</label>
-                                <h:inputText value="#{applicantMB.applicant.lastName}" 
+                                <h:inputText value="#{applicantBean.applicant.lastName}"
                                              styleClass="text-input medium-input" id="lastName"
                                              required="true"
                                              requiredMessage="You must enter last name."/>
@@ -51,7 +51,7 @@
                             <p>
                                 <label>Gender</label>
                                 <h:selectOneMenu id="gender"
-                                                  value="#{applicantMB.applicant.gender}"
+                                                  value="#{applicantBean.applicant.gender}"
                                                   styleClass="text-input medium-input">
                                     <f:selectItem itemLabel="Male" itemValue="true"/>
                                     <f:selectItem itemLabel="Female" itemValue="false" />
@@ -59,17 +59,17 @@
                             </p>
                             <p>
                                 <label>Date Of Birth</label>
-                                <p:calendar value="#{applicantMB.applicant.dob}"
+                                <p:calendar value="#{applicantBean.applicant.dob}"
                                             id="dob"
                                             navigator="true"
                                             yearRange="c-50:c+50"
                                             mindate="1/1/62"
-                                            maxdate="#{applicantMB.currentDate}"
+                                            maxdate="#{calendarMB.currentDate}"
                                             pattern="EEE, dd MMM, yyyy"
-                                            styleClass="dob"
+                                            styleClass="remove"
                                             required="true"
                                             requiredMessage="You must enter date of birth."
-                                            validator="#{applicantMB.validateDOB}">
+                                            validator="#{applicantBean.validateDOB}">
                                 </p:calendar>
                                 <h:message for="dob" id="msgDOB"
                                            infoClass="input-notification success png_bg"
@@ -97,9 +97,9 @@
                             </p>
                             <p>
                                 <label>Phone Number</label>
-                                <h:inputText value="#{applicantMB.applicant.phoneNumber}" 
+                                <h:inputText value="#{applicantBean.applicant.phoneNumber}"
                                              styleClass="text-input medium-input" id="phone"
-                                             validator="#{applicantMB.validatePhoneNumber}">
+                                             validator="#{applicantBean.validatePhoneNumber}">
                                     <p:ajax update="msgPhone" event="keyup"/>
                                     <p:ajax update="msgPhone" event="blur"/>
                                 </h:inputText>
@@ -111,12 +111,12 @@
                             </p>
                             <p>
                                 <label>Email</label>
-                                <h:inputText value="#{applicantMB.applicant.email}" 
+                                <h:inputText value="#{applicantBean.applicant.email}"
                                              styleClass="text-input medium-input"
                                              id="email"
                                              required="true"
                                              requiredMessage="You must enter email address."
-                                             validator="#{applicantMB.validateEmail}">
+                                             validator="#{applicantBean.validateEmail}">
                                     <p:ajax update="msgEmail" event="keyup"/>
                                     <p:ajax update="msgEmail" event="blur"/>
                                 </h:inputText>
@@ -128,7 +128,9 @@
                             </p>
                             <p>
                                 <label>Address</label>
-                                <h:inputTextarea value="#{applicantMB.applicant.address}" styleClass="text-input textarea medium-input" cols="80" rows="5" id="txtAddress"/>
+                                <h:inputTextarea value="#{applicantBean.applicant.address}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtAddress"/>
                             </p>
                         </fieldset>
                     </div><!-- End #tab3 -->
@@ -153,10 +155,10 @@
                             </p>
                             <p>
                                 <label>Salary Requirement</label>
-                                <h:inputText value="#{applicantMB.applicant.salaryRequirement}" 
+                                <h:inputText value="#{applicantBean.applicant.salaryRequirement}"
                                              styleClass="text-input medium-input" id="salary"
                                              converterMessage="Input is wrong format"
-                                             validator="#{applicantMB.validateSalary}">
+                                             validator="#{applicantBean.validateSalary}">
                                     <p:ajax update="msgSalary" event="keyup"/>
                                     <p:ajax update="msgSalary" event="blur"/>
                                 </h:inputText>
@@ -167,10 +169,10 @@
                             </p>
                             <p>
                                 <label>Year Of Experience</label>
-                                <h:inputText value="#{applicantMB.applicant.yearOfExperience}" 
+                                <h:inputText value="#{applicantBean.applicant.yearOfExperience}"
                                              styleClass="text-input medium-input" id="year"
                                              converterMessage="Input is wrong format"
-                                             validator="#{applicantMB.validateYear}">
+                                             validator="#{applicantBean.validateYear}">
                                     <p:ajax update="msgYear" event="keyup"/>
                                     <p:ajax update="msgYear" event="blur"/>
                                 </h:inputText>
@@ -181,25 +183,33 @@
                             </p>
                             <p>
                                 <label>Language</label>
-                                <h:inputTextarea value="#{applicantMB.applicant.language}" styleClass="text-input medium-input" cols="80" rows="5" id="txtLanguage"/>
+                                <h:inputTextarea value="#{applicantBean.applicant.language}"
+                                                 styleClass="text-input medium-input"
+                                                 cols="80" rows="5" id="txtLanguage"/>
                             </p>
                             <p>
                                 <p:commandLink oncomplete="dlg.show();" value="Attach vacancy to new applicant"/>
-                                <small><h:outputText id="attach-number" value="#{applicantMB.numberVacancies}"/></small>
+                                <small><h:outputText id="msgAttach" value="#{attachBean.msgAttached}"/></small>
                             </p>
                         </fieldset>
                         <fieldset class="column-right">
                             <p>
                                 <label>Degree</label>
-                                <h:inputTextarea value="#{applicantMB.applicant.degree}" styleClass="text-input textarea medium-input" cols="80" rows="5" id="txtDegree"/>
+                                <h:inputTextarea value="#{applicantBean.applicant.degree}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtDegree"/>
                             </p>
                             <p>
                                 <label>Skill</label>
-                                <h:inputTextarea value="#{applicantMB.applicant.skill}" styleClass="text-input textarea medium-input" cols="80" rows="5" id="txtSkill"/>
+                                <h:inputTextarea value="#{applicantBean.applicant.skill}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtSkill"/>
                             </p>
                             <p>
                                 <label>Award</label>
-                                <h:inputTextarea value="#{applicantMB.applicant.award}" styleClass="text-input textarea medium-input" cols="80" rows="5" id="txtAward"/>
+                                <h:inputTextarea value="#{applicantBean.applicant.award}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtAward"/>
                             </p>
                         </fieldset>
                         <div class="clear"></div><!-- End .clear -->
@@ -208,14 +218,11 @@
             </div>
 
             <p>
-                <h:commandButton value="Create new" styleClass="button" action="#{applicantMB.add}"/>
+                <h:commandButton value="Create new" styleClass="button" actionListener="#{applicantBean.add}"/>
             </p>
-
-        </h:form>
-
-        <ui:include src="dialogs/attach-dialog.xhtml"/>
+        </h:form>        
         <script type="text/javascript" >
-            $('.dob input').removeClass('ui-inputfield');
+            $('.remove input').removeClass('ui-inputfield');
         </script>
     </ui:define>
 </ui:composition>

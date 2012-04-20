@@ -24,47 +24,53 @@ import javax.persistence.TemporalType;
  * @author user
  */
 @Entity
-@Table(name = "Schedule")
+@Table(name = "Interview")
 @NamedQueries({
-    @NamedQuery(name = "Schedule.findAll", query = "SELECT s FROM Schedule s"),
-    @NamedQuery(name = "Schedule.findByScheduleID", query = "SELECT s FROM Schedule s WHERE s.scheduleID = :scheduleID"),
-    @NamedQuery(name = "Schedule.findByStatus", query = "SELECT s FROM Schedule s WHERE s.status = :status"),
-    @NamedQuery(name = "Schedule.findByStartedTime", query = "SELECT s FROM Schedule s WHERE s.startedTime = :startedTime"),
-    @NamedQuery(name = "Schedule.findByEndedTime", query = "SELECT s FROM Schedule s WHERE s.endedTime = :endedTime")})
-public class Schedule implements Serializable {
+    @NamedQuery(name = "Interview.findAll", query = "SELECT i FROM Interview i"),
+    @NamedQuery(name = "Interview.findByInterviewID", query = "SELECT i FROM Interview i WHERE i.interviewID = :interviewID"),
+    @NamedQuery(name = "Interview.findByStatus", query = "SELECT i FROM Interview i WHERE i.status = :status"),
+    @NamedQuery(name = "Interview.findByAVStatus", query = "SELECT i FROM Interview i WHERE i.aVStatus = :aVStatus"),
+    @NamedQuery(name = "Interview.findByStartedTime", query = "SELECT i FROM Interview i WHERE i.startedTime = :startedTime"),
+    @NamedQuery(name = "Interview.findByEndedTime", query = "SELECT i FROM Interview i WHERE i.endedTime = :endedTime")})
+public class Interview implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "ScheduleID")
-    private String scheduleID;
+    @Column(name = "InterviewID")
+    private String interviewID;
     @Column(name = "Status")
     private Integer status;
+    @Column(name = "AVStatus")
+    private Integer aVStatus;
     @Column(name = "StartedTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startedTime;
     @Column(name = "EndedTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endedTime;
-    @JoinColumn(name = "EmployeeID", referencedColumnName = "EmployeeID")
+    @JoinColumn(name = "VacancyID", referencedColumnName = "VacancyID")
     @ManyToOne(optional = false)
+    private Vacancy vacancy;
+    @JoinColumn(name = "EmployeeID", referencedColumnName = "EmployeeID")
+    @ManyToOne
     private Employee employee;
     @JoinColumn(name = "ApplicantID", referencedColumnName = "ApplicantID")
     @ManyToOne(optional = false)
     private Applicant applicant;
 
-    public Schedule() {
+    public Interview() {
     }
 
-    public Schedule(String scheduleID) {
-        this.scheduleID = scheduleID;
+    public Interview(String interviewID) {
+        this.interviewID = interviewID;
     }
 
-    public String getScheduleID() {
-        return scheduleID;
+    public String getInterviewID() {
+        return interviewID;
     }
 
-    public void setScheduleID(String scheduleID) {
-        this.scheduleID = scheduleID;
+    public void setInterviewID(String interviewID) {
+        this.interviewID = interviewID;
     }
 
     public Integer getStatus() {
@@ -73,6 +79,14 @@ public class Schedule implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getAVStatus() {
+        return aVStatus;
+    }
+
+    public void setAVStatus(Integer aVStatus) {
+        this.aVStatus = aVStatus;
     }
 
     public Date getStartedTime() {
@@ -89,6 +103,14 @@ public class Schedule implements Serializable {
 
     public void setEndedTime(Date endedTime) {
         this.endedTime = endedTime;
+    }
+
+    public Vacancy getVacancy() {
+        return vacancy;
+    }
+
+    public void setVacancy(Vacancy vacancy) {
+        this.vacancy = vacancy;
     }
 
     public Employee getEmployee() {
@@ -110,18 +132,18 @@ public class Schedule implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (scheduleID != null ? scheduleID.hashCode() : 0);
+        hash += (interviewID != null ? interviewID.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Schedule)) {
+        if (!(object instanceof Interview)) {
             return false;
         }
-        Schedule other = (Schedule) object;
-        if ((this.scheduleID == null && other.scheduleID != null) || (this.scheduleID != null && !this.scheduleID.equals(other.scheduleID))) {
+        Interview other = (Interview) object;
+        if ((this.interviewID == null && other.interviewID != null) || (this.interviewID != null && !this.interviewID.equals(other.interviewID))) {
             return false;
         }
         return true;
@@ -129,7 +151,7 @@ public class Schedule implements Serializable {
 
     @Override
     public String toString() {
-        return "rps.entities.Schedule[scheduleID=" + scheduleID + "]";
+        return "rps.entities.Interview[interviewID=" + interviewID + "]";
     }
 
 }

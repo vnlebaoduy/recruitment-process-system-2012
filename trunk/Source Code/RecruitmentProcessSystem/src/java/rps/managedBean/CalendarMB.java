@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import rps.business.InterviewService;
+import rps.entities.Interview;
 
 /**
  *
@@ -20,7 +24,7 @@ import javax.faces.bean.ViewScoped;
  */
 @ManagedBean
 @ViewScoped
-public class CalendarMB implements Serializable{
+public class CalendarMB implements Serializable {
 
     private Date date;
     private Date currentDate;
@@ -120,23 +124,6 @@ public class CalendarMB implements Serializable{
             dates.add(new Date(curTime));
             curTime += interval;
         }
-
-
-//        FacesMessage message = new FacesMessage(
-//                FacesMessage.SEVERITY_INFO,
-//                "Year : " + this.getYear(),
-//                "Year : " + this.getYear());
-//        FacesContext.getCurrentInstance().addMessage(null, message);
-//        message = new FacesMessage(
-//                FacesMessage.SEVERITY_INFO,
-//                "Month : " + this.getMonth(),
-//                "Month : " + this.getMonth());
-//        FacesContext.getCurrentInstance().addMessage(null, message);
-//        message = new FacesMessage(
-//                FacesMessage.SEVERITY_INFO,
-//                "Date : " + this.getDate().toString(),
-//                "Date : " + this.getDate().toString());
-//        FacesContext.getCurrentInstance().addMessage(null, message);
         return dates;
     }
 
@@ -156,6 +143,10 @@ public class CalendarMB implements Serializable{
         return format(obj, "MMM");
     }
 
+    public String monthFullFormat(Object obj) {
+        return format(obj, "MMMM");
+    }
+
     public String monthYearFormat(Object obj) {
         return format(obj, "MMMM yyyy");
     }
@@ -168,9 +159,10 @@ public class CalendarMB implements Serializable{
         return format(obj, "E, MMMM d yyyy");
     }
 
-    public String timeFormat(Object obj){
+    public String timeFormat(Object obj) {
         return format(obj, "HH:mm");
     }
+
     private String format(Object obj, String pattern) {
         try {
             Date d = (Date) obj;
@@ -180,7 +172,6 @@ public class CalendarMB implements Serializable{
             return "";
         }
     }
-
 
     public void nextMonth() {
         int next = this.getMonth() + 1;
@@ -221,4 +212,69 @@ public class CalendarMB implements Serializable{
         }
         return true;
     }
+    // <editor-fold defaultstate="collapsed" desc="MANAGE Interview">
+    private Date firstDate;
+    private Date lastDate;
+
+    public Date getFirstDate() {
+        firstDate = new Date(this.getYear(), this.getMonth(), 1);
+        return firstDate;
+    }
+
+    public Date getLastDate() {
+        Calendar calendar = Calendar.getInstance();
+        Date d = new Date(this.getYear(), this.getMonth(), this.getDay());
+        calendar.setTime(d);
+        int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        lastDate = new Date(this.getYear(), this.getMonth(), days);
+        return lastDate;
+    }
+
+    public List<Date> getEventDates() {
+        try {
+            List<Date> dates = new ArrayList<Date>();
+
+            InterviewService service = new InterviewService();
+            List<Interview> list = service.getInterviews(firstDate, lastDate);
+            for (Interview s : list) {
+                Date current = new Date(Date.parse(dateFormat(s.getStartedTime())));
+                if (!dates.contains(current)) {
+                    dates.add(current);
+                }
+            }
+            if (dates.size() > 0) {
+                return dates;
+            }
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "An error occured",
+                    ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    private String msgInterview;
+
+    public String getMsgInterview() {
+        int num = 0;
+        InterviewService service = new InterviewService();
+        num = service.getInterviews(getFirstDate(),
+                getLastDate()).size();
+        String month = monthFullFormat(getFirstDate());
+        switch (num) {
+            case 0:
+                msgInterview = "Have not any an interview in " + month;
+                break;
+            case 1:
+                msgInterview = "There are 1 interview in " + month;
+                break;
+            default:
+                msgInterview = "There are " + num + " interviews in " + month;
+                break;
+        }
+        return msgInterview;
+    }
+    // </editor-fold>
 }

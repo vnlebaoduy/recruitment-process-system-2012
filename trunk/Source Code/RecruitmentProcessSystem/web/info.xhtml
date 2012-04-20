@@ -9,68 +9,72 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
-        <p:growl id="growl" sticky="true" globalOnly="true" showDetail="true"/>
+        <p:growl id="growl" showDetail="true"/>
         <ui:include src="dialogs/password-dialog.xhtml"/>
-        <ui:include src="dialogs/schedule-dialog.xhtml"/>
-        <h:form id="frm-schedule">
+        <ui:include src="dialogs/progress-interview-dialog.xhtml"/>
+        <h:form id="frm-interview">
             <div class="content-box column-left">
                 <div class="content-box-header">
-                    <h3>My Schedule</h3>
+                    <h3>My Current Interviews</h3>
                 </div> <!-- End .content-box-header -->
 
                 <div class="content-box-content">
                     <div class="tab-content default-tab">
                         <p>
-                            <strong>#{scheduleMB.msgNumber}</strong>
+                            <strong>#{myInterviewBean.msgNumber}</strong>
                         </p>
-                        <ui:repeat value="#{scheduleMB.myCurrentSchedule}" var="schedule">
+                        <ui:repeat value="#{myInterviewBean.myCurrentInterviews}" var="interview">
                             <div class="border">
                                 <div class="event">
                                     <div class="title">
-                                        <h3>#{calendarMB.titleFormat(schedule.startedTime)}</h3>
-                                        <h:commandButton image="resources/images/icons/edit.png"
-                                                         actionListener="#{scheduleMB.progressStatus}"
-                                                         onclick="dlg_schedule.show();">
-                                            <f:param name="edit" value="#{schedule.scheduleID}" />
-                                            <f:ajax execute="@this" render=":frm-progress-schedule"/>
+                                        <h3>#{calendarMB.titleFormat(interview.startedTime)}</h3>
+                                        <h:commandButton image="resources/images/icons/info.png"
+                                                         actionListener="#{myInterviewBean.progressStatus}"
+                                                         onclick="dlg_interview.show();">
+                                            <f:param name="edit" value="#{interview.interviewID}" />
+                                            <f:ajax execute="@this" render=":frm-progress-interview"/>
                                         </h:commandButton>
+                                        <h:outputLink value="#">
+                                            <h:commandButton image="resources/images/icons/clock.png"/>
+                                        </h:outputLink>
                                     </div>
                                     <div class="event_body">
                                         <div class="middle">
-                                            <h:panelGroup rendered="#{schedule.status == 0}">
+                                            <h:panelGroup rendered="#{interview.status == 0}">
                                                 <div class="cal_day day_red">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
                                                 </div>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{schedule.status == 100}">
+                                            <h:panelGroup rendered="#{interview.status == 100}">
                                                 <div class="cal_day day_green">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
                                                 </div>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{schedule.status == -100}">
+                                            <h:panelGroup rendered="#{interview.status == -100}">
                                                 <div class="cal_day day_blue">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(schedule.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(schedule.startedTime)}</div>
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
+                                                </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{interview.status == 99}">
+                                                <div class="cal_day day_yellow">
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
                                                 </div>
                                             </h:panelGroup>
                                         </div>
                                         <div class="event_content">
                                             <p><strong>Time: </strong>
-                                                #{calendarMB.timeFormat(schedule.startedTime)}
-                                                to #{calendarMB.timeFormat(schedule.endedTime)}</p>
+                                                #{calendarMB.timeFormat(interview.startedTime)}
+                                                to #{calendarMB.timeFormat(interview.endedTime)}</p>
                                             <p><strong>Applicant name: </strong>
-                                                #{schedule.applicant.firstName} #{schedule.applicant.lastName}</p>
-                                            <h:panelGroup
-                                                rendered="#{scheduleMB.numberVacancies(schedule.applicant)==1
-                                                            || scheduleMB.numberVacancies(schedule.applicant)==0}">
-                                                <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(schedule.applicant)} vacancy</p>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{scheduleMB.numberVacancies(schedule.applicant)>1}">
-                                                <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(schedule.applicant)} vacancies</p>
-                                            </h:panelGroup>
-                                            <p><strong>Status: </strong> #{scheduleMB.statusValue(schedule.status)}</p>
+                                                #{interview.applicant.firstName} #{interview.applicant.lastName}</p>
+                                            <p><strong>Vacancy: </strong> 
+                                                #{interview.vacancy.title}</p>
+                                            
+                                            <p><strong>Status: </strong> #{interviewBean.statusValue(interview.status)}</p>
                                         </div>
                                     </div>
                                 </div>
