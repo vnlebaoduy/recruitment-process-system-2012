@@ -12,6 +12,7 @@ import rps.dataaccess.FindResult;
 import rps.dataaccess.VacancyDA;
 import rps.entities.Applicant;
 import rps.entities.Department;
+import rps.entities.Interview;
 import rps.entities.Vacancy;
 
 /**
@@ -88,10 +89,10 @@ public class VacancyService extends AbstractService {
     public List<Applicant> getApplicantHired(String vacancyID) {
         List<Applicant> list = new ArrayList<Applicant>();
         Vacancy vacancy = vacancyDA.find(vacancyID);
-        if (vacancy != null) {
-            for (Applicant app : vacancy.getApplicantList()) {
-                if (app.getStatus() == 1) {//Applicant hired - status = 1
-                    list.add(app);
+        if (vacancy != null && !vacancy.getInterviewList().isEmpty()) {
+            for (Interview interview : vacancy.getInterviewList()) {
+                if (interview.getApplicant().getStatus() == 1) {//Applicant hired - status = 1
+                    list.add(interview.getApplicant());
                 }
             }
         }

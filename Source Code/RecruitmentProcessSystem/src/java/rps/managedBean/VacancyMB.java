@@ -277,16 +277,16 @@ public class VacancyMB {
     public List<Vacancy> getLstMostApplyVacancy() {
         vacancyService = new VacancyService();
         List<Vacancy> lstAllVacancy = vacancyService.getAll();
-        Vacancy tempObj;
-        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
-            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
-                if (lstAllVacancy.get(x).getApplicantList().size() > lstAllVacancy.get(y).getApplicantList().size()) {
-                    tempObj = lstAllVacancy.get(x);
-                    lstAllVacancy.set(x, lstAllVacancy.get(y));
-                    lstAllVacancy.set(y, tempObj);
-                }
-            }
-        }
+//        Vacancy tempObj;
+//        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
+//            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
+//                if (lstAllVacancy.get(x).getApplicantList().size() > lstAllVacancy.get(y).getApplicantList().size()) {
+//                    tempObj = lstAllVacancy.get(x);
+//                    lstAllVacancy.set(x, lstAllVacancy.get(y));
+//                    lstAllVacancy.set(y, tempObj);
+//                }
+//            }
+//        }
         return lstAllVacancy.subList(lstAllVacancy.size() - 4, lstAllVacancy.size() - 1);
     }
 

@@ -36,28 +36,7 @@ public class ApplicantMB implements Serializable {
     private Applicant applicant;
     private List<Applicant> lstApplicant;
     private String applicantID;
-     private List<Applicant> lstNewApplicant;
 
-    public List<Applicant> getLstNewApplicant() {
-         applicantService = new ApplicantService();
-        List<Applicant> lstAllApplicant = applicantService.getListApplicant();
-        Applicant tempObj;
-        for (int x = 0; x < lstAllApplicant.size() - 1; x++) {
-            for (int y = x + 1; y < lstAllApplicant.size(); y++) {
-                if (lstAllApplicant.get(x).getCreatedDate().before(lstAllApplicant.get(y).getCreatedDate())) {
-                    tempObj = lstAllApplicant.get(x);
-                    lstAllApplicant.set(x, lstAllApplicant.get(y));
-                    lstAllApplicant.set(y, tempObj);
-                }
-            }
-        }
-        return lstAllApplicant.subList(lstAllApplicant.size() - 4, lstAllApplicant.size() - 1);
-        
-    }
-
-    public void setLstNewApplicant(List<Applicant> lstNewApplicant) {
-        this.lstNewApplicant = lstNewApplicant;
-    }
     public Applicant getApplicant() {
         if (applicant == null) {
             applicant = new Applicant();
@@ -94,49 +73,50 @@ public class ApplicantMB implements Serializable {
         vacancyService = new VacancyService();
     }
 
-    public String search() {
-        applicantService = new ApplicantService();
-        lstApplicant = applicantService.getListApplicantByID(applicantID);
-        return null;
-    }
+//    public String search() {
+//        applicantService = new ApplicantService();
+//        lstApplicant = applicantService.getListApplicantByID(applicantID);
+//        return null;
+//    }
 
     public String addNew() {
         return "applicant.xhtml";
     }
 
-    public String editAppl(Object appl){
-    String applID = (String) appl;
-    return "applicant.xhtml?faces-redirect=true&ID="+applID;
+    public String editAppl(Object appl) {
+        String applID = (String) appl;
+        return "applicant.xhtml?faces-redirect=true&ID=" + applID;
     }
+
     public String add() {
-        try {
-            if (applicant.getSalaryRequirement() == null) {
-                applicant.setSalaryRequirement(0.0);
-            }
-            if (applicant.getYearOfExperience() == null) {
-                applicant.setYearOfExperience(0);
-            }
-            applicantService.beginTransaction();
-            applicant = applicantService.addApplicant(applicant.getFirstName(), applicant.getLastName(),
-                    applicant.getGender(), applicant.getDob(), applicant.getPhoneNumber(),
-                    applicant.getEmail(), applicant.getAddress(), applicant.getSalaryRequirement(),
-                    applicant.getLanguage(), applicant.getYearOfExperience(), applicant.getLanguage(),
-                    applicant.getSkill(), applicant.getAward(), applicant.getVacancyList(), null);
-            applicantService.commitTransaction();
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Create new successfull", "Click <a href='applicants.xhtml'>here</a> to view all applicants");
-            facesContext.addMessage(null, message);
-            applicant = null;
-            listAvailable = null;
-            listDropped = null;
-            numberVacancies = "";
-        } catch (Exception ex) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-                    "An error occured", ex.getMessage());
-            facesContext.addMessage(null, message);
-        }
+//        try {
+//            if (applicant.getSalaryRequirement() == null) {
+//                applicant.setSalaryRequirement(0.0);
+//            }
+//            if (applicant.getYearOfExperience() == null) {
+//                applicant.setYearOfExperience(0);
+//            }
+//            applicantService.beginTransaction();
+//            applicant = applicantService.addApplicant(applicant.getFirstName(), applicant.getLastName(),
+//                    applicant.getGender(), applicant.getDob(), applicant.getPhoneNumber(),
+//                    applicant.getEmail(), applicant.getAddress(), applicant.getSalaryRequirement(),
+//                    applicant.getLanguage(), applicant.getYearOfExperience(), applicant.getLanguage(),
+//                    applicant.getSkill(), applicant.getAward(), applicant.getVacancyList(), null);
+//            applicantService.commitTransaction();
+//            FacesContext facesContext = FacesContext.getCurrentInstance();
+//            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+//                    "Create new successfull", "Click <a href='applicants.xhtml'>here</a> to view all applicants");
+//            facesContext.addMessage(null, message);
+//            applicant = null;
+//            listAvailable = null;
+//            listDropped = null;
+//            numberVacancies = "";
+//        } catch (Exception ex) {
+//            FacesContext facesContext = FacesContext.getCurrentInstance();
+//            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+//                    "An error occured", ex.getMessage());
+//            facesContext.addMessage(null, message);
+//        }
         return null;
     }
 
@@ -296,7 +276,7 @@ public class ApplicantMB implements Serializable {
         listAvailable.remove(vacancy);
         saveListenner();
     }
-/*
+
     public void attachVacancy(String obj) {
         Vacancy vacancy = vacancyService.getDetailVacancy(obj);
         listDropped.add(vacancy);
@@ -310,8 +290,6 @@ public class ApplicantMB implements Serializable {
         listDropped.remove(vacancy);
         saveListenner();
     }
- * 
- */
     private String numberVacancies;
 
     public String getNumberVacancies() {
@@ -319,15 +297,15 @@ public class ApplicantMB implements Serializable {
     }
 
     public void saveListenner() {
-        this.getApplicant().setVacancyList(listDropped);
-        int size = this.getApplicant().getVacancyList().size();
-        if (size > 0) {
-            if (size == 1) {
-                numberVacancies = "   ( 1 vacancy attached for new applicant )";
-            } else {
-                numberVacancies = "   ( " + size + " vacancies attached for new applicant )";
-            }
-        }
+//        this.getApplicant().setVacancyList(listDropped);
+//        int size = this.getApplicant().getVacancyList().size();
+//        if (size > 0) {
+//            if (size == 1) {
+//                numberVacancies = "   ( 1 vacancy attached for new applicant )";
+//            } else {
+//                numberVacancies = "   ( " + size + " vacancies attached for new applicant )";
+//            }
+//        }
     }
 
     public String statusValue(Object obj) {
@@ -369,4 +347,7 @@ public class ApplicantMB implements Serializable {
         }
         return "Female";
     }
+    // <editor-fold defaultstate="collapsed" desc="schedule.xhtml">
+
+    // </editor-fold>
 }

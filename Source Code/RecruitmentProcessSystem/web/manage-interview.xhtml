@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true"/>
+        <h:form id="frm-manage-interview">
+            <div class="content-box"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>Manage Interviews</h3>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content" style="margin: 0px auto;">
+                    <div class="default-tab">
+                        <div id="calendar_wrap" class="manage">
+                            <div class="title_bar">
+                                <h:commandLink actionListener="#{calendarMB.backMonth}">
+                                    <div class="previous"></div>
+                                    <f:ajax execute="@this" render="@form"/>
+                                </h:commandLink>
+                                <h:commandLink actionListener="#{calendarMB.nextMonth}">
+                                    <div class="next"></div>
+                                    <f:ajax execute="@this" render="@form"/>
+                                </h:commandLink>
+                                <h2 class="month">#{calendarMB.monthYearFormat(calendarMB.date)}</h2>
+                            </div>
+                            <h3 class="msg">#{calendarMB.msgInterview}</h3>
+                            <h:panelGroup rendered="#{not empty calendarMB.eventDates}">
+                                <ui:repeat value="#{calendarMB.eventDates}" var="date">
+                                    <div class="article">
+                                        <div class="article-left">
+                                            <p:commandLink title="#{calendarMB.titleFormat(date)}">
+                                                <div class="cal_day day_red">
+                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(date)}</div>
+                                                    <div class="day_count">
+                                                        <span class="event">#{interviewBean.msgEvent(date)}</span>
+                                                    </div>
+                                                    <h:panelGroup rendered="#{calendarMB.today(date)}">
+                                                        <div class="day_number today">#{calendarMB.dayFormat(date)}</div>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup rendered="#{!calendarMB.today(date)}">
+                                                        <div class="day_number">#{calendarMB.dayFormat(date)}</div>
+                                                    </h:panelGroup>
+                                                </div>
+                                            </p:commandLink>
+                                        </div>
+                                        <div class="article-main">
+                                            <h:panelGroup rendered="#{not empty manageInterviewBean.listInterviews(date)}">
+                                                <h:dataTable value="#{manageInterviewBean.interviews}"
+                                                             var="interview"
+                                                             columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col,action-col">
+                                                    <h:column>
+                                                        <h:graphicImage value="resources/images/other/not_in_progress.png"
+                                                                        rendered="#{interview.status == 0}"
+                                                                        title="Not In Progress"/>
+                                                        <h:graphicImage value="resources/images/other/select.png"
+                                                                        rendered="#{interview.status == 100}"
+                                                                        title="Selected"/>
+                                                        <h:graphicImage value="resources/images/other/reject.png"
+                                                                        rendered="#{interview.status == -100}"
+                                                                        title="Rejected"/>
+                                                        <h:graphicImage value="resources/images/other/postpone.png"
+                                                                        rendered="#{interview.status == 99}"
+                                                                        title="Postpone"/>
+                                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                                        rendered="#{interview.status == 1}"
+                                                                        title="Remove"/>
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">Time</f:facet>
+                                                        #{calendarMB.timeFormat(interview.startedTime)}
+                                                        to #{calendarMB.timeFormat(interview.endedTime)}
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">Interviewer</f:facet>
+                                                        #{interview.employee.firstName} #{interview.employee.lastName}
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">Vacancy</f:facet>
+                                                        #{interview.vacancy.title}
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">Applicant</f:facet>
+                                                        #{interview.applicant.firstName} #{interview.applicant.lastName}
+                                                    </h:column>
+                                                    <h:column>
+                                                        <h:graphicImage value="resources/images/other/not_in_progress.png"
+                                                                        rendered="#{interview.status == 0}"
+                                                                        title="Not In Progress"/>
+                                                        <h:graphicImage value="resources/images/other/select.png"
+                                                                        rendered="#{interview.status == 100}"
+                                                                        title="Selected"/>
+                                                        <h:graphicImage value="resources/images/other/reject.png"
+                                                                        rendered="#{interview.status == -100}"
+                                                                        title="Rejected"/>
+                                                        <h:graphicImage value="resources/images/other/postpone.png"
+                                                                        rendered="#{interview.status == 99}"
+                                                                        title="Postpone"/>
+                                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                                        rendered="#{interview.status == 1}"
+                                                                        title="Remove"/>
+
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">Action</f:facet>
+                                                        <h:panelGroup rendered="#{interview.status != 1}">
+                                                            <h:commandButton image="resources/images/icons/clock.png"
+                                                                             title="Change Time"
+                                                                             rendered="#{interview.status != -100}"/>
+                                                            <h:commandButton image="resources/images/icons/refresh.png"
+                                                                             title="Reschedule"
+                                                                             rendered="#{interview.status == -100}"/>
+                                                            <h:commandButton image="resources/images/icons/unlock.png"
+                                                                             title="Reopen"
+                                                                             rendered="#{interview.status == 99}"
+                                                                             actionListener="#{manageInterviewBean.reopen(interview.interviewID)}">
+                                                                <f:ajax execute="@this" render="@form :growl"/>
+                                                            </h:commandButton>
+                                                            <h:commandButton image="resources/images/icons/lock.png"
+                                                                             title="Postpone"
+                                                                             rendered="#{interview.status != 99}"
+                                                                             actionListener="#{manageInterviewBean.postpone(interview.interviewID)}">
+                                                                <f:ajax execute="@this" render="@form :growl"/>
+                                                            </h:commandButton>
+                                                            <h:commandButton image="resources/images/icons/trash.png"
+                                                                             title="Remove"
+                                                                             onclick="return remove();"
+                                                                             actionListener="#{manageInterviewBean.remove(interview.interviewID)}">
+                                                                <f:ajax execute="@this" render="@form :growl"/>
+                                                            </h:commandButton>
+                                                        </h:panelGroup>
+                                                    </h:column>
+                                                </h:dataTable>
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+                            </h:panelGroup>
+                        </div>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+            <script type="text/javascript">
+                function remove(){
+                    return confirm("The interview will be removed and will not be REOPEN or POSTPONE by anyway.\n\
+\n\
+Are you sure to removed this interview?");
+                }
+            </script>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

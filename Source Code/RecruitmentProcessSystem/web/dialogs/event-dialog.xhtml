@@ -4,58 +4,71 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core">
-    <h:form id="form2">
+    <h:form id="frm-event">
         <p:dialog
             id="message"
             header="Event Dialog"
             widgetVar="dlg"
             modal="true"
             resizable="false"
-            width="400" >
-            <h3>#{calendarMB.titleFormat(scheduleMB.selectedDate)}</h3>
-            <h:panelGroup rendered="#{scheduleMB.numberInterviewsOnDay==1
-                                      || scheduleMB.numberInterviewsOnDay==0}">
-                <p>
-                    <strong>There are currently
-                        #{scheduleMB.numberInterviewsOnDay}
-                        event scheduled.</strong>
-                </p>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{scheduleMB.numberInterviewsOnDay>1}">
-                <p>
-                    <strong>There are currently
-                        #{scheduleMB.numberInterviewsOnDay}
-                        events scheduled.</strong>
-                </p>
-            </h:panelGroup>
-
-            <ui:repeat value="#{scheduleMB.lstInterviews}" var="interview">
+            width="450">
+            <h3>#{calendarMB.titleFormat(interviewBean.selectedDate)}</h3>
+            <p>
+                <strong>#{interviewBean.msgNumber}</strong>
+            </p>
+            <ui:repeat value="#{interviewBean.lstInterviews}" var="interview">
                 <h:panelGroup rendered="#{accountMB.account.employee == interview.employee}">
                     <div class="border">
                         <div class="event">
-                            <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
-                                #{interview.employee.employeeID}</h3>
+                            <div class="title">
+                                <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
+                                    #{interview.employee.employeeID}</h3>
+                                <h:outputLink value="info.xhtml">
+                                    <h:commandButton image="resources/images/icons/info.png"/>
+                                </h:outputLink>
+                                <h:outputLink value="#">
+                                    <h:commandButton image="resources/images/icons/clock.png"/>
+                                </h:outputLink>
+                            </div>
                             <div class="middle">
-                                <div class="cal_day day_red">
-                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
-                                    <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
-                                </div>
+                                <h:panelGroup rendered="#{interview.status == 0}">
+                                    <div class="cal_day day_red">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 100}">
+                                    <div class="cal_day day_green">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == -100}">
+                                    <div class="cal_day day_blue">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 99}">
+                                    <div class="cal_day day_yellow">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 1}">
+                                    <div class="cal_day day_gray">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                             <div class="event_content">
                                 <p><strong>Time: </strong>
                                     #{calendarMB.timeFormat(interview.startedTime)}
                                     to #{calendarMB.timeFormat(interview.endedTime)}</p>
                                 <p><strong>Applicant name: </strong> #{interview.applicant.firstName} #{interview.applicant.lastName}</p>
-                                <h:panelGroup
-                                    rendered="#{scheduleMB.numberVacancies(interview.applicant)==1
-                                                || scheduleMB.numberVacancies(interview.applicant)==0}">
-                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancy</p>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{scheduleMB.numberVacancies(interview.applicant)>1}">
-                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancies</p>
-                                </h:panelGroup>
-                                <p><strong>Status: </strong> #{scheduleMB.statusValue(interview.status)}</p>
-                                <p:commandLink action="#{calendarMB.mySchedule}" ajax="false" value="More"/>
+                                <p><strong>Vacancy: </strong> #{interview.vacancy.title}</p>
+                                <p><strong>Status: </strong> #{interviewBean.statusValue(interview.status)}</p>
                             </div>
                         </div>
                     </div>
@@ -66,25 +79,44 @@
                             <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
                                 #{interview.employee.employeeID}</h3>
                             <div class="middle">
-                                <div class="cal_day day_red">
-                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(scheduleMB.selectedDate)}</div>
-                                    <div class="day_number">#{calendarMB.dayFormat(scheduleMB.selectedDate)}</div>
-                                </div>
+                                <h:panelGroup rendered="#{interview.status == 0}">
+                                    <div class="cal_day day_red">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 100}">
+                                    <div class="cal_day day_green">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == -100}">
+                                    <div class="cal_day day_blue">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 99}">
+                                    <div class="cal_day day_yellow">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{interview.status == 1}">
+                                    <div class="cal_day day_gray">
+                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewBean.selectedDate)}</div>
+                                        <div class="day_number">#{calendarMB.dayFormat(interviewBean.selectedDate)}</div>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                             <div class="event_content">
                                 <p><strong>Time: </strong>
                                     #{calendarMB.timeFormat(interview.startedTime)}
                                     to #{calendarMB.timeFormat(interview.endedTime)}</p>
                                 <p><strong>Applicant name: </strong> #{interview.applicant.firstName} #{interview.applicant.lastName}</p>
-                                <h:panelGroup
-                                    rendered="#{scheduleMB.numberVacancies(interview.applicant)==1
-                                                || scheduleMB.numberVacancies(interview.applicant)==0}">
-                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancy</p>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{scheduleMB.numberVacancies(interview.applicant)>1}">
-                                    <p><strong>Vacancy: </strong> #{scheduleMB.numberVacancies(interview.applicant)} vacancies</p>
-                                </h:panelGroup>
-                                <p><strong>Status: </strong> #{scheduleMB.statusValue(interview.status)}</p>
+                                <p><strong>Vacancy: </strong> #{interview.vacancy.title}</p>
+                                <p><strong>Status: </strong> #{interviewBean.statusValue(interview.status)}</p>
                             </div>
                         </div>
                     </div>

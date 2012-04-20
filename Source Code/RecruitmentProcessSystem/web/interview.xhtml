@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="frm-add-interview">
+            <p:growl id="growl" sticky="true" showDetail="true" globalOnly="true"/>
+            <div class="content-box column-left"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>Schedule interview</h3>
+                    <p><h:commandButton styleClass="schedule button"
+                                        value="My Schedule"
+                                        action="#{calendarMB.mySchedule}"/></p>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content">
+                    <div class="default-tab">
+                        <div id="add-interview">
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                        <label>Interview Date : </label>
+                                    </td>
+                                    <td align="left">
+                                        <p:calendar id="date"
+                                                    styleClass="text-input medium-input remove"
+                                                    required="true"
+                                                    requiredMessage="You must select date."
+                                                    value="#{manageInterviewBean.date}">
+                                        </p:calendar>
+                                        <h:message for="date" id="msgDate"
+                                                   infoClass="input-notification success png_bg"
+                                                   warnClass="input-notification attention png_bg"
+                                                   errorClass="input-notification error png_bg"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Interviewer : </label>
+                                    </td>
+                                    <td align="left">
+                                        <h:selectOneMenu id="cboInterviewer"
+                                                         value="#{manageInterviewBean.employeeID}"
+                                                         styleClass="text-input medium-input">
+                                            <f:selectItems value="#{manageInterviewBean.interviewers}"
+                                                           var="employee"
+                                                           itemLabel="#{employee.firstName} #{employee.lastName}"
+                                                           itemValue="#{employee.employeeID}"/>
+                                        </h:selectOneMenu>
+                                        <h:message for="cboInterviewer" id="msgInterviewer"
+                                                   infoClass="input-notification success png_bg"
+                                                   warnClass="input-notification attention png_bg"
+                                                   errorClass="input-notification error png_bg"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Applicant : </label>
+                                    </td>
+                                    <td align="left">
+                                        <h:selectOneMenu id="cboApplicant"
+                                                         value="#{manageInterviewBean.applicantID}"
+                                                         styleClass="text-input medium-input"
+                                                         rendered="#{not empty manageInterviewBean.applicantsNotScheduled}">
+                                            <f:selectItems value="#{manageInterviewBean.applicantsNotScheduled}"
+                                                           var="applicant"
+                                                           itemLabel="#{applicant.firstName} #{applicant.lastName}"
+                                                           itemValue="#{applicant.applicantID}"/>
+                                        </h:selectOneMenu>
+                                        <h:panelGroup rendered="#{empty manageInterviewBean.applicantsNotScheduled}">
+                                            <p>Have not an applicant register interview.
+                                                <a href="applicant.xhtml">Create new</a>
+                                                or <a href="attach.xhtml">attach vacancy</a> for an applicant.
+                                            </p>
+
+                                        </h:panelGroup>
+                                        <h:message for="cboApplicant" id="msgApplicant"
+                                                   infoClass="input-notification success png_bg"
+                                                   warnClass="input-notification attention png_bg"
+                                                   errorClass="input-notification error png_bg"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Time Started : </label>
+                                    </td>
+                                    <td align="left">
+                                        <p:calendar id="startTime"
+                                                    pattern="HH:mm" timeOnly="true"
+                                                    styleClass="text-input small-input remove"
+                                                    required="true"
+                                                    requiredMessage="You must select time."
+                                                    value="#{manageInterviewBean.interview.startedTime}">
+                                            
+                                        </p:calendar>
+                                        <h:message for="startTime" id="msgStartTime"
+                                                   infoClass="input-notification success png_bg"
+                                                   warnClass="input-notification attention png_bg"
+                                                   errorClass="input-notification error png_bg"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Time Ended : </label>
+                                    </td>
+                                    <td align="left">
+                                        <p:calendar id="endTime"
+                                                    pattern="HH:mm" timeOnly="true"
+                                                    styleClass="text-input small-input remove"
+                                                    required="true"
+                                                    requiredMessage="You must select time."
+                                                    value="#{manageInterviewBean.interview.endedTime}">
+                                            
+                                        </p:calendar>
+                                        <h:message for="endTime" id="msgEndTime"
+                                                   infoClass="input-notification success png_bg"
+                                                   warnClass="input-notification attention png_bg"
+                                                   errorClass="input-notification error png_bg"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:commandButton value="Create new"
+                                                         styleClass="button"
+                                                         actionListener="#{manageInterviewBean.add()}"/>
+                                    </td>
+                                    <td>
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" >
+            $('.remove input').removeClass('ui-inputfield');
+            </script>
+        </h:form>
+    </ui:define>
+</ui:composition>

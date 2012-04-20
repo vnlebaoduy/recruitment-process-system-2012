@@ -6,8 +6,8 @@
     <class>rps.entities.Applicant</class>
     <class>rps.entities.Department</class>
     <class>rps.entities.Employee</class>
+    <class>rps.entities.Interview</class>
     <class>rps.entities.Role</class>
-    <class>rps.entities.SchedulingInterview</class>
     <class>rps.entities.Vacancy</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>

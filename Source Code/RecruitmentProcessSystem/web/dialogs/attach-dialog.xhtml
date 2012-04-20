@@ -10,9 +10,10 @@
         widgetVar="dlg"
         modal="true"
         resizable="false"
-        width="960" >
+        width="960"
+        height="650">
 
-        <h:form id="form2">
+        <h:form id="frm-attach">
             <div class="content-box column-right">
                 <div class="content-box-header">
                     <h3>Available Vacancies</h3>
@@ -20,32 +21,45 @@
 
                 <div class="content-box-content">
                     <div class="tab-content default-tab">
-                        <h:dataTable id="availaleVacancies" value="#{applicantMB.listAvailable}" var="vacancy" style="width: 100%">
-                            <h:column>
-                                <p:panel id="pnl" header="#{vacancy.title}" style="margin-bottom: 10px; display: table; width: 100%">
-                                    <div id="vacancy">
-                                        <img alt=""  src="resources/images/other/new.png"/>
-                                        <div id="content">
-                                            <h4>#{vacancy.title}</h4>
-                                            <p>Department: #{vacancy.department.name}</p>
-                                            <p class="number_vac">Hired: #{applicantMB.numberApplicantHired(vacancy.vacancyID)}/#{vacancy.numberRequirement}</p>
+                        <div class="attach-scroll">
+                            <h:dataTable id="availaleVacancies" value="#{attachBean.listAvailable}"
+                                         var="vacancy" style="width: 100%">
+                                <h:column>
+                                    <p:panel id="pnl" header="#{vacancy.title}"
+                                             style="margin-bottom: 10px;">
+                                        <div id="vacancy">
+                                            <table cellpadding="4">
+                                                <tr>
+                                                    <td rowspan="3" style="vertical-align: middle; width: 140px">
+                                                        <img alt=""  src="resources/images/other/job.png"/>
+                                                    </td>
+                                                    <td><h4>#{vacancy.title}</h4></td>
+                                                    <td rowspan="3" style="vertical-align: top; width: 40px">
+                                                <h:commandButton id="attachButton"
+                                                                 image="resources/images/icons/accept.png"
+                                                                 value="Attach"
+                                                                 actionListener="#{attachBean.attachVacancy(vacancy.vacancyID)}">
+                                                    <f:ajax execute="@this" render="@form :frm-applicant:msgAttach"/>
+                                                </h:commandButton>
+                                                </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><p>Department: <strong>#{vacancy.department.name}</strong></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><p>Hired:
+                                                            #{attachBean.numberHired(vacancy.vacancyID)}/
+                                                            #{vacancy.numberRequirement}</p></td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                        <h:commandButton
-                                            id="attachButton"
-                                            image="resources/images/icons/accept.png"
-                                            value="Attach"
-                                            actionListener="#{applicantMB.attachVacancy(vacancy.vacancyID)}"
-                                            >
-                                            <f:ajax execute="@this" render="@form :form1:attach-number"/>
+                                    </p:panel>
 
-                                        </h:commandButton>
-                                    </div>
-                                </p:panel>
-
-                                <p:draggable for="pnl" revert="true"
-                                             handle=".ui-panel-titlebar" stack=".ui-panel"/>
-                            </h:column>
-                        </h:dataTable>
+                                    <p:draggable for="pnl" revert="true"
+                                                 handle=".ui-panel-titlebar" stack=".ui-panel"/>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
                     </div> <!-- End #tab3 -->
                 </div> <!-- End .content-box-content -->
             </div> <!-- End .content-box -->
@@ -57,39 +71,55 @@
 
                 <div class="content-box-content">
                     <div class="tab-content default-tab">
+                        <div class="attach-scroll">
                         <p:fieldset id="selectedVacancies">
                             <p:outputPanel id="dropArea">
                                 <h:outputText value="!!!Drop here!!!"
-                                              rendered="#{empty applicantMB.listDropped}"
+                                              rendered="#{empty attachBean.listDropped}"
                                               style="font-size:24px;" />
                                 <h:dataTable
-                                    value="#{applicantMB.listDropped}"
+                                    value="#{attachBean.listDropped}"
                                     var="vacancy2" style="width: 100%"
-                                    rendered="#{not empty applicantMB.listDropped}">
+                                    rendered="#{not empty attachBean.listDropped}">
                                     <h:column>
-                                        <p:panel id="pnl2" header="#{vacancy2.title}" style="margin-bottom: 10px; display: table; width: 100%">
+                                        <p:panel id="pnl2" header="#{vacancy2.title}"
+                                                 style="margin-bottom: 10px; display: table; width: 100%">
                                             <div id="vacancy">
-                                                <img alt=""  src="resources/images/other/new.png"/>
-                                                <div id="content">
-                                                    <h4>#{vacancy2.title}</h4>
-                                                    <p>Department: #{vacancy2.department.name}</p>
-                                                    <p class="number_vac">Hired: #{applicantMB.numberApplicantHired(vacancy2.vacancyID)}/#{vacancy2.numberRequirement}</p>
-                                                </div>
-                                                <h:commandButton id="detachButton"
-                                                                 image="resources/images/icons/delete.png"
-                                                                 value="Detach"
-                                                                 actionListener="#{applicantMB.detachVacancy(vacancy2.vacancyID)}">
-                                                    <f:ajax execute="@this" render="@form :form1:attach-number"/>
-                                                </h:commandButton>
+                                                <table cellpadding="4">
+                                                    <tr>
+                                                        <td rowspan="3" style="vertical-align: middle; width: 140px">
+                                                            <img alt=""  src="resources/images/other/job.png"/>
+                                                        </td>
+                                                        <td><h4>#{vacancy2.title}</h4></td>
+                                                        <td rowspan="3" style="vertical-align: top; width: 40px">
+
+                                                    <h:commandButton id="detachButton"
+                                                                     image="resources/images/icons/delete.png"
+                                                                     value="Detach"
+                                                                     actionListener="#{attachBean.detachVacancy(vacancy2.vacancyID)}">
+                                                        <f:ajax execute="@this" render="@form :frm-applicant:msgAttach"/>
+                                                    </h:commandButton>
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><p>Department: <strong>#{vacancy2.department.name}</strong></p></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><p>Hired:
+                                                                #{attachBean.numberHired(vacancy2.vacancyID)}/
+                                                                #{vacancy2.numberRequirement}</p></td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </p:panel>
                                     </h:column>
                                 </h:dataTable>
                             </p:outputPanel>
                         </p:fieldset>
+                            </div>
                         <p:droppable for="selectedVacancies" tolerance="touch"
                                      activeStyleClass="ui-state-highlight" datasource="availaleVacancies">
-                            <p:ajax listener="#{applicantMB.onVacancyDrop}" update="dropArea availaleVacancies :form1:attach-number" />
+                            <p:ajax listener="#{attachBean.onVacancyDrop}" update="dropArea availaleVacancies :frm-applicant:msgAttach" />
                         </p:droppable>
                     </div> <!-- End #tab3 -->
                 </div> <!-- End .content-box-content -->

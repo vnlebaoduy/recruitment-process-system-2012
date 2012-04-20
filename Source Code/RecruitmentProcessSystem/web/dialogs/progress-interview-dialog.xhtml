@@ -6,38 +6,25 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <p:dialog id="message2"
-              header="Progress Schedule Dialog"
-              widgetVar="dlg_schedule"
+              header="Progress Interview Dialog"
+              widgetVar="dlg_interview"
               modal="true"
               resizable="false"
               width="960">
-        <h:form id="frm-progress-schedule">
+        <h:form id="frm-progress-interview">
             <div id="combobox">
                 <p class="p-left">
                     <label>Status :</label>
                 <h:selectOneMenu id="cbo-status"
-                                 value="#{scheduleMB.selectedSchedule.status}"
+                                 value="#{myInterviewBean.selectedInterview.status}"
                                  styleClass="text-input medium-input">
                     <f:selectItem itemLabel="Not In Progress" itemValue="0"/>
                     <f:selectItem itemLabel="Selected" itemValue="100" />
                     <f:selectItem itemLabel="Rejected" itemValue="-100" />
-                    <p:ajax process="@this" listener="#{scheduleMB.changeStatus}" update="@form :frm-schedule"/>
-                    <f:param name="id" value="#{scheduleMB.selectedSchedule.scheduleID}"/>
+                    <p:ajax process="@this" listener="#{myInterviewBean.changeStatus}"
+                            update="@form :frm-interview :growl"/>
+                    <f:param name="id" value="#{myInterviewBean.selectedInterview.interviewID}"/>
                 </h:selectOneMenu>
-                </p>
-                <p>
-                    <label>Vacancy :</label>
-                <h:selectOneMenu id="cbo-vacancy"
-                                 value="#{scheduleMB.vacancyID}"
-                                 styleClass="text-input cbo-schedule">
-                    <f:selectItems value="#{scheduleMB.selectedSchedule.applicant.vacancyList}"
-                                   var="vacancy"
-                                   itemLabel="#{vacancy.title}"
-                                   itemValue="#{vacancy.vacancyID}"/>
-                     <f:param name="id" value="#{scheduleMB.selectedSchedule.scheduleID}"/>
-                    <p:ajax process="@this" update="@form"/>
-                </h:selectOneMenu>
-                <h:messages />
                 </p>
             </div>
             <div class="content-box column-left">
@@ -47,63 +34,63 @@
 
                 <div class="content-box-content">
                     <div class="tab-content default-tab v-scroll">
-                        <h:panelGroup rendered="#{not scheduleMB.selectedSchedule.applicant.gender}">
+                        <h:panelGroup rendered="#{not myInterviewBean.selectedInterview.applicant.gender}">
                             <div class="female"/>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{scheduleMB.selectedSchedule.applicant.gender}">
+                        <h:panelGroup rendered="#{myInterviewBean.selectedInterview.applicant.gender}">
                             <div class="male"/>
                         </h:panelGroup>
                         <div class="personal-info">
-                            <h4>#{scheduleMB.selectedSchedule.applicant.firstName}
-                                #{scheduleMB.selectedSchedule.applicant.lastName}
-                                - #{scheduleMB.selectedSchedule.applicant.applicantID}</h4>
+                            <h4>#{myInterviewBean.selectedInterview.applicant.firstName}
+                                #{myInterviewBean.selectedInterview.applicant.lastName}
+                                - #{myInterviewBean.selectedInterview.applicant.applicantID}</h4>
                             <p>
                                 <strong>Gender: </strong>
-                                #{applicantMB.gender(scheduleMB.selectedSchedule.applicant)}
+                                #{applicantBean.gender(myInterviewBean.selectedInterview.applicant)}
                             </p>
                             <p>
                                 <strong>Date Of Birth: </strong>
-                                #{calendarMB.titleFormat(scheduleMB.selectedSchedule.applicant.dob)}
+                                #{calendarMB.titleFormat(myInterviewBean.selectedInterview.applicant.dob)}
                             </p>
                         </div>
                         <div class="contact-info">
                             <p>
                                 <strong>Phone Number: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.phoneNumber}
+                                #{myInterviewBean.selectedInterview.applicant.phoneNumber}
                             </p>
                             <p>
                                 <strong>Email: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.email}
+                                #{myInterviewBean.selectedInterview.applicant.email}
                             </p>
                             <p>
                                 <strong>Address: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.address}
+                                #{myInterviewBean.selectedInterview.applicant.address}
                             </p>
                         </div>
                         <div class="recruitment-info">
                             <p>
                                 <strong>Salary Requirement: </strong>
-                                $ #{scheduleMB.selectedSchedule.applicant.salaryRequirement}
+                                $ #{myInterviewBean.selectedInterview.applicant.salaryRequirement}
                             </p>
                             <p>
                                 <strong>Language: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.language}
+                                #{myInterviewBean.selectedInterview.applicant.language}
                             </p>
                             <p>
                                 <strong>Year Of Experience: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.yearOfExperience}
+                                #{myInterviewBean.selectedInterview.applicant.yearOfExperience}
                             </p>
                             <p>
                                 <strong>Degree: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.degree}
+                                #{myInterviewBean.selectedInterview.applicant.degree}
                             </p>
                             <p>
                                 <strong>Skill: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.skill}
+                                #{myInterviewBean.selectedInterview.applicant.skill}
                             </p>
                             <p>
                                 <strong>Award: </strong>
-                                #{scheduleMB.selectedSchedule.applicant.award}
+                                #{myInterviewBean.selectedInterview.applicant.award}
                             </p>
                         </div>
                     </div> <!-- End #tab3 -->
@@ -117,84 +104,84 @@
 
                     <div class="content-box-content">
                         <div class="tab-content default-tab v-scroll">
-                            <h4 class="vacancy-title">#{scheduleMB.cboVacancy.title} -
-                                #{scheduleMB.cboVacancy.vacancyID}</h4>
+                            <h4 class="vacancy-title">#{myInterviewBean.selectedInterview.vacancy.title} -
+                                #{myInterviewBean.selectedInterview.vacancy.vacancyID}</h4>
                             <div class="block">
                                 <p>
                                     <strong>Department: </strong>
-                                    #{scheduleMB.cboVacancy.department.name}
+                                    #{myInterviewBean.selectedInterview.vacancy.department.name}
                                 </p>
                                 <p>
                                     <strong>Number Requirement: </strong>
-                                    #{scheduleMB.cboVacancy.numberRequirement}
+                                    #{myInterviewBean.selectedInterview.vacancy.numberRequirement}
                                 </p>
                                 <p>
                                     <strong>Position: </strong>
-                                    #{scheduleMB.cboVacancy.position}
+                                    #{myInterviewBean.selectedInterview.vacancy.position}
                                 </p>
                             </div>
                             <div class="block">
                                 <p>
                                     <strong>Working Place: </strong>
-                                    #{scheduleMB.cboVacancy.workingPlace}
+                                    #{myInterviewBean.selectedInterview.vacancy.workingPlace}
                                 </p>
                                 <p>
                                     <strong>Work Type: </strong>
-                                    #{scheduleMB.cboVacancy.workType}
+                                    #{myInterviewBean.selectedInterview.vacancy.workType}
                                 </p>
                                 <p>
                                     <strong>Minimum Salary: </strong>
-                                    $ #{scheduleMB.cboVacancy.minimumSalary}
+                                    $ #{myInterviewBean.selectedInterview.vacancy.minimumSalary}
                                 </p>
                                 <p>
                                     <strong>Maximum Salary: </strong>
-                                    $ #{scheduleMB.cboVacancy.maximumSalary}
+                                    $ #{myInterviewBean.selectedInterview.vacancy.maximumSalary}
                                 </p>
                             </div>
                             <div class="block">
                                 <p>
                                     <strong>Description: </strong>
-                                    #{scheduleMB.cboVacancy.description}
+                                    #{myInterviewBean.selectedInterview.vacancy.description}
                                 </p>
                                 <p>
                                     <strong>Skill Requirement: </strong>
-                                    #{scheduleMB.cboVacancy.skillRequirement}
+                                    #{myInterviewBean.selectedInterview.vacancy.skillRequirement}
                                 </p>
                                 <p>
                                     <strong>Entitlement: </strong>
-                                    #{scheduleMB.cboVacancy.entitlement}
+                                    #{myInterviewBean.selectedInterview.vacancy.entitlement}
                                 </p>
                             </div>
                             <div class="block">
                                 <p>
                                     <strong>Minimum Age: </strong>
-                                    #{scheduleMB.cboVacancy.minimumAge}
+                                    #{myInterviewBean.selectedInterview.vacancy.minimumAge}
                                 </p>
                                 <p>
                                     <strong>Maximum Age: </strong>
-                                    #{scheduleMB.cboVacancy.maximumAge}
+                                    #{myInterviewBean.selectedInterview.vacancy.maximumAge}
                                 </p>
                                 <p>
                                     <strong>Gender: </strong>
-                                    #{scheduleMB.cboVacancy.gender}
+                                    #{myInterviewBean.selectedInterview.vacancy.gender}
                                 </p>
                             </div>
                             <div class="block">
                                 <p>
                                     <strong>Degree: </strong>
-                                    #{scheduleMB.cboVacancy.degree}
+                                    #{myInterviewBean.selectedInterview.vacancy.degree}
                                 </p>
                                 <p>
                                     <strong>Year Of Experience: </strong>
-                                    #{scheduleMB.cboVacancy.yearOfExperience}
+                                    #{myInterviewBean.selectedInterview.vacancy.yearOfExperience}
                                 </p>
                                 <p>
                                     <strong>Probationary Period: </strong>
-                                    #{scheduleMB.cboVacancy.probationaryPeriod}
+                                    #{myInterviewBean.selectedInterview.vacancy.probationaryPeriod}
                                 </p>
                                 <p>
                                     <strong>Deadline: </strong>
-                                    #{calendarMB.dateFormat(scheduleMB.cboVacancy.deadline)}
+                                    #{calendarMB.dateFormat(myInterviewBean.selectedInterview.vacancy.deadline)}
                                 </p>
                             </div>
                         </div> <!-- End #tab3 -->

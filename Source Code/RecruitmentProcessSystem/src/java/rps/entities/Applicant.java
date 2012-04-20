@@ -13,9 +13,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -88,13 +85,8 @@ public class Applicant implements Serializable {
     private String skill;
     @Column(name = "Award")
     private String award;
-    @JoinTable(name = "VacancyOfApplicant", joinColumns = {
-        @JoinColumn(name = "ApplicantID", referencedColumnName = "ApplicantID")}, inverseJoinColumns = {
-        @JoinColumn(name = "VacancyID", referencedColumnName = "VacancyID")})
-    @ManyToMany
-    private List<Vacancy> vacancyList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicant")
-    private List<Schedule> scheduleList;
+    private List<Interview> interviewList;
 
     public Applicant() {
     }
@@ -238,20 +230,12 @@ public class Applicant implements Serializable {
         this.award = award;
     }
 
-    public List<Vacancy> getVacancyList() {
-        return vacancyList;
+    public List<Interview> getInterviewList() {
+        return interviewList;
     }
 
-    public void setVacancyList(List<Vacancy> vacancyList) {
-        this.vacancyList = vacancyList;
-    }
-
-    public List<Schedule> getScheduleList() {
-        return scheduleList;
-    }
-
-    public void setScheduleList(List<Schedule> scheduleList) {
-        this.scheduleList = scheduleList;
+    public void setInterviewList(List<Interview> interviewList) {
+        this.interviewList = interviewList;
     }
 
     @Override
