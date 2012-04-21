@@ -443,17 +443,15 @@ div.article table tfoot td .bulk-actions select {
 }
 
 /***** ADD INTERVIEW *****/
-div#add-interview label{
-    display: inline;
+div#add-interview p select, input{
+    vertical-align: middle;
 }
 
-div#add-interview table td{
-    padding: 5px;
-}
-div#add-interview table td:first-child{
-    width: 100px;
+div#add-interview p select{
+    margin-right: 10px;
 }
 
-div#add-interview table td p{
-    padding: 5px 0px 5px 0px;
+#frm-conflict div.content{
+    border: none;
+    padding: 10px 20px;
 }
