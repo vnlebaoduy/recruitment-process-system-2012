@@ -17,37 +17,37 @@
             <div class="content" style="margin: 0px auto;">
                 <div class="default-tab">
                     <div id="calendar_wrap" class="manage">
-                        <h3>#{manageInterviewBean.msgConflict}</h3>
+                        <h3>#{interviewBean.msgConflict}</h3>
                         <div class="article">
                             <div class="article-left">
                                 <p:commandLink title="#{calendarMB.titleFormat(
-                                                        manageInterviewBean.interview.startedTime)}">
+                                                        interviewBean.interview.startedTime)}">
                                     <div class="cal_day day_red">
                                         <div class="day_heading">
                                             #{calendarMB.dayInWeekFormat(
-                                              manageInterviewBean.interview.startedTime)}</div>
+                                              interviewBean.interview.startedTime)}</div>
                                         <div class="day_count">
                                             <span class="event">
                                                 #{interviewBean.msgEvent(
-                                                  manageInterviewBean.interview.startedTime)}</span>
+                                                  interviewBean.interview.startedTime)}</span>
                                         </div>
                                         <h:panelGroup rendered="#{calendarMB.today(
-                                                                  manageInterviewBean.interview.startedTime)}">
+                                                                  interviewBean.interview.startedTime)}">
                                             <div class="day_number today">
                                                 #{calendarMB.dayFormat(
-                                                  manageInterviewBean.interview.startedTime)}</div>
+                                                  interviewBean.interview.startedTime)}</div>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{!calendarMB.today(
-                                                                  manageInterviewBean.interview.startedTime)}">
+                                                                  interviewBean.interview.startedTime)}">
                                             <div class="day_number">
                                                 #{calendarMB.dayFormat(
-                                                  manageInterviewBean.interview.startedTime)}</div>
+                                                  interviewBean.interview.startedTime)}</div>
                                         </h:panelGroup>
                                     </div>
                                 </p:commandLink>
                             </div>
                             <div class="article-main">
-                                <h:dataTable value="#{manageInterviewBean.listConflict}"
+                                <h:dataTable value="#{interviewBean.listConflict}"
                                              var="interview"
                                              columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col">
                                     <h:column>

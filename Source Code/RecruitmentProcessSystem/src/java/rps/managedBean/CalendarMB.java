@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.DateSelectEvent;
 import rps.business.InterviewService;
 import rps.entities.Interview;
 
@@ -163,6 +165,10 @@ public class CalendarMB implements Serializable {
         return format(obj, "HH:mm");
     }
 
+    public String dateTimeFormat(Object obj) {
+        return format(obj, "MM/dd/yyyy HH:mm");
+    }
+
     private String format(Object obj, String pattern) {
         try {
             Date d = (Date) obj;
@@ -233,9 +239,13 @@ public class CalendarMB implements Serializable {
     public List<Date> getEventDates() {
         try {
             List<Date> dates = new ArrayList<Date>();
-
+            List<Interview> list = new ArrayList<Interview>();
             InterviewService service = new InterviewService();
-            List<Interview> list = service.getInterviews(firstDate, lastDate);
+            if (search) {
+                list = service.getInterviews(getStartTime(), getEndTime(), status);
+            } else {
+                list = service.getInterviews(firstDate, lastDate);
+            }
             for (Interview s : list) {
                 Date current = new Date(Date.parse(dateFormat(s.getStartedTime())));
                 if (!dates.contains(current)) {
@@ -246,11 +256,6 @@ public class CalendarMB implements Serializable {
                 return dates;
             }
         } catch (Exception ex) {
-            FacesMessage message = new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR,
-                    "An error occured",
-                    ex.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null, message);
             ex.printStackTrace();
         }
         return null;
@@ -259,22 +264,105 @@ public class CalendarMB implements Serializable {
 
     public String getMsgInterview() {
         int num = 0;
+        String time = "";
+        String type = "";
         InterviewService service = new InterviewService();
-        num = service.getInterviews(getFirstDate(),
-                getLastDate()).size();
-        String month = monthFullFormat(getFirstDate());
+        if (search) {
+            num = service.getInterviews(getStartTime(), getEndTime(), status).size();
+            time = " from " + dateTimeFormat(getStartTime()) + " to "
+                    + dateTimeFormat(getEndTime());
+        } else {
+            num = service.getInterviews(getFirstDate(), getLastDate()).size();
+            time = " in " + monthFullFormat(getFirstDate());
+        }
         switch (num) {
             case 0:
-                msgInterview = "Have not any an interview in " + month;
+                msgInterview = "Have not any an " + statusValue() + " interview" + time;
                 break;
             case 1:
-                msgInterview = "There are 1 interview in " + month;
+                msgInterview = "There are 1 " + statusValue() + " interview" + time;
                 break;
             default:
-                msgInterview = "There are " + num + " interviews in " + month;
+                msgInterview = "There are " + num + " " + statusValue() + " interviews" + time;
                 break;
         }
-        return msgInterview;
+        return msgInterview.replaceAll("\\b\\s{2,}\\b", " ");
     }
+    // <editor-fold defaultstate="collapsed" desc="SEARCH ON INTERVIEW DATE">
+    private boolean search;
+
+    public boolean isSearch() {
+        return search;
+    }
+
+    public void setSearch(boolean search) {
+        this.search = search;
+    }
+    Date startTime;
+
+    public Date getStartTime() {
+        if (startTime == null) {
+            startTime = getFirstDate();
+        }
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+    Date endTime;
+
+    public Date getEndTime() {
+        if (endTime == null) {
+            endTime = getLastDate();
+        }
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void handleDateStart(DateSelectEvent event) {
+        setStartTime(event.getDate());
+    }
+
+    public void handleDateEnd(DateSelectEvent event) {
+        setEndTime(event.getDate());
+    }
+    private int status = -1;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String statusValue() {
+        String value = "";
+        switch (status) {
+            case 0:
+                value = "not in progress";
+                break;
+            case 100:
+                value = "selected";
+                break;
+            case -100:
+                value = "rejected";
+                break;
+            case 99:
+                value = "postpone";
+                break;
+            case 1:
+                value = "remove";
+                break;
+            default:
+                break;
+        }
+        return value;
+    }
+    // </editor-fold>
     // </editor-fold>    
 }

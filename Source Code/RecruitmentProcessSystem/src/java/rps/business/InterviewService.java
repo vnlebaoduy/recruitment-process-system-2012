@@ -53,11 +53,15 @@ public class InterviewService extends AbstractService {
     public List<Interview> getInterviews(Date date) {
         long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
         Date endedDate = new Date(date.getTime() + interval);
-        return interviewDA.searchInterview(date, endedDate);
+        return interviewDA.searchInterview(date, endedDate, -1);
     }
 
     public List<Interview> getInterviews(Date startedDate, Date endedDate) {
-        return interviewDA.searchInterview(startedDate, endedDate);
+        return interviewDA.searchInterview(startedDate, endedDate, -1);
+    }
+
+    public List<Interview> getInterviews(Date startedDate, Date endedDate, int status) {
+        return interviewDA.searchInterview(startedDate, endedDate, status);
     }
 
     public List<Interview> getInterviews(Employee employee,
@@ -71,8 +75,9 @@ public class InterviewService extends AbstractService {
     }
 
     public List<Interview> getInterviews(Date date, int status) {
-        return interviewDA.findAbsolutely(new String[]{"startedTime", "status"},
-                new Object[]{date, status}, null, null, -1, -1);
+        long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
+        Date endedDate = new Date(date.getTime() + interval);
+        return interviewDA.searchInterview(date, endedDate, status);
     }
 
     public List<Interview> getInterviews(Employee employee, int status) {

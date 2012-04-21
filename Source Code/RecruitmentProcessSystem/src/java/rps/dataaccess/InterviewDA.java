@@ -29,7 +29,8 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
         super(Interview.class, em);
     }
 
-    public FindResult<Interview> searchInterview(Date startedTime, Date endedTime) {
+    public FindResult<Interview> searchInterview(Date startedTime, Date endedTime,
+            int status) {
 
         FindResult<Interview> results;
         CriteriaBuilder cb;
@@ -53,7 +54,9 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
 
         predicates.add(cb.between(root.get("startedTime"),
                 startedTime, endedTime));
-
+        if (status != -1) {
+            predicates.add(cb.equal(root.get("status"), status));
+        }
         predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
         cq.select(root).where(predicate).orderBy(cb.asc(root.get("startedTime")));
         countCq.select(cb.count(root)).where(predicate);
