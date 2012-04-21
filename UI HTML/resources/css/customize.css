@@ -421,16 +421,16 @@ div.article table tfoot td .bulk-actions select {
     width: 30px;
 }
 .col-2{/* TIME */
-    width: 100px;
+       width: 100px;
 }
 .col-3{/* Interviewer */
-    width: 150px;
+       width: 150px;
 }
 .col-4{/* Vacancy */
-    width: 250px;
+       width: 250px;
 }
 .col-5{/* Applicant */
-    width: 150px;
+       width: 150px;
 }
 .app-status-col{
     width: 30px;
@@ -454,4 +454,25 @@ div#add-interview p select{
 #frm-conflict div.content{
     border: none;
     padding: 10px 20px;
+}
+
+/***** SEARCH INTERVIEW *****/
+div#search-interview{
+    border: 1px dotted #CCC;
+    margin-bottom: 10px;
+}
+
+div#search-interview *{
+    display: inline;
+    vertical-align: middle;
+}
+
+div#search-interview fieldset{
+    width: 100%;
+    padding: 10px;
+}
+
+.small-date input[type="text"], select.small-date {
+    margin: 0px 10px;
+    width: 20% !important;
 }
