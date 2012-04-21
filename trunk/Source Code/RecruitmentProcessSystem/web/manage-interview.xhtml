@@ -14,25 +14,81 @@
             <div class="content-box"><!-- Start Content Box -->
                 <div class="content-box-header">
                     <h3>Manage Interviews</h3>
+                    <h:commandButton image="resources/images/icons/search.png"
+                                     title="Search"
+                                     rendered="#{not calendarMB.search}"
+                                     actionListener="#{calendarMB.setSearch(true)}">
+                        <f:ajax execute="@this" render="@form"/>
+                    </h:commandButton>
                     <div class="clear"></div>
                 </div>
 
                 <div class="content-box-content" style="margin: 0px auto;">
                     <div class="default-tab">
                         <div id="calendar_wrap" class="manage">
-                            <div class="title_bar">
-                                <h:commandLink actionListener="#{calendarMB.backMonth}">
-                                    <div class="previous"></div>
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                                <h:commandLink actionListener="#{calendarMB.nextMonth}">
-                                    <div class="next"></div>
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                                <h2 class="month">#{calendarMB.monthYearFormat(calendarMB.date)}</h2>
-                            </div>
+                            <h:panelGroup rendered="#{not calendarMB.search}">
+                                <div class="title_bar">
+                                    <h:commandLink actionListener="#{calendarMB.backMonth}">
+                                        <div class="previous"></div>
+                                        <f:ajax execute="@this" render="@form"/>
+                                    </h:commandLink>
+                                    <h:commandLink actionListener="#{calendarMB.nextMonth}">
+                                        <div class="next"></div>
+                                        <f:ajax execute="@this" render="@form"/>
+                                    </h:commandLink>
+                                    <h2 class="month">#{calendarMB.monthYearFormat(calendarMB.date)}</h2>
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{calendarMB.search}">
+                                <div id="search-interview">
+                                    <fieldset>
+                                        <label>Started Time :</label>
+                                        <p:calendar id="startedTime"
+                                                    styleClass="text-input small-input remove small-date"
+                                                    required="true"
+                                                    requiredMessage="You must select time."
+                                                    value="#{calendarMB.startTime}"
+                                                    pattern="MM/dd/yyyy HH:mm">
+                                            <p:ajax event="dateSelect"
+                                                    listener="#{calendarMB.handleDateStart}"
+                                                    update="@form" />
+                                        </p:calendar>
+
+                                        <label>Ended Time :</label>
+                                        <p:calendar id="endedTime"
+                                                    styleClass="text-input small-input remove small-date"
+                                                    required="true"
+                                                    requiredMessage="You must select time."
+                                                    value="#{calendarMB.endTime}"
+                                                    pattern="MM/dd/yyyy HH:mm">
+                                            <p:ajax event="dateSelect"
+                                                    listener="#{calendarMB.handleDateEnd}"
+                                                    update="@form" />
+                                        </p:calendar>
+
+                                        <label>Status :</label>
+                                        <h:selectOneMenu id="cboStatus"
+                                                         value="#{calendarMB.status}"
+                                                         styleClass="text-input small-input small-date">
+                                            <f:selectItem itemLabel="All interviews"  itemValue="-1"/>
+                                            <f:selectItem itemLabel="Not In Progress" itemValue="0"/>
+                                            <f:selectItem itemLabel="Selected" itemValue="100" />
+                                            <f:selectItem itemLabel="Rejected" itemValue="-100" />
+                                            <f:selectItem itemLabel="Postpone" itemValue="99" />
+                                            <f:selectItem itemLabel="Remove" itemValue="1" />
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:selectOneMenu>
+
+                                        <h:commandButton value="Cancel"
+                                                         actionListener="#{calendarMB.setSearch(false)}"
+                                                         styleClass="schedule button">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandButton>
+                                    </fieldset>
+                                </div>
+                            </h:panelGroup>
                             <h3 class="msg">#{calendarMB.msgInterview}</h3>
-                            <h:panelGroup rendered="#{not empty calendarMB.eventDates}">
+                            <h:panelGroup id="list" rendered="#{not empty calendarMB.eventDates}">
                                 <ui:repeat value="#{calendarMB.eventDates}" var="date">
                                     <div class="article">
                                         <div class="article-left">
@@ -52,7 +108,9 @@
                                             </p:commandLink>
                                         </div>
                                         <div class="article-main">
-                                            <h:panelGroup rendered="#{not empty manageInterviewBean.listInterviews(date)}">
+                                            <h:panelGroup 
+                                                rendered="#{not empty manageInterviewBean.listInterviews(
+                                                            calendarMB.search, date, calendarMB.status)}">
                                                 <h:dataTable value="#{manageInterviewBean.interviews}"
                                                              var="interview"
                                                              columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col,action-col">
@@ -153,6 +211,8 @@
 \n\
 Are you sure to removed this interview?");
                 }
+
+                $('.remove input').removeClass('ui-inputfield');
             </script>
         </h:form>
     </ui:define>

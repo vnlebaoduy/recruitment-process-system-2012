@@ -34,7 +34,7 @@
                                                 styleClass="text-input medium-input remove"
                                                 required="true"
                                                 requiredMessage="You must select date."
-                                                value="#{manageInterviewBean.date}">
+                                                value="#{interviewBean.date}">
                                     </p:calendar>
                                     <h:message for="date" id="msgDate"
                                                infoClass="input-notification success png_bg"
@@ -48,7 +48,7 @@
                                                 styleClass="text-input small-input remove"
                                                 required="true"
                                                 requiredMessage="You must select time."
-                                                value="#{manageInterviewBean.interview.startedTime}">
+                                                value="#{interviewBean.interview.startedTime}">
 
                                     </p:calendar>
                                     <h:message for="startTime" id="msgStartTime"
@@ -63,7 +63,7 @@
                                                 styleClass="text-input small-input remove"
                                                 required="true"
                                                 requiredMessage="You must select time."
-                                                value="#{manageInterviewBean.interview.endedTime}">
+                                                value="#{interviewBean.interview.endedTime}">
 
                                     </p:calendar>
                                     <h:message for="endTime" id="msgEndTime"
@@ -74,7 +74,7 @@
                                 <p>
                                     <h:commandButton value="Create new"
                                                      styleClass="button"
-                                                     action="#{manageInterviewBean.add()}">
+                                                     action="#{interviewBean.add()}">
 
                                     </h:commandButton>
                                 </p>
@@ -83,9 +83,9 @@
                                 <p>
                                     <label>Interviewer</label>
                                     <h:selectOneMenu id="cboInterviewer"
-                                                     value="#{manageInterviewBean.employeeID}"
+                                                     value="#{interviewBean.employeeID}"
                                                      styleClass="text-input medium-input">
-                                        <f:selectItems value="#{manageInterviewBean.interviewers}"
+                                        <f:selectItems value="#{interviewBean.interviewers}"
                                                        var="employee"
                                                        itemLabel="#{employee.firstName} #{employee.lastName}"
                                                        itemValue="#{employee.employeeID}"/>
@@ -93,12 +93,12 @@
                                     <h:commandButton image="resources/images/icons/calendar.png"
                                                      title="View schedules"
                                                      onclick="dlg.show();"
-                                                     rendered="#{manageInterviewBean.iConflict}">
+                                                     rendered="#{interviewBean.iConflict}">
                                         <f:ajax execute="@this"/>
                                     </h:commandButton>
 
                                 </p>
-                                <h:panelGroup rendered="#{manageInterviewBean.iConflict}">
+                                <h:panelGroup rendered="#{interviewBean.iConflict}">
                                     <p>
                                         <h:message for="cboInterviewer" id="msgInterviewer"
                                                    infoClass="input-notification success png_bg"
@@ -109,10 +109,10 @@
                                 <p>
                                     <label>Applicant</label>
                                     <h:selectOneMenu id="cboApplicant"
-                                                     value="#{manageInterviewBean.applicantID}"
+                                                     value="#{interviewBean.applicantID}"
                                                      styleClass="text-input medium-input"
-                                                     rendered="#{not empty manageInterviewBean.applicantsNotScheduled}">
-                                        <f:selectItems value="#{manageInterviewBean.applicantsNotScheduled}"
+                                                     rendered="#{not empty interviewBean.applicantsNotScheduled}">
+                                        <f:selectItems value="#{interviewBean.applicantsNotScheduled}"
                                                        var="applicant"
                                                        itemLabel="#{applicant.firstName} #{applicant.lastName}"
                                                        itemValue="#{applicant.applicantID}"/>
@@ -120,18 +120,18 @@
                                     <h:commandButton image="resources/images/icons/calendar.png"
                                                      title="View schedules"
                                                      onclick="dlg.show();"
-                                                     rendered="#{manageInterviewBean.aConflict}">
+                                                     rendered="#{interviewBean.aConflict}">
                                         <f:ajax execute="@this"/>
                                     </h:commandButton>
                                 </p>
-                                <h:panelGroup rendered="#{empty manageInterviewBean.applicantsNotScheduled}">
+                                <h:panelGroup rendered="#{empty interviewBean.applicantsNotScheduled}">
                                     <p>Have not an applicant register interview.
                                         <a href="applicant.xhtml">Create new</a>
                                         or <a href="attach.xhtml">attach vacancy</a> for an applicant.
                                     </p>
 
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{manageInterviewBean.aConflict}">
+                                <h:panelGroup rendered="#{interviewBean.aConflict}">
                                     <p>
                                         <h:message for="cboApplicant" id="msgApplicant"
                                                    infoClass="input-notification success png_bg"
@@ -142,10 +142,10 @@
                                 <p>
                                     <label>Vacancy</label>
                                     <h:selectOneMenu id="cboVacancy"
-                                                     value="#{manageInterviewBean.vacancyID}"
+                                                     value="#{interviewBean.vacancyID}"
                                                      styleClass="text-input medium-input"
-                                                     rendered="#{not empty manageInterviewBean.vacancies}">
-                                        <f:selectItems value="#{manageInterviewBean.vacancies}"
+                                                     rendered="#{not empty interviewBean.vacancies}">
+                                        <f:selectItems value="#{interviewBean.vacancies}"
                                                        var="vacancy"
                                                        itemLabel="#{vacancy.title}"
                                                        itemValue="#{vacancy.vacancyID}"/>
@@ -155,7 +155,7 @@
                                                warnClass="input-notification attention png_bg"
                                                errorClass="input-notification error png_bg"/>
                                 </p>
-                                <h:panelGroup rendered="#{empty manageInterviewBean.vacancies}">
+                                <h:panelGroup rendered="#{empty interviewBean.vacancies}">
                                     <p>Have not a vacancy attached.</p>
                                 </h:panelGroup>
                             </fieldset>
