@@ -212,7 +212,7 @@ public class CalendarMB implements Serializable {
         }
         return true;
     }
-    // <editor-fold defaultstate="collapsed" desc="MANAGE Interview">
+    // <editor-fold defaultstate="collapsed" desc="MANAGE INTERVIEW">
     private Date firstDate;
     private Date lastDate;
 
@@ -276,5 +276,5 @@ public class CalendarMB implements Serializable {
         }
         return msgInterview;
     }
-    // </editor-fold>
+    // </editor-fold>    
 }

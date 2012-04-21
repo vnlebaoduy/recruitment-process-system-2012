@@ -50,55 +50,24 @@ public class InterviewService extends AbstractService {
         return interview;
     }
 
-    public String checkHour(Date startTime, Date endTime, String emplID, String applID) {
-        String flag = "";
-        List<Interview> lstInterview = new ArrayList<Interview>();
-        Interview entity;
-        lstInterview = interviewDA.findAll();
-        Date timeNow = new Date();
-        if (startTime.after(endTime)) {
-            flag = "Thời gian bắt đầu phải trước thời gian kết thúc phỏng vấn";
-        }
-        if (startTime.before(timeNow) || endTime.before(timeNow)) {
-            flag = "Thời gian phỏng vấn không thể trước hoặc bằng với thời gian hiện tại";
-        }
-        if (!(startTime.getDay() == endTime.getDay())) {
-            flag = "Thời gian phỏng vấn phải trong cùng 1 ngày";
-        }
-        for (int count = 0; count < lstInterview.size(); count++) {
-            entity = lstInterview.get(count);
-            if ((emplID.equals(entity.getEmployee().getEmployeeID()) && applID.equals(entity.getApplicant().getApplicantID())) || (emplID.equals(entity.getEmployee().getEmployeeID())) || (applID.equals(entity.getApplicant().getApplicantID()))) {
-                if (startTime.after(entity.getStartedTime()) && startTime.before(entity.getEndedTime())) {
-                    flag = "Employee hoặc Vacancy đã được lên lịch trùng với thời gian bắt đầu này";
-                    break;
-                }
-                if (startTime.after(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
-                    flag = "Employee hoặc Vacancy đã được lên lịch trong khoảng thời gian bắt đầu và kết thúc này";
-                    break;
-                }
-                if (startTime.before(entity.getStartedTime()) && endTime.before(entity.getEndedTime())) {
-                    flag = "Employee hoặc Vacancy đã được lên lịch trong khoảng thời gian bắt đầu và kết thúc này";
-                    break;
-                }
-            }
-        }
-
-        return flag;
-    }
-
     public List<Interview> getInterviews(Date date) {
         long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
         Date endedDate = new Date(date.getTime() + interval);
-        return interviewDA.searchInterview(null, date, endedDate);
+        return interviewDA.searchInterview(date, endedDate);
     }
 
     public List<Interview> getInterviews(Date startedDate, Date endedDate) {
-        return interviewDA.searchInterview(null, startedDate, endedDate);
+        return interviewDA.searchInterview(startedDate, endedDate);
     }
 
     public List<Interview> getInterviews(Employee employee,
             Date startedDate, Date endedDate) {
-        return interviewDA.searchInterview(employee, startedDate, endedDate);
+        return interviewDA.searchInterview(employee, null, startedDate, endedDate);
+    }
+
+    public List<Interview> getInterviews(Applicant applicant,
+            Date startedDate, Date endedDate) {
+        return interviewDA.searchInterview(null, applicant, startedDate, endedDate);
     }
 
     public List<Interview> getInterviews(Date date, int status) {
@@ -109,6 +78,18 @@ public class InterviewService extends AbstractService {
     public List<Interview> getInterviews(Employee employee, int status) {
         return interviewDA.findAbsolutely(new String[]{"employee", "status"},
                 new Object[]{employee, status}, null, null, -1, -1);
+    }
+
+    public Interview getInterviews(Applicant applicant, Vacancy vacancy,
+            int status, int aVStatus) {
+        List<Interview> list = interviewDA.findAbsolutely(
+                new String[]{"applicant", "vacancy", "status", "aVStatus"},
+                new Object[]{applicant, vacancy, status, aVStatus},
+                null, null, -1, -1);
+        if (list != null && list.size() == 1) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public List<Interview> getCurrentInterviews(Employee employee) {
@@ -126,14 +107,29 @@ public class InterviewService extends AbstractService {
     public List<Applicant> getApplicantsByAVStatus(int avStatus) {
         List<Interview> interviews = getInterviewsByAVStatus(avStatus);
         List<Applicant> applicants = new ArrayList<Applicant>();
-        for(Interview interview : interviews){
-            applicants.add(interview.getApplicant());
+        for (Interview interview : interviews) {
+            if (!applicants.contains(interview.getApplicant())) {
+                applicants.add(interview.getApplicant());
+            }
         }
         return applicants;
     }
 
     private List<Interview> getInterviewsByAVStatus(int avStatus) {
         return interviewDA.findAbsolutely("aVStatus", avStatus);
+    }
+
+    public List<Vacancy> getVacancies(Applicant applicant) {
+        List<Vacancy> vacancies = new ArrayList<Vacancy>();
+        List<Interview> interviews = interviewDA.findAbsolutely(
+                new String[]{"applicant", "aVStatus"}, new Object[]{applicant, 0},
+                null, null, -1, -1);
+        if (!interviews.isEmpty()) {
+            for (Interview interview : interviews) {
+                vacancies.add(interview.getVacancy());
+            }
+        }
+        return vacancies;
     }
 
     public Interview updateInterview(String id, Employee employee, Vacancy vacancy,
