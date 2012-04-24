@@ -9,9 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import rps.business.ApplicantService;
 import rps.business.EmployeeService;
@@ -27,7 +28,7 @@ import rps.entities.Vacancy;
  * @author user
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class InterviewBean {
 
     private InterviewService interviewService;
@@ -312,6 +313,11 @@ public class InterviewBean {
                             content,
                             content);
                     FacesContext.getCurrentInstance().addMessage("frm-add-interview:cboInterviewer", message);
+                    message = new FacesMessage(
+                            FacesMessage.SEVERITY_WARN,
+                            "WARNING",
+                            "Time has been conflicted");
+                    FacesContext.getCurrentInstance().addMessage(null, message);
                     return false;
                 } else if (applicantValue != null) {
                     results = interviewService.getInterviews(
@@ -327,6 +333,11 @@ public class InterviewBean {
                                 content,
                                 content);
                         FacesContext.getCurrentInstance().addMessage("frm-add-interview:cboApplicant", message);
+                        message = new FacesMessage(
+                                FacesMessage.SEVERITY_WARN,
+                                "WARNING",
+                                "Time has been conflicted");
+                        FacesContext.getCurrentInstance().addMessage(null, message);
                         return false;
                     }
                 }
@@ -392,6 +403,20 @@ public class InterviewBean {
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DISPLAY CONFLICT">
+
+    public void showConflictDialog() {
+        Map<String, Object> params =
+                FacesContext.getCurrentInstance().getViewRoot().getViewMap();
+        ConflictTimeBean bean = (ConflictTimeBean) params.get("conflictTimeBean");
+        if (bean != null) {
+            bean.setMsgConflict(getMsgConflict());
+            bean.setInterview(interview);
+            bean.setListConflict(listConflict);
+            listConflict = null;
+            aConflict = false;
+            iConflict = false;
+        }
+    }
     private String msgConflict;
 
     public String getMsgConflict() {

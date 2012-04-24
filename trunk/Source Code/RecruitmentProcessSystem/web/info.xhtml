@@ -25,17 +25,21 @@
                         </p>
                         <ui:repeat value="#{myInterviewBean.myCurrentInterviews}" var="interview">
                             <div class="border">
-                                <div class="event">
+                                <div class="event padding-b-t">
                                     <div class="title">
                                         <h3>#{calendarMB.titleFormat(interview.startedTime)}</h3>
                                         <h:commandButton image="resources/images/icons/info.png"
                                                          actionListener="#{myInterviewBean.progressStatus}"
-                                                         onclick="dlg_interview.show();">
+                                                         onclick="dlg_interview.show();"
+                                                         title="Information">
                                             <f:param name="edit" value="#{interview.interviewID}" />
                                             <f:ajax execute="@this" render=":frm-progress-interview"/>
                                         </h:commandButton>
-                                        <h:outputLink value="#">
-                                            <h:commandButton image="resources/images/icons/clock.png"/>
+                                        <h:outputLink value="processing-interview.xhtml">
+                                            <h:commandButton image="resources/images/icons/clock.png"
+                                                             title="Change time"/>
+                                            <f:param name="id" value="#{interview.interviewID}"/>
+                                            <f:param name="type" value="time"/>
                                         </h:outputLink>
                                     </div>
                                     <div class="event_body">

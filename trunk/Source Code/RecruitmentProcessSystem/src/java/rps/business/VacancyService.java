@@ -86,12 +86,34 @@ public class VacancyService extends AbstractService {
         return vacancyDA.findAbsolutely("status", 0);
     }
 
+    public List<Vacancy> getAvailableVacancies(Applicant applicant) {
+        List<Vacancy> listAttached = getAttachedVacancies(applicant);
+        List<Vacancy> listTotal = vacancyDA.findAbsolutely("status", 0);
+        List<Vacancy> listAvailable = new ArrayList<Vacancy>();
+        if (listAttached == null || listAttached.isEmpty()) {
+            return listTotal;
+        }
+        for (Vacancy vacancy : listTotal) {
+            if (!listAttached.contains(vacancy)) {
+                listAvailable.add(vacancy);
+            }
+        }
+        return listAvailable;
+    }
+
+    public List<Vacancy> getAttachedVacancies(Applicant applicant) {
+        InterviewService service = new InterviewService();
+        List<Vacancy> listAttached = service.getVacancies(applicant, 99);
+        return listAttached;
+    }
+
     public List<Applicant> getApplicantHired(String vacancyID) {
         List<Applicant> list = new ArrayList<Applicant>();
         Vacancy vacancy = vacancyDA.find(vacancyID);
         if (vacancy != null && !vacancy.getInterviewList().isEmpty()) {
             for (Interview interview : vacancy.getInterviewList()) {
-                if (interview.getApplicant().getStatus() == 1) {//Applicant hired - status = 1
+                if (interview.getAVStatus() == 100
+                        && interview.getApplicant().getStatus() == 1) {//Applicant hired - status = 1
                     list.add(interview.getApplicant());
                 }
             }

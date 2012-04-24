@@ -36,10 +36,11 @@ public class ApplicantService extends AbstractService {
         applicantDA.create(applicant);
         return applicant;
     }
-public Applicant updateApplicant(String id, String firstName, String lastName,
-        boolean gender, Date dob, String phone, String email, String address,
-        Double salary, String language, int year, String degree, String skill,
-        String award, List<Interview> interviews, Date createdDate, int status) {
+
+    public Applicant updateApplicant(String id, String firstName, String lastName,
+            boolean gender, Date dob, String phone, String email, String address,
+            Double salary, String language, int year, String degree, String skill,
+            String award, List<Interview> interviews, Date createdDate, int status) {
 
         Applicant applicant = setAttributes(id, firstName, lastName, gender,
                 dob, phone, email, address, salary, language, year, degree,
@@ -73,6 +74,7 @@ public Applicant updateApplicant(String id, String firstName, String lastName,
         applicant.setCreatedDate(createdDate);
         return applicant;
     }
+
     private String generateID() {
         FindResult<Applicant> applicants = applicantDA.findAbsolutely(null, null, new String[]{"applicantID"}, new String[]{"DESC"}, 0, 1);
         String newID = "A";
@@ -124,6 +126,11 @@ public Applicant updateApplicant(String id, String firstName, String lastName,
 //
     public List<Applicant> getApplicantByStatus(int status) {
         return applicantDA.findAbsolutely("status", status);
+    }
+
+    public List<Applicant> getApplicantsToAttach() {
+        return applicantDA.findRelatively(new String[]{"status", "status"},
+                new Object[]{99, 0}, null, null, -1, -1);
     }
 
     public List<Interview> attachVacancies(Applicant applicant, List<Vacancy> list) {

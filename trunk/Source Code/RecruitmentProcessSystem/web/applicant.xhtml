@@ -9,8 +9,10 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
-        <p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"/>
-        <ui:include src="dialogs/attach-dialog.xhtml"/>
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+            <ui:include src="dialogs/attach-dialog.xhtml"/>
+        </h:panelGroup>
         <h:form id="frm-applicant">
             <div class="content-box column-left">
                 <div class="content-box-header">
@@ -51,8 +53,8 @@
                             <p>
                                 <label>Gender</label>
                                 <h:selectOneMenu id="gender"
-                                                  value="#{applicantBean.applicant.gender}"
-                                                  styleClass="text-input medium-input">
+                                                 value="#{applicantBean.applicant.gender}"
+                                                 styleClass="text-input medium-input">
                                     <f:selectItem itemLabel="Male" itemValue="true"/>
                                     <f:selectItem itemLabel="Female" itemValue="false" />
                                 </h:selectOneMenu>
@@ -187,10 +189,13 @@
                                                  styleClass="text-input medium-input"
                                                  cols="80" rows="5" id="txtLanguage"/>
                             </p>
-                            <p>
-                                <p:commandLink oncomplete="dlg.show();" value="Attach vacancy to new applicant"/>
-                                <small><h:outputText id="msgAttach" value="#{attachBean.msgAttached}"/></small>
-                            </p>
+                            <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+                                <p>
+                                    <p:commandLink oncomplete="dlg.show();" 
+                                                   value="Attach vacancy to new applicant"/>
+                                    <small><h:outputText id="msgAttach" value="#{attachBean.msgAttached}"/></small>
+                                </p>
+                            </h:panelGroup>
                         </fieldset>
                         <fieldset class="column-right">
                             <p>
@@ -218,7 +223,14 @@
             </div>
 
             <p>
-                <h:commandButton value="Create new" styleClass="button" actionListener="#{applicantBean.add}"/>
+                <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+                    <h:commandButton value="Create new" styleClass="button" actionListener="#{applicantBean.add}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty applicantBean.applicant.applicantID}">
+                    <h:commandButton value="Save changes" styleClass="button" action="#{applicantBean.edit}">
+                        <f:param name="id" value="#{param.id}"/>
+                    </h:commandButton>
+                </h:panelGroup>
             </p>
         </h:form>        
         <script type="text/javascript" >

@@ -10,163 +10,21 @@
 
     <ui:define name="content">
         <p:growl id="growl" showDetail="true" globalOnly="true"/>
-        <ui:include src="dialogs/conflict-time-dialog.xhtml"/>
         <h:form id="frm-add-interview">
-            <div class="content-box"><!-- Start Content Box -->
-                <div class="content-box-header">
-                    <h3>Schedule interview</h3>
-                    <div class="clear"></div>
-                </div>
+            <h:panelGroup rendered="#{empty param.id}">
+                <p>
+                    <h:commandButton id="btnNew" styleClass="button" value="Create new" action="#{vacancyMB.insertVacancy}">
 
-                <div class="content-box-content">
-                    <div class="default-tab">
-                        <div id="add-interview">
-                            <fieldset class="column-left">
-                                <h4>Introduction by Admin</h4>
-                                <p>
-                                    When you schedule for a new interview, you need to enter the interview's information.
-                                    This information will be sent for interviewers. You must choose the date when this interview
-                                    will be held with start time and end time, the interviewer, applicant and vacancy must be selected.
-                                </p>
-                                <p>
-                                    <label>Interview Date</label>
-                                    <p:calendar id="date"
-                                                styleClass="text-input medium-input remove"
-                                                required="true"
-                                                requiredMessage="You must select date."
-                                                value="#{manageInterviewBean.date}">
-                                    </p:calendar>
-                                    <h:message for="date" id="msgDate"
-                                               infoClass="input-notification success png_bg"
-                                               warnClass="input-notification attention png_bg"
-                                               errorClass="input-notification error png_bg"/>
-                                </p>
-                                <p>
-                                    <label>Time Started</label>
-                                    <p:calendar id="startTime"
-                                                pattern="HH:mm" timeOnly="true"
-                                                styleClass="text-input small-input remove"
-                                                required="true"
-                                                requiredMessage="You must select time."
-                                                value="#{manageInterviewBean.interview.startedTime}">
-
-                                    </p:calendar>
-                                    <h:message for="startTime" id="msgStartTime"
-                                               infoClass="input-notification success png_bg"
-                                               warnClass="input-notification attention png_bg"
-                                               errorClass="input-notification error png_bg"/>
-                                </p>
-                                <p>
-                                    <label>Time Ended</label>
-                                    <p:calendar id="endTime"
-                                                pattern="HH:mm" timeOnly="true"
-                                                styleClass="text-input small-input remove"
-                                                required="true"
-                                                requiredMessage="You must select time."
-                                                value="#{manageInterviewBean.interview.endedTime}">
-
-                                    </p:calendar>
-                                    <h:message for="endTime" id="msgEndTime"
-                                               infoClass="input-notification success png_bg"
-                                               warnClass="input-notification attention png_bg"
-                                               errorClass="input-notification error png_bg"/>
-                                </p>
-                                <p>
-                                    <h:commandButton value="Create new"
-                                                     styleClass="button"
-                                                     action="#{manageInterviewBean.add()}">
-
-                                    </h:commandButton>
-                                </p>
-                            </fieldset>
-                            <fieldset class="column-right">
-                                <p>
-                                    <label>Interviewer</label>
-                                    <h:selectOneMenu id="cboInterviewer"
-                                                     value="#{manageInterviewBean.employeeID}"
-                                                     styleClass="text-input medium-input">
-                                        <f:selectItems value="#{manageInterviewBean.interviewers}"
-                                                       var="employee"
-                                                       itemLabel="#{employee.firstName} #{employee.lastName}"
-                                                       itemValue="#{employee.employeeID}"/>
-                                    </h:selectOneMenu>
-                                    <h:commandButton image="resources/images/icons/calendar.png"
-                                                     title="View schedules"
-                                                     onclick="dlg.show();"
-                                                     rendered="#{manageInterviewBean.iConflict}">
-                                        <f:ajax execute="@this"/>
-                                    </h:commandButton>
-
-                                </p>
-                                <h:panelGroup rendered="#{manageInterviewBean.iConflict}">
-                                    <p>
-                                        <h:message for="cboInterviewer" id="msgInterviewer"
-                                                   infoClass="input-notification success png_bg"
-                                                   warnClass="input-notification attention png_bg"
-                                                   errorClass="input-notification error png_bg"/>
-                                    </p>
-                                </h:panelGroup>
-                                <p>
-                                    <label>Applicant</label>
-                                    <h:selectOneMenu id="cboApplicant"
-                                                     value="#{manageInterviewBean.applicantID}"
-                                                     styleClass="text-input medium-input"
-                                                     rendered="#{not empty manageInterviewBean.applicantsNotScheduled}">
-                                        <f:selectItems value="#{manageInterviewBean.applicantsNotScheduled}"
-                                                       var="applicant"
-                                                       itemLabel="#{applicant.firstName} #{applicant.lastName}"
-                                                       itemValue="#{applicant.applicantID}"/>
-                                    </h:selectOneMenu>
-                                    <h:commandButton image="resources/images/icons/calendar.png"
-                                                     title="View schedules"
-                                                     onclick="dlg.show();"
-                                                     rendered="#{manageInterviewBean.aConflict}">
-                                        <f:ajax execute="@this"/>
-                                    </h:commandButton>
-                                </p>
-                                <h:panelGroup rendered="#{empty manageInterviewBean.applicantsNotScheduled}">
-                                    <p>Have not an applicant register interview.
-                                        <a href="applicant.xhtml">Create new</a>
-                                        or <a href="attach.xhtml">attach vacancy</a> for an applicant.
-                                    </p>
-
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{manageInterviewBean.aConflict}">
-                                    <p>
-                                        <h:message for="cboApplicant" id="msgApplicant"
-                                                   infoClass="input-notification success png_bg"
-                                                   warnClass="input-notification attention png_bg"
-                                                   errorClass="input-notification error png_bg"/>
-                                    </p>
-                                </h:panelGroup>
-                                <p>
-                                    <label>Vacancy</label>
-                                    <h:selectOneMenu id="cboVacancy"
-                                                     value="#{manageInterviewBean.vacancyID}"
-                                                     styleClass="text-input medium-input"
-                                                     rendered="#{not empty manageInterviewBean.vacancies}">
-                                        <f:selectItems value="#{manageInterviewBean.vacancies}"
-                                                       var="vacancy"
-                                                       itemLabel="#{vacancy.title}"
-                                                       itemValue="#{vacancy.vacancyID}"/>
-                                    </h:selectOneMenu>
-                                    <h:message for="cboVacancy" id="msgVacancy"
-                                               infoClass="input-notification success png_bg"
-                                               warnClass="input-notification attention png_bg"
-                                               errorClass="input-notification error png_bg"/>
-                                </p>
-                                <h:panelGroup rendered="#{empty manageInterviewBean.vacancies}">
-                                    <p>Have not a vacancy attached.</p>
-                                </h:panelGroup>
-                            </fieldset>
-                        </div>
-                        <div class="clear"></div><!-- End .clear -->
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript" >
-            $('.remove input').removeClass('ui-inputfield');
-            </script>
+                    </h:commandButton>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty param.id}">
+                <p>
+                    <h:commandButton id="btnSave" styleClass="button" value="Save changes" action="#{vacancyMB.editVacancy}">
+                        <f:param name="id" value="#{param.id}"/>
+                    </h:commandButton>
+                </p>
+            </h:panelGroup>
         </h:form>
     </ui:define>
 

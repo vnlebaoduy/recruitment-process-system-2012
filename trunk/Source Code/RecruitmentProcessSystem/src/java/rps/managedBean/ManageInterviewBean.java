@@ -11,8 +11,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.event.DateSelectEvent;
+import rps.business.ApplicantService;
 import rps.business.InterviewService;
+import rps.entities.Applicant;
 import rps.entities.Interview;
 
 /**
@@ -101,7 +102,71 @@ public class ManageInterviewBean {
         }
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="SEARCH ON INTERVIEW DATE">
+    // <editor-fold defaultstate="collapsed" desc="REVIEW INTERVIEW">
+    private Interview reviewInterview;
+
+    public Interview getReviewInterview() {
+        if (reviewInterview == null) {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String id = params.get("id");
+            reviewInterview = interviewService.getInterview(id);
+        }
+        return reviewInterview;
+    }
+
+    public void review(String id) {
+        reviewInterview = interviewService.getInterview(id);
+    }
+
+    public void changeStatus() {
+        try {
+            editInterview(reviewInterview);
+            ApplicantService service = new ApplicantService();
+            Applicant applicant = reviewInterview.getApplicant();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesMessage message = null;
+            switch (reviewInterview.getAVStatus()) {
+                case 99:
+                    applicant.setStatus(99);
+                    break;
+                case 1:
+                    applicant.setStatus(1);
+                    message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "INFORMATION", "This applicant's interview is not required");
+                    break;
+                case 100:
+                    applicant.setStatus(1);
+                    message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "INFORMATION", "This applicant will be hired");
+                    break;
+                case -100:
+                    applicant.setStatus(0);
+                    message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+                            "WARNING", "This applicant will be rejected.");
+                    break;
+                default:
+                    break;
+            }
+            interviewService.reviewInterview(reviewInterview);
+            service.beginTransaction();
+            service.updateApplicant(applicant.getApplicantID(),
+                    applicant.getFirstName(), applicant.getLastName(),
+                    applicant.getGender(), applicant.getDob(),
+                    applicant.getPhoneNumber(), applicant.getEmail(),
+                    applicant.getAddress(), applicant.getSalaryRequirement(),
+                    applicant.getLanguage(), applicant.getYearOfExperience(),
+                    applicant.getDegree(), applicant.getSkill(),
+                    applicant.getAward(), applicant.getInterviewList(),
+                    applicant.getCreatedDate(), applicant.getStatus());
+            service.commitTransaction();
+            if (message != null) {
+                facesContext.addMessage(null, message);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     // </editor-fold>
     // </editor-fold>
 }

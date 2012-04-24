@@ -8,11 +8,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.DragDropEvent;
+import rps.business.ApplicantService;
+import rps.business.InterviewService;
 import rps.business.VacancyService;
+import rps.entities.Applicant;
+import rps.entities.Interview;
 import rps.entities.Vacancy;
 
 /**
@@ -24,10 +30,14 @@ import rps.entities.Vacancy;
 public class AttachBean implements Serializable {
 
     private VacancyService vacancyService;
+    private ApplicantService applicantService;
+    private InterviewService interviewService;
 
     /** Creates a new instance of AttachBean */
     public AttachBean() {
         vacancyService = new VacancyService();
+        interviewService = new InterviewService();
+        applicantService = new ApplicantService();
     }
     // <editor-fold defaultstate="collapsed" desc="applicant.xhtml | attach-dialog.xhtml">
     // <editor-fold defaultstate="collapsed" desc="ATTACH VACANCY">
@@ -53,8 +63,23 @@ public class AttachBean implements Serializable {
 
     public List<Vacancy> getListAvailable() {
         try {
-            if (listAvailable == null && listDropped == null) {
+            if (listDropped == null) {
                 listAvailable = vacancyService.getAvailableVacancies();
+            } else {
+                if (getApplicantID() != null && !getApplicantID().equals("")) {
+                    try {
+                        Applicant applicant = applicantService.getApplicant(getApplicantID());
+                        if (applicant != null) {
+                            listAvailable = vacancyService.getAvailableVacancies(applicant);
+                        }
+                    } catch (Exception ex) {
+                        FacesMessage message = new FacesMessage(
+                                FacesMessage.SEVERITY_WARN,
+                                "WARNING",
+                                "Vacancies not found!");
+                        FacesContext.getCurrentInstance().addMessage(null, message);
+                    }
+                }
             }
             return listAvailable;
         } catch (Exception ex) {
@@ -64,8 +89,19 @@ public class AttachBean implements Serializable {
     }
 
     public List<Vacancy> getListDropped() {
-        if (listDropped == null) {
-            listDropped = new ArrayList<Vacancy>();
+        if (getApplicantID() != null && !getApplicantID().equals("")) {
+            try {
+                Applicant applicant = applicantService.getApplicant(getApplicantID());
+                if (applicant != null) {
+                    listDropped = vacancyService.getAttachedVacancies(applicant);
+                }
+            } catch (Exception ex) {
+                FacesMessage message = new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "WARNING",
+                        "Vacancies not found!");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+            }
         }
         return listDropped;
     }
@@ -120,5 +156,49 @@ public class AttachBean implements Serializable {
         }
     }
     // </editor-fold>
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="attach.xhtml">
+    public List<Applicant> applicants;
+
+    public List<Applicant> getApplicants() {
+        if (applicants == null) {
+            applicants = applicantService.getApplicantsToAttach();
+        }
+        return applicants;
+    }
+    private String applicantID;
+
+    public String getApplicantID() {
+        if (applicantID == null) {
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String paramAID = request.getParameter("id");
+            if (paramAID != null && !paramAID.equals("")) {
+                applicantID = paramAID;
+            } else {
+                if (getApplicants() != null && !getApplicants().isEmpty()) {
+                    applicantID = getApplicants().get(0).getApplicantID();
+                }
+            }
+        }
+        return applicantID;
+    }
+
+    public void setApplicantID(String applicantID) {
+        this.applicantID = applicantID;
+    }
+
+    public boolean scheduled(String vID) {
+        try {
+            Applicant applicant = applicantService.getApplicant(getApplicantID());
+            Vacancy vacancy = vacancyService.getDetailVacancy(vID);
+            Interview interview = interviewService.getInterviews(applicant, vacancy);
+            if(interview.getAVStatus()==99){
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
     // </editor-fold>
 }
