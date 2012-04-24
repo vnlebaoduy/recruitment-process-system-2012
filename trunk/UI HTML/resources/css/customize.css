@@ -225,8 +225,13 @@ div.border{
     border-top: 1px dotted #CCC;
 }
 div.event{
-    padding: 15px 0px 15px 0px;
     position:relative;
+}
+div.padding-b-t{
+    padding: 15px 0px 15px 0px;
+}
+div.padding-b{
+    padding-bottom: 15px;
 }
 div.other{
     filter:alpha(opacity=50);
@@ -427,13 +432,14 @@ div.article table tfoot td .bulk-actions select {
        width: 150px;
 }
 .col-4{/* Vacancy */
-       width: 250px;
+       width: 200px;
 }
 .col-5{/* Applicant */
        width: 150px;
 }
 .app-status-col{
     width: 30px;
+    text-align: center;
 }
 .action-col{
     text-align: center;
@@ -475,4 +481,19 @@ div#search-interview fieldset{
 .small-date input[type="text"], select.small-date {
     margin: 0px 10px;
     width: 20% !important;
+}
+
+/***** EDIT INTERVIEW *****/
+
+fieldset#edit-interview h4{
+    line-height: 1.6em;
+}
+
+div.border p label span{
+    font-size: 16px;
+    color: #222;
+    margin-right: 10px;
+}
+fieldset#edit-interview label.conflict{
+    padding: 0px;
 }
