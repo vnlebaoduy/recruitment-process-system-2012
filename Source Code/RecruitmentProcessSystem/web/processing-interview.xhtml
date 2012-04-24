@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <ui:include src="dialogs/conflict-time-dialog.xhtml"/>
+        <h:form id="frm-edit-interview">
+            <div class="content-box column-left"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h:panelGroup rendered="#{param.type == 'time'}">
+                        <h3>Change interview's time</h3>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{param.type == 'info'}">
+                        <h3>Reschedule interview</h3>
+                    </h:panelGroup>
+                    <p><h:outputLink value="info.xhtml">
+                            <h:commandButton styleClass="schedule button"
+                                             value="My Schedule"/>
+                        </h:outputLink></p>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content">
+                    <div class="default-tab">
+                        <div class="event padding-b" >
+                            <div class="title">
+                                <h3>#{calendarMB.titleFormat(
+                                      interviewEditorBean.interview.startedTime)}
+                                </h3>
+                            </div>
+                            <div class="event_body">
+                                <div class="middle">
+                                    <h:panelGroup rendered="#{interviewEditorBean.interview.status == 0}">
+                                        <div class="cal_day day_red">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewEditorBean.interview.startedTime)}</div>
+                                            <div class="day_number">#{calendarMB.dayFormat(interviewEditorBean.interview.startedTime)}</div>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{interviewEditorBean.interview.status == 100}">
+                                        <div class="cal_day day_green">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewEditorBean.interview.startedTime)}</div>
+                                            <div class="day_number">#{calendarMB.dayFormat(interviewEditorBean.interview.startedTime)}</div>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{interviewEditorBean.interview.status == -100}">
+                                        <div class="cal_day day_blue">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewEditorBean.interview.startedTime)}</div>
+                                            <div class="day_number">#{calendarMB.dayFormat(interviewEditorBean.interview.startedTime)}</div>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{interviewEditorBean.interview.status == 99}">
+                                        <div class="cal_day day_yellow">
+                                            <div class="day_heading">#{calendarMB.dayInWeekFormat(interviewEditorBean.interview.startedTime)}</div>
+                                            <div class="day_number">#{calendarMB.dayFormat(interviewEditorBean.interview.startedTime)}</div>
+                                        </div>
+                                    </h:panelGroup>
+                                </div>
+                                <div class="event_content">
+                                    <p><strong>Time: </strong>
+                                        #{calendarMB.timeFormat(interviewEditorBean.interview.startedTime)}
+                                        to #{calendarMB.timeFormat(interviewEditorBean.interview.endedTime)}</p>
+                                    <p><strong>Interviewer: </strong>
+                                        #{interviewEditorBean.interview.employee.firstName}
+                                        #{interviewEditorBean.interview.employee.lastName}</p>
+                                    <p><strong>Applicant name: </strong>
+                                        #{interviewEditorBean.interview.applicant.firstName}
+                                        #{interviewEditorBean.interview.applicant.lastName}
+                                    </p>
+                                    <p><strong>Vacancy: </strong>
+                                        #{interviewEditorBean.interview.vacancy.title}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="add-interview">
+                            <fieldset id="edit-interview">
+                                <div class="border" style="padding: 15px 0px 10px 0px">
+                                    <h:panelGroup rendered="#{param.type != 'time' and param.type != 'info'}">
+                                        <p>
+                                            <label>Interview Date :
+                                                <span>#{calendarMB.dateFormat(interviewEditorBean.date)}</span></label>
+                                        </p>
+                                        <p>
+                                            <label>Time Started :
+                                                <span>#{calendarMB.timeFormat(interviewEditorBean.interview.startedTime)}</span></label>
+                                        </p>
+                                        <p>
+                                            <label>Time Ended :
+                                                <span>#{calendarMB.timeFormat(interviewEditorBean.interview.endedTime)}</span></label>
+                                        </p>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{param.type == 'time' || param.type == 'info'}">
+                                        <p>
+                                            <label>Interview Date</label>
+                                            <p:calendar id="date"
+                                                        styleClass="text-input medium-input remove"
+                                                        required="true"
+                                                        requiredMessage="You must select date."
+                                                        value="#{interviewEditorBean.date}">
+                                            </p:calendar>
+                                            <h:message for="date" id="msgDate"
+                                                       infoClass="input-notification success png_bg"
+                                                       warnClass="input-notification attention png_bg"
+                                                       errorClass="input-notification error png_bg"/>
+                                        </p>
+                                        <p>
+                                            <label>Time Started</label>
+                                            <p:calendar id="startTime"
+                                                        pattern="HH:mm" timeOnly="true"
+                                                        styleClass="text-input small-input remove"
+                                                        required="true"
+                                                        requiredMessage="You must select time."
+                                                        value="#{interviewEditorBean.interview.startedTime}">
+
+                                            </p:calendar>
+                                            <h:message for="startTime" id="msgStartTime"
+                                                       infoClass="input-notification success png_bg"
+                                                       warnClass="input-notification attention png_bg"
+                                                       errorClass="input-notification error png_bg"/>
+                                        </p>
+                                        <p>
+                                            <label>Time Ended</label>
+                                            <p:calendar id="endTime"
+                                                        pattern="HH:mm" timeOnly="true"
+                                                        styleClass="text-input small-input remove"
+                                                        required="true"
+                                                        requiredMessage="You must select time."
+                                                        value="#{interviewEditorBean.interview.endedTime}">
+
+                                            </p:calendar>
+                                            <h:message for="endTime" id="msgEndTime"
+                                                       infoClass="input-notification success png_bg"
+                                                       warnClass="input-notification attention png_bg"
+                                                       errorClass="input-notification error png_bg"/>
+                                        </p>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{param.type == 'info'}">
+                                        <p>
+                                            <label>Interviewer</label>
+                                            <h:selectOneMenu id="cboInterviewer"
+                                                             value="#{interviewEditorBean.employeeID}"
+                                                             styleClass="text-input medium-input">
+                                                <f:selectItems value="#{interviewEditorBean.interviewers}"
+                                                               var="employee"
+                                                               itemLabel="#{employee.firstName} #{employee.lastName}"
+                                                               itemValue="#{employee.employeeID}"/>
+                                            </h:selectOneMenu>
+                                            <h:commandButton image="resources/images/icons/calendar.png"
+                                                             title="View schedules"
+                                                             onclick="dlg.show();"
+                                                             actionListener="#{interviewEditorBean.showConflictDialog}"
+                                                             rendered="#{interviewEditorBean.iConflict}">
+                                                <f:ajax execute="@this" render=":frm-conflict"/>
+                                            </h:commandButton>
+                                        </p>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{param.type != 'info'}">
+                                        <p>
+                                            <label class="conflict">Interviewer :
+                                                <span>#{interviewEditorBean.interview.employee.firstName}
+                                                    #{interviewEditorBean.interview.employee.lastName}</span>
+                                                <h:commandButton image="resources/images/icons/calendar.png"
+                                                                 title="View schedules"
+                                                                 onclick="dlg.show();"
+                                                                 actionListener="#{interviewEditorBean.showConflictDialog}"
+                                                                 rendered="#{interviewEditorBean.iConflict}">
+                                                    <f:param name="id" value="#{param.id}"/>
+                                                    <f:param name="type" value="#{param.type}"/>
+                                                    <f:ajax execute="@this" render=":frm-conflict"/>
+                                                </h:commandButton>
+                                            </label>
+                                        </p>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{interviewEditorBean.iConflict}">
+                                        <p>
+                                            <h:message for="cboInterviewer" id="msgInterviewer"
+                                                       infoClass="input-notification success png_bg"
+                                                       warnClass="input-notification attention png_bg"
+                                                       errorClass="input-notification error png_bg"/>
+                                        </p>
+                                    </h:panelGroup>
+                                    <p>
+                                        <label class="conflict">Applicant :
+                                            <span>#{interviewEditorBean.interview.applicant.firstName}
+                                                #{interviewEditorBean.interview.applicant.lastName}</span>
+
+                                            <h:commandButton image="resources/images/icons/calendar.png"
+                                                             title="View schedules"
+                                                             onclick="dlg.show();"
+                                                             actionListener="#{interviewEditorBean.showConflictDialog}"
+                                                             rendered="#{interviewEditorBean.aConflict}"
+                                                             id="cboApplicant">
+                                                <f:param name="id" value="#{param.id}"/>
+                                                <f:param name="type" value="#{param.type}"/>
+                                                <f:ajax execute="@this" render=":frm-conflict"/>
+                                            </h:commandButton>
+                                        </label>
+                                    </p>
+                                    <h:panelGroup rendered="#{interviewEditorBean.aConflict}">
+                                        <p>
+                                            <h:message for="cboApplicant" id="msgApplicant"
+                                                       infoClass="input-notification success png_bg"
+                                                       warnClass="input-notification attention png_bg"
+                                                       errorClass="input-notification error png_bg"/>
+                                        </p>
+                                    </h:panelGroup>
+                                </div>
+                                <p style="border-top: 1px dotted #CCC;padding-top: 15px">
+                                    <h:commandButton value="Save changes"
+                                                     styleClass="button"
+                                                     action="#{interviewEditorBean.edit()}"
+                                                     rendered="#{param.id!=null and param.id!=''
+                                                                 and param.type!=null and param.type!=''}">
+                                        <f:param name="id" value="#{param.id}"/>
+                                        <f:param name="type" value="#{param.type}"/>
+                                    </h:commandButton>
+                                </p>
+                            </fieldset>
+                        </div>
+                        <div class="clear"></div><!-- End .clear -->
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" >
+            $('.remove input').removeClass('ui-inputfield');
+            </script>
+        </h:form>
+    </ui:define>
+</ui:composition>

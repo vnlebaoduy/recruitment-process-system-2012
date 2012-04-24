@@ -116,15 +116,15 @@ public class MyInterviewBean {
             switch (getSelectedInterview().getStatus()) {
                 case 0:
                     message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Not in progress", "The interview has not in progressed.");
+                            "INFORMATION", "The interview has not in progressed");
                     break;
                 case 100:
                     message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Selected interview", "The interview has been selected.");
+                            "INFORMATION", "The interview has been selected");
                     break;
                 case -100:
                     message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                            "Rejected interview", "The interview has been rejected.");
+                            "WARNING", "The interview has been rejected");
                     break;
                 default:
                     break;

@@ -97,6 +97,21 @@ public class InterviewService extends AbstractService {
         return null;
     }
 
+    public Interview getInterviews(Applicant applicant, Vacancy vacancy) {
+        List<Interview> list = interviewDA.findAbsolutely(
+                new String[]{"applicant", "vacancy"},
+                new Object[]{applicant, vacancy},
+                null, null, -1, -1);
+        if (list != null && list.size() == 1) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public List<Interview> getInterviewsLate(Applicant applicant, Date endTime) {
+        return interviewDA.searchInterview(applicant, endTime);
+    }
+
     public List<Interview> getCurrentInterviews(Employee employee) {
         return interviewDA.getNotRemoveInterview(employee, 1);
     }
@@ -137,6 +152,19 @@ public class InterviewService extends AbstractService {
         return vacancies;
     }
 
+    public List<Vacancy> getVacancies(Applicant applicant, int aVStatus) {
+        List<Vacancy> vacancies = new ArrayList<Vacancy>();
+        List<Interview> interviews = interviewDA.findAbsolutely(
+                new String[]{"applicant", "aVStatus"}, new Object[]{applicant, aVStatus},
+                null, null, -1, -1);
+        if (!interviews.isEmpty()) {
+            for (Interview interview : interviews) {
+                vacancies.add(interview.getVacancy());
+            }
+        }
+        return vacancies;
+    }
+    
     public Interview updateInterview(String id, Employee employee, Vacancy vacancy,
             Applicant applicant, Date startedTime, Date endedTime, int status,
             int avStatus)
@@ -154,6 +182,23 @@ public class InterviewService extends AbstractService {
         interview.setAVStatus(avStatus);
         interviewDA.edit(interview);
         return interview;
+    }
+
+    public void reviewInterview(Interview interview) throws Exception {
+        List<Interview> list = getInterviewsLate(interview.getApplicant(), interview.getEndedTime());
+        if (list != null && !list.isEmpty()) {
+            int num = 99;
+            if (interview.getAVStatus() == 100) {
+                num = 1;
+            }
+            for (Interview i : list) {
+                beginTransaction();
+                updateInterview(i.getInterviewID(),
+                        i.getEmployee(), i.getVacancy(), i.getApplicant(),
+                        i.getStartedTime(), i.getEndedTime(), i.getStatus(), num);
+                commitTransaction();
+            }
+        }
     }
 
     private String generateID() {

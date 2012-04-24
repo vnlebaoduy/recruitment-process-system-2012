@@ -7,44 +7,46 @@
 
     <p:dialog
         id="messages"
-        header="Schedule Dialog"
+        header="Review Dialog"
         widgetVar="dlg"
         modal="true"
         resizable="false"
-        width="960">
+        width="1200">
 
-        <h:form id="frm-conflict">
+        <h:form id="frm-review">
             <div class="content" style="margin: 0px auto;">
                 <div class="default-tab">
                     <div id="calendar_wrap" class="manage">
-                        <h3>#{conflictTimeBean.msgConflict}</h3>
+                        <h3>You need to select status to review the interview's
+                            result for #{manageInterviewBean.reviewInterview.applicant.firstName}
+                            #{manageInterviewBean.reviewInterview.applicant.lastName}</h3>
                         <div class="article">
                             <div class="article-left">
                                 <p:commandLink title="#{calendarMB.titleFormat(
-                                                        conflictTimeBean.interview.startedTime)}">
+                                                        manageInterviewBean.reviewInterview.startedTime)}">
                                     <div class="cal_day day_red">
                                         <div class="day_heading">
                                             #{calendarMB.dayInWeekFormat(
-                                              conflictTimeBean.interview.startedTime)}</div>
+                                              manageInterviewBean.reviewInterview.startedTime)}</div>
                                         <h:panelGroup rendered="#{calendarMB.today(
-                                                                  conflictTimeBean.interview.startedTime)}">
+                                                                  manageInterviewBean.reviewInterview.startedTime)}">
                                             <div class="day_number today">
                                                 #{calendarMB.dayFormat(
-                                                  conflictTimeBean.interview.startedTime)}</div>
+                                                  manageInterviewBean.reviewInterview.startedTime)}</div>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{!calendarMB.today(
-                                                                  conflictTimeBean.interview.startedTime)}">
+                                                                  manageInterviewBean.reviewInterview.startedTime)}">
                                             <div class="day_number">
                                                 #{calendarMB.dayFormat(
-                                                  conflictTimeBean.interview.startedTime)}</div>
+                                                  manageInterviewBean.reviewInterview.startedTime)}</div>
                                         </h:panelGroup>
                                     </div>
                                 </p:commandLink>
                             </div>
                             <div class="article-main">
-                                <h:dataTable value="#{conflictTimeBean.listConflict}"
+                                <h:dataTable value="#{manageInterviewBean.reviewInterview}"
                                              var="interview"
-                                             columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col">
+                                    columnClasses="status-col,col-2,col-3,col-4,col-5,action-col">
                                     <h:column>
                                         <h:graphicImage value="resources/images/other/not_in_progress.png"
                                                         rendered="#{interview.status == 0}"
@@ -69,7 +71,8 @@
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">Interviewer</f:facet>
-                                        #{interview.employee.firstName} #{interview.employee.lastName}
+                                        #{interview.employee.firstName}
+                                        #{interview.employee.lastName}
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">Vacancy</f:facet>
@@ -77,7 +80,23 @@
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">Applicant</f:facet>
-                                        #{interview.applicant.firstName} #{interview.applicant.lastName}
+                                        #{interview.applicant.firstName}
+                                        #{interview.applicant.lastName}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Status</f:facet>
+                                        <h:selectOneMenu id="cbo-status"
+                                                         value="#{interview.AVStatus}"
+                                                         styleClass="text-input large-input">
+                                            <f:selectItem itemLabel="In Progress" itemValue="99"/>
+                                            <f:selectItem itemLabel="Selected" itemValue="100" />
+                                            <f:selectItem itemLabel="Rejected" itemValue="-100" />
+                                            <f:selectItem itemLabel="Not Required" itemValue="1" />
+                                            <p:ajax process="@this"
+                                                    listener="#{manageInterviewBean.changeStatus}"
+                                                    update="@form :frm-manage-interview :growl"/>
+                                            <f:param name="id" value="#{interview.interviewID}"/>
+                                        </h:selectOneMenu>
                                     </h:column>
                                 </h:dataTable>
                             </div>

@@ -75,7 +75,6 @@
                                     <h:commandButton value="Create new"
                                                      styleClass="button"
                                                      action="#{interviewBean.add()}">
-
                                     </h:commandButton>
                                 </p>
                             </fieldset>
@@ -93,8 +92,9 @@
                                     <h:commandButton image="resources/images/icons/calendar.png"
                                                      title="View schedules"
                                                      onclick="dlg.show();"
+                                                     actionListener="#{interviewBean.showConflictDialog}"
                                                      rendered="#{interviewBean.iConflict}">
-                                        <f:ajax execute="@this"/>
+                                        <f:ajax execute="@this" render=":frm-conflict"/>
                                     </h:commandButton>
 
                                 </p>
@@ -120,8 +120,9 @@
                                     <h:commandButton image="resources/images/icons/calendar.png"
                                                      title="View schedules"
                                                      onclick="dlg.show();"
+                                                     actionListener="#{interviewBean.showConflictDialog}"
                                                      rendered="#{interviewBean.aConflict}">
-                                        <f:ajax execute="@this"/>
+                                        <f:ajax execute="@this" render=":frm-conflict"/>
                                     </h:commandButton>
                                 </p>
                                 <h:panelGroup rendered="#{empty interviewBean.applicantsNotScheduled}">
