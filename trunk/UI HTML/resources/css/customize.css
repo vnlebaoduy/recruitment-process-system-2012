@@ -125,7 +125,7 @@ div.day_green{
 }
 
 div.day_gray{
-    background: url('../images/other/day_gray.png') top no-repeat;
+    background: url('../images/other/day_grey.png') top no-repeat;
 }
 
 div.day_yellow{
@@ -196,7 +196,7 @@ div.content-box-header .schedule{
 }
 
 div.middle{
-    padding: 10px 0px 10px 0px;
+    padding: 5px 0px 10px 0px;
     float: left;
 }
 
@@ -406,6 +406,10 @@ div.article table td{
     line-height: 1.3em;
     border-top: 1px solid #ddd;
 }
+div.article table td div.text-center{
+    width: 100%;
+    text-align: center;
+}
 div.article table th {
     padding: 0px 10px 10px 10px;
     line-height: 1.3em;
@@ -422,29 +426,28 @@ div.article table tfoot td .bulk-actions select {
     border: 1px solid #ccc;
 }
 
-.status-col{
+.col-30{
     width: 30px;
 }
-.col-2{/* TIME */
+.col-100{/* TIME */
        width: 100px;
 }
-.col-3{/* Interviewer */
+.col-150{/* Interviewer */
        width: 150px;
 }
-.col-4{/* Vacancy */
+.col-170{
+       width: 170px;
+}
+.col-200{/* Vacancy */
        width: 200px;
 }
-.col-5{/* Applicant */
-       width: 150px;
+.col-250{
+       width: 250px;
 }
-.app-status-col{
-    width: 30px;
+.col-center{
     text-align: center;
 }
-.action-col{
-    text-align: center;
-}
-.action-col input{
+.col-center input{
     padding: 2px;
 }
 
@@ -497,3 +500,35 @@ div.border p label span{
 fieldset#edit-interview label.conflict{
     padding: 0px;
 }
+
+/***** OTHER *****/
+p.inline label{
+    display: inline;
+    margin-right: 10px;
+}
+p.dotted{
+    margin: 15px 0px;
+    border-top: 1px dotted #CCC;
+    line-height: 0px;
+    padding: 0px;
+}
+h3.msg{
+    border-top: 1px dotted #CCC;
+    padding-top: 10px;
+}
+/***** SEARCH VACANCY *****/
+div#search-vacancy{
+    margin-bottom: 10px;
+}
+
+div#search-vacancy *{
+    display: inline;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+div#search-vacancy fieldset{
+    width: 100%;
+    padding: 10px;
+}
+
