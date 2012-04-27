@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import rps.entities.Applicant;
@@ -29,8 +28,8 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
         super(Interview.class, em);
     }
 
-    public FindResult<Interview> searchInterview(Date startedTime, Date endedTime,
-            int status) {
+    public FindResult<Interview> searchInterview(Employee employee, Date startedTime,
+            Date endedTime, int status) {
 
         FindResult<Interview> results;
         CriteriaBuilder cb;
@@ -52,8 +51,13 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
         //Create Predicate
         List<Predicate> predicates = new ArrayList<Predicate>();
 
-        predicates.add(cb.between(root.get("startedTime"),
-                startedTime, endedTime));
+        if (employee != null) {
+            predicates.add(cb.equal(root.get("employee"), employee));
+        }
+        if (startedTime != null && endedTime != null) {
+            predicates.add(cb.between(root.get("startedTime"),
+                    startedTime, endedTime));
+        }
         if (status != -1) {
             predicates.add(cb.equal(root.get("status"), status));
         }
@@ -146,85 +150,6 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
 
         return results;
     }
-//
-//    public FindResult<Interview> searchInterviewAbsolutely(String id, Employee employee,
-//            Applicant applicant, Vacancy vacancy, int status, int aVStatus,
-//            Date startedTime, Date endedTime) {
-//
-//        FindResult<Interview> results;
-//        CriteriaBuilder cb;
-//        CriteriaQuery<Interview> cq;
-//        CriteriaQuery<Long> countCq;
-//        Root root;
-//        Predicate predicate;
-//
-//        //Create CriteraBuilder
-//        cb = getEntityManager().getCriteriaBuilder();
-//        //Create CriteraQuery
-//        cq = cb.createQuery(Interview.class);
-//        countCq = cb.createQuery(Long.class);
-//        //Create results
-//        results = new FindResult<Interview>();
-//        //Create root
-//        root = cq.from(Interview.class);
-//
-//        //Create Predicate
-//        List<Predicate> predicates = new ArrayList<Predicate>();
-//
-//        if (id != null) {
-//            predicates.add(cb.equal(root.get("interviewID"), id));
-//        }
-//        if(employee!=null){
-//            predicates.add(cb.equal(root.get("employee"), employee));
-//        }
-//        if(applicant!=null){
-//            predicates.add(cb.equal(root.get("applicant"), applicant));
-//        }
-//        if(status!=-1){
-//            predicates.add(cb.equal(root.get("status"), status));
-//        }
-//        if(aVStatus!=-1){
-//            predicates.add(cb.equal(root.get("aVStatus"), aVStatus));
-//        }
-//        if(startedTime!=null){
-//
-//        }
-//        //start ---- startedTime ---- end
-//        Predicate predicate1 = cb.between(root.get("startedTime"),
-//                startedTime, endedTime);
-//
-//        //start ---- endedTime ---- end
-//        Predicate predicate2 = cb.between(root.get("endedTime"),
-//                startedTime, endedTime);
-//
-//        //startTime ---- start ---- end --- endedTime
-//        Predicate predicate3 = cb.lessThan(root.get("startedTime"),
-//                startedTime);
-//
-//        predicate3 = cb.and(predicate3, cb.greaterThan(root.get("endedTime"),
-//                endedTime));
-//
-//        //start ---- startTime --- endedTime ---- end
-//        Predicate predicate4 = cb.greaterThan(root.get("startedTime"),
-//                startedTime);
-//
-//        predicate4 = cb.and(predicate4, cb.lessThan(root.get("endedTime"),
-//                endedTime));
-//
-//        predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
-//        cq.select(root).where(predicate);
-//        countCq.select(cb.count(root)).where(predicate);
-//
-//        Query q = getEntityManager().createQuery(cq);
-//        Query countQ = getEntityManager().createQuery(countCq);
-//
-//        int count = ((Long) countQ.getSingleResult()).intValue();
-//
-//        results.addAll(q.getResultList());
-//        results.setCount(count);
-//
-//        return results;
-//    }
 
     public FindResult<Interview> getNotRemoveInterview(Employee employee, int status) {
 
@@ -252,7 +177,7 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
                 cb.notEqual(root.get("status"), status));
 
         predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
-        cq.select(root).where(predicate);
+        cq.select(root).where(predicate).orderBy(cb.asc(root.get("startedTime")));
         countCq.select(cb.count(root)).where(predicate);
 
         Query q = getEntityManager().createQuery(cq);
@@ -293,6 +218,50 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
 
         predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
         cq.select(root).where(predicate).orderBy(cb.asc(root.get("startedTime")));
+        countCq.select(cb.count(root)).where(predicate);
+
+        Query q = getEntityManager().createQuery(cq);
+        Query countQ = getEntityManager().createQuery(countCq);
+
+        int count = ((Long) countQ.getSingleResult()).intValue();
+
+        results.addAll(q.getResultList());
+        results.setCount(count);
+
+        return results;
+    }
+
+    public FindResult<Interview> searchInterviewNotRemove(Vacancy vacancy,
+            Applicant applicant, int AVStatus) {
+
+        FindResult<Interview> results;
+        CriteriaBuilder cb;
+        CriteriaQuery<Interview> cq;
+        CriteriaQuery<Long> countCq;
+        Root root;
+        Predicate predicate;
+
+        //Create CriteraBuilder
+        cb = getEntityManager().getCriteriaBuilder();
+        //Create CriteraQuery
+        cq = cb.createQuery(Interview.class);
+        countCq = cb.createQuery(Long.class);
+        //Create results
+        results = new FindResult<Interview>();
+        //Create root
+        root = cq.from(Interview.class);
+
+        //Create Predicate
+        List<Predicate> predicates = new ArrayList<Predicate>();
+
+        predicates.add(cb.equal(root.get("applicant"), applicant));
+        predicates.add(cb.equal(root.get("vacancy"), vacancy));
+        predicates.add(cb.equal(root.get("aVStatus"), AVStatus));
+        predicates.add(cb.notEqual(root.get("status"), 1));
+
+        predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+
+        cq.select(root).where(predicate);
         countCq.select(cb.count(root)).where(predicate);
 
         Query q = getEntityManager().createQuery(cq);

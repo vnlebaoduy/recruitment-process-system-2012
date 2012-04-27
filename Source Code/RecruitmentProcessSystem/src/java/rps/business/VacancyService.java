@@ -103,8 +103,15 @@ public class VacancyService extends AbstractService {
 
     public List<Vacancy> getAttachedVacancies(Applicant applicant) {
         InterviewService service = new InterviewService();
-        List<Vacancy> listAttached = service.getVacancies(applicant, 99);
-        return listAttached;
+        List<Vacancy> list = new ArrayList<Vacancy>();
+        list = service.getVacancies(applicant, 99);
+        List<Vacancy> listAttached = service.getVacancies(applicant, 0);
+        for (Vacancy vacancy : listAttached) {
+            if (!listAttached.isEmpty()) {
+                list.add(vacancy);
+            }
+        }
+        return list;
     }
 
     public List<Applicant> getApplicantHired(String vacancyID) {
@@ -142,7 +149,6 @@ public class VacancyService extends AbstractService {
             int minimumAge, int maximumAge, boolean gender, String degree, int yearOfExperience, String probationaryPeriod,
             Date deadline, Date createDate) {
         Vacancy objEntity = getDetailVacancy(id);
-        objEntity.setVacancyID(generateID());
         objEntity.setTitle(title);
         objEntity.setDepartment(deparment);
         objEntity.setStatus(status);
@@ -165,5 +171,23 @@ public class VacancyService extends AbstractService {
         objEntity.setCreatedDate(createDate);
         vacancyDA.edit(objEntity);
         return objEntity;
+    }
+
+    public List<Vacancy> searchVacancy(String keyword, int status) {
+        List<Vacancy> list = vacancyDA.search(keyword, status);
+        if (list == null) {
+            list = new ArrayList<Vacancy>();
+        }
+        return list;
+    }
+
+    public void afterHiredApplicant(Vacancy vacancy) {
+        List<Applicant> list = getApplicantHired(vacancy.getVacancyID());
+        if (list.size() == vacancy.getNumberRequirement()) {
+            beginTransaction();
+            vacancy.setStatus(1);
+            vacancyDA.edit(vacancy);
+            commitTransaction();
+        }
     }
 }

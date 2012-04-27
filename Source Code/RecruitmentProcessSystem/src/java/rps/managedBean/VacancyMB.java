@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -11,7 +12,6 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import rps.business.DepartmentService;
@@ -25,14 +25,12 @@ import rps.entities.Vacancy;
  */
 @ManagedBean
 @RequestScoped
-public class VacancyMB {
+public class VacancyMB implements Serializable {
 
     private Vacancy vacancy;
     private String vacancyID;
     private Department department;
     private List<Vacancy> lstVacancy;
-    private List<Vacancy> lstMostApplyVacancy;
-    private List<Vacancy> lstNewApplyVacancy;
     private VacancyService vacancyService;
     private DepartmentService departmentService;
 
@@ -102,10 +100,6 @@ public class VacancyMB {
         this.vacancy = vacancy;
     }
 
-    public String searchVacancy() {
-        list = vacancyService.searchVacancyByTitle(vacancy.getTitle());
-        return "search.xhtml";
-    }
     private List<Vacancy> list;
 
     public List<Vacancy> getList() {
@@ -114,11 +108,6 @@ public class VacancyMB {
 
     public void setList(List<Vacancy> list) {
         this.list = list;
-    }
-
-    public String editAppl(Object appl) {
-        String applID = (String) appl;
-        return "vacancys.xhtml?faces-redirect=true&ID=" + applID;
     }
 
     public String insertVacancy() {
@@ -138,6 +127,11 @@ public class VacancyMB {
                 vacancy.getSkillRequirement(), vacancy.getEntitlement(), vacancy.getMinimumAge(), vacancy.getMaximumAge(),
                 vacancy.getGender(), vacancy.getDegree(), vacancy.getYearOfExperience(), vacancy.getProbationaryPeriod(), vacancy.getDeadline());
         vacancyService.commitTransaction();
+        FacesMessage message = new FacesMessage(
+                FacesMessage.SEVERITY_INFO,
+                "INFORMATION",
+                "Create a new vacancy successful");
+        FacesContext.getCurrentInstance().addMessage(null, message);
         return null;
     }
 
@@ -211,6 +205,13 @@ public class VacancyMB {
                     "Number is greater than minimum salary");
             context.addMessage("msgMaximumSalary", message);
             result = false;
+        }else if(vacancy.getMaximumAge() < vacancy.getMinimumAge()) {
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_WARN,
+                    "Age is greater than minimum age",
+                    "Age is greater than minimum age");
+            context.addMessage("msgMaximumAge", message);
+            result = false;
         }
         return result;
     }
@@ -236,12 +237,6 @@ public class VacancyMB {
             }
         }
     }
-
-    public String editRedirect() {
-        return "vacancy.xhtml?faces-redirect=true&id=" + this.getVacancy().getVacancyID();
-    }
-
-
 
     public String getVacancyID() {
         return vacancyID;
@@ -271,46 +266,11 @@ public class VacancyMB {
                 vacancy.getGender(), vacancy.getDegree(), vacancy.getYearOfExperience(),
                 vacancy.getProbationaryPeriod(), vacancy.getDeadline(), vacancy.getCreatedDate());
         vacancyService.commitTransaction();
-        return null;
-    }
-
-    public List<Vacancy> getLstMostApplyVacancy() {
-        vacancyService = new VacancyService();
-        List<Vacancy> lstAllVacancy = vacancyService.getAll();
-//        Vacancy tempObj;
-//        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
-//            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
-//                if (lstAllVacancy.get(x).getApplicantList().size() > lstAllVacancy.get(y).getApplicantList().size()) {
-//                    tempObj = lstAllVacancy.get(x);
-//                    lstAllVacancy.set(x, lstAllVacancy.get(y));
-//                    lstAllVacancy.set(y, tempObj);
-//                }
-//            }
-//        }
-        return lstAllVacancy.subList(lstAllVacancy.size() - 4, lstAllVacancy.size() - 1);
-    }
-
-    public void setLstMostApplyVacancy(List<Vacancy> lstMostApplyVacancy) {
-        this.lstMostApplyVacancy = lstMostApplyVacancy;
-    }
-
-    public List<Vacancy> getLstNewApplyVacancy() {
-        vacancyService = new VacancyService();
-        List<Vacancy> lstAllVacancy = vacancyService.getAll();
-        Vacancy tempObj;
-        for (int x = 0; x < lstAllVacancy.size() - 1; x++) {
-            for (int y = x + 1; y < lstAllVacancy.size(); y++) {
-                if (lstAllVacancy.get(x).getCreatedDate().before(lstAllVacancy.get(y).getCreatedDate())) {
-                    tempObj = lstAllVacancy.get(x);
-                    lstAllVacancy.set(x, lstAllVacancy.get(y));
-                    lstAllVacancy.set(y, tempObj);
-                }
-            }
-        }
-        return lstAllVacancy.subList(lstAllVacancy.size() - 4, lstAllVacancy.size() - 1);
-    }
-
-    public void setLstNewApplyVacancy(List<Vacancy> lstNewApplyVacancy) {
-        this.lstNewApplyVacancy = lstNewApplyVacancy;
+        FacesMessage message = new FacesMessage(
+                FacesMessage.SEVERITY_INFO,
+                "INFORMATION",
+                "All of informations have been saved");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        return "vacancies.xhtml?faces-redirect=true";
     }
 }

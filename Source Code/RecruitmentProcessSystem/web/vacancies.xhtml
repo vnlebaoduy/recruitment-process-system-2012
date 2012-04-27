@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui"
-    template="./templates/rpsTemplate.xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core">
-    
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="./templates/rpsTemplate.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
     <ui:define name="content">
         <p:growl id="growl" showDetail="true" globalOnly="true"/>
-        <h:form id="frm-applicant">
+        <h:form id="frm-vacancy">
             <div class="content-box column-left">
                 <div class="content-box-header">
                     <h3>Most Vacancies</h3>
@@ -40,10 +40,117 @@
 
                 <div class="content-box-content">
                     <div class="tab-content default-tab">
+                        <div id="search-vacancy">
+                            <fieldset>
+                                <label>Search :</label>
+                                <h:inputText value="#{manageVacancyBean.keyword}"
+                                             styleClass="text-input medium-input">
+                                </h:inputText>
 
+                                <label>Status :</label>
+                                <h:selectOneMenu id="cboStatus"
+                                                 value="#{manageVacancyBean.status}"
+                                                 styleClass="text-input small-input">
+                                    <f:selectItem itemLabel="All vacancies"  itemValue="-1"/>
+                                    <f:selectItem itemLabel="Open" itemValue="0"/>
+                                    <f:selectItem itemLabel="Suspend" itemValue="99" />
+                                    <f:selectItem itemLabel="Close" itemValue="1" />
+                                </h:selectOneMenu>
+                                <h:commandButton value="Search"
+                                                 actionListener="#{manageVacancyBean.search()}"
+                                                 styleClass="schedule button">
+                                </h:commandButton>
+                            </fieldset>
+                        </div>
+                        <h:panelGroup rendered="#{manageVacancyBean.msgSearch!=''}">
+                            <h3 class="msg">#{manageVacancyBean.msgSearch}</h3>
+                        </h:panelGroup>
+                        <h:panelGroup id="table" rendered="#{not empty manageVacancyBean.vacancies}">
+                            <div class="article">
+                                <h:dataTable value="#{manageVacancyBean.vacancies}"
+                                             var="vacancy"
+                                             columnClasses="col-30,col-250,col-200,col-150,col-170 col-center,col-30 col-center,col-center">
+                                    <h:column>
+                                        <h:graphicImage value="resources/images/other/select.png"
+                                                        rendered="#{vacancy.status == 0}"
+                                                        title="Open"/>
+                                        <h:graphicImage value="resources/images/other/postpone.png"
+                                                        rendered="#{vacancy.status == 99}"
+                                                        title="Suspend"/>
+                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                        rendered="#{vacancy.status == 1}"
+                                                        title="Remove"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Title</f:facet>
+                                        #{vacancy.title}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Department</f:facet>
+                                        #{vacancy.department.name}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Position</f:facet>
+                                        #{vacancy.position}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Number Requirement</f:facet>
+                                        #{vacancy.numberRequirement}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Hired</f:facet>
+                                        #{manageVacancyBean.numberHired(vacancy.vacancyID)}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Action</f:facet>
+                                        <h:panelGroup rendered="#{vacancy.status != 1}">
+                                            <h:outputLink value="vacancy-info.xhtml">
+                                                <h:commandButton image="resources/images/icons/info.png"
+                                                                 title="Information"/>
+                                                <f:param name="id" value="#{vacancy.vacancyID}"/>
+                                            </h:outputLink>
+                                            <h:panelGroup rendered="#{accountMB.hRGroup}">
+                                                <h:outputLink value="vacancy.xhtml">
+                                                    <h:commandButton image="resources/images/icons/edit.png"
+                                                                     title="Edit Information"/>
+                                                    <f:param name="id" value="#{vacancy.vacancyID}"/>
+                                                </h:outputLink>
+                                                <h:commandButton image="resources/images/icons/unlock.png"
+                                                                 title="Reopen"
+                                                                 rendered="#{vacancy.status == 99}"
+                                                                 actionListener="#{manageVacancyBean.reopen(vacancy.vacancyID)}">
+                                                    <f:ajax execute="@this" render="@form :growl"/>
+                                                </h:commandButton>
+                                                <h:commandButton image="resources/images/icons/lock.png"
+                                                                 title="Suspend"
+                                                                 rendered="#{vacancy.status != 99}"
+                                                                 actionListener="#{manageVacancyBean.suspend(vacancy.vacancyID)}">
+                                                    <f:ajax execute="@this" render="@form :growl"/>
+                                                </h:commandButton>
+                                                <h:commandButton image="resources/images/icons/trash.png"
+                                                                 title="Close"
+                                                                 onclick="return remove();"
+                                                                 actionListener="#{manageVacancyBean.close(vacancy.vacancyID)}">
+                                                    <f:ajax execute="@this" render="@form :growl"/>
+                                                </h:commandButton>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </h:panelGroup>
                     </div>
                 </div>
             </div>
+            <script type="text/javascript">
+                function remove(){
+                    return confirm("The vacancy will be closed and will not be REOPEN or SUSPEND by anyway.\n\
+\n\
+Are you sure to closed this vacancy?");
+                }
+
+                $('.remove input').removeClass('ui-inputfield');
+            </script>
         </h:form>
     </ui:define>
 

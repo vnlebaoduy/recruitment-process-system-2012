@@ -28,81 +28,66 @@
 
                         <!-- Sidebar Profile links -->
                         <div id="profile-links">
-				Hello, <a href="#" title="Edit your profile">John Doe</a>, you have <a href="#messages" rel="modal" title="3 Messages">3 Messages</a><br />
-                            <br />
-                            <a href="#" title="View the Site">View the Site</a> | <a href="#" title="Sign Out">Sign Out</a>
+				Hello, <a href="info.xhtml" title="Edit your profile">
+                                #{accountMB.account.employee.firstName}
+                                #{accountMB.account.employee.lastName}
+                            </a>
+                            <br /><br />
+                            <h:form>
+                                <a href="#" title="View the Site">View the Site</a> |
+                                <h:commandLink value="Sign out" action="#{accountMB.logout}"/>
+                            </h:form>
                         </div>
 
                         <ul id="main-nav">  <!-- Accordion Menu -->
-
-                            <li>
-                                <a href="http://www.google.com/" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
-						Dashboard
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#" class="nav-top-item current"> <!-- Add the class "current" to current menu item -->
-					Articles
-                                </a>
-                                <ul>
-                                    <li><a href="#">Write a new Article</a></li>
-                                    <li><a class="current" href="#">Manage Articles</a></li> <!-- Add class "current" to sub menu items also -->
-                                    <li><a href="#">Manage Comments</a></li>
-                                    <li><a href="#">Manage Categories</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <a href="#" class="nav-top-item">
-						Pages
-                                </a>
-                                <ul>
-                                    <li><a href="#">Create a new Page</a></li>
-                                    <li><a href="#">Manage Pages</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <a href="#" class="nav-top-item">
-						Image Gallery
-                                </a>
-                                <ul>
-                                    <li><a href="#">Upload Images</a></li>
-                                    <li><a href="#">Manage Galleries</a></li>
-                                    <li><a href="#">Manage Albums</a></li>
-                                    <li><a href="#">Gallery Settings</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <a href="#" class="nav-top-item">
-						Events Calendar
-                                </a>
-                                <ul>
-                                    <li><a href="#">Calendar Overview</a></li>
-                                    <li><a href="#">Add a new Event</a></li>
-                                    <li><a href="#">Calendar Settings</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <a href="#" class="nav-top-item">
-						Settings
-                                </a>
-                                <ul>
-                                    <li><a href="#">General</a></li>
-                                    <li><a href="#">Design</a></li>
-                                    <li><a href="#">Your Profile</a></li>
-                                    <li><a href="#">Users and Permissions</a></li>
-                                </ul>
-                            </li>
-
+                            <ui:repeat value="#{systemBean.systemSettings.listPages}"
+                                       var="pageGroup">
+                                <li>
+                                    <h:panelGroup rendered="#{not empty pageGroup.pages}">
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item current"
+                                                      rendered="#{pageGroup.page.current}"><!-- Add the class "current" to current menu item -->
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item"
+                                                      rendered="#{not pageGroup.page.current}">
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <ul>
+                                            <ui:repeat value="#{pageGroup.pages}" var="page">
+                                                <li>
+                                                    <h:outputLink value="#{page.url}"
+                                                                  styleClass="current"
+                                                                  rendered="#{page.current}">
+                                                        #{page.title}
+                                                    </h:outputLink>
+                                                    <h:outputLink value="#{page.url}"
+                                                                  rendered="#{not page.current}">
+                                                        #{page.title}
+                                                    </h:outputLink>
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{empty pageGroup.pages}">
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item current no-submenu"
+                                                      rendered="#{pageGroup.page.current}"><!-- Add the class "current" to current menu item -->
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item no-submenu"
+                                                      rendered="#{not pageGroup.page.current}">
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                    </h:panelGroup>
+                                </li>
+                            </ui:repeat>
                         </ul> <!-- End #main-nav -->
                     </div></div> <!-- End #sidebar -->
 
                 <div id="main-content"> <!-- Main Content Section with everything -->
-
                     <noscript> <!-- Show a notification if the user has disabled javascript -->
                         <div class="notification error png_bg">
                             <div>
@@ -110,40 +95,29 @@
                             </div>
                         </div>
                     </noscript>
-
                     <!-- Page Head -->
-                    <h2>Welcome John</h2>
+                    <h2>Welcome #{accountMB.account.employee.firstName}
+                        #{accountMB.account.employee.lastName}</h2>
                     <p id="page-intro">What would you like to do?</p>
 
                     <ul class="shortcut-buttons-set">
-
-                        <li><a class="shortcut-button" href="#"><span>
-                                    <img src="resources/images/icons/pencil_48.png" alt="icon" /><br />
-					Write an Article
-                                </span></a></li>
-
-                        <li><a class="shortcut-button" href="#"><span>
-                                    <img src="resources/images/icons/paper_content_pencil_48.png" alt="icon" /><br />
-					Create new
-                                </span></a></li>
-
-                        <li><a class="shortcut-button" href="#"><span>
-                                    <img src="resources/images/icons/image_add_48.png" alt="icon" /><br />
-					Upload an Image
-                                </span></a></li>
-
-                        <li><a class="shortcut-button" href="#"><span>
-                                    <img src="resources/images/icons/clock_48.png" alt="icon" /><br />
-					Add an Event
-                                </span></a></li>
-
-                        <li><a class="shortcut-button" href="#messages" rel="modal"><span>
-                                    <img src="resources/images/icons/comment_48.png" alt="icon" /><br />
-					Open Modal
-                                </span></a></li>
-
+                        <ui:repeat value="#{systemBean.systemSettings.listMenu}"
+                                   var="pageGroup2">
+                            <ui:repeat value="#{pageGroup2.pages}"
+                                       var="page2">
+                                <li>
+                                    <h:outputLink value="#{page2.url}"
+                                                  styleClass="shortcut-button">
+                                        <span>
+                                            <img src="#{page2.image}" alt="icon" />
+                                            <br />
+                                            #{page2.title}
+                                        </span>
+                                    </h:outputLink>
+                                </li>
+                            </ui:repeat>
+                        </ui:repeat>
                     </ul><!-- End .shortcut-buttons-set -->
-
                     <div class="clear"></div> <!-- End .clear -->
 
                     <ui:insert name="content"/>
@@ -158,7 +132,5 @@
 
                 </div> <!-- End #main-content -->
             </div></body>
-
     </h:body>
-
 </html>

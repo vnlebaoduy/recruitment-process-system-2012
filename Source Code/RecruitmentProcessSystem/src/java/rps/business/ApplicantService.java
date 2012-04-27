@@ -100,11 +100,6 @@ public class ApplicantService extends AbstractService {
         return applicantDA.find(id);
     }
 
-//    public void attachVacancy(String id, List<Vacancy> vacancies) {
-//        Applicant applicant = applicantDA.find(id);
-//        applicant.setVacancyList(vacancies);
-//        applicantDA.edit(applicant);
-//    }
     public boolean isEmailExisted(String email) {
         FindResult result = applicantDA.findAbsolutely("email", email);
         if (result.size() > 0) {
@@ -117,13 +112,6 @@ public class ApplicantService extends AbstractService {
         return applicantDA.findAll();
     }
 
-//    public List<Applicant> getListApplicantByID(String idAppl) {
-//        if (idAppl.equals("")) {
-//            return applicantDA.findAll();
-//        }
-//        return applicantDA.findAbsolutely("applicantID", idAppl);
-//    }
-//
     public List<Applicant> getApplicantByStatus(int status) {
         return applicantDA.findAbsolutely("status", status);
     }
@@ -145,5 +133,40 @@ public class ApplicantService extends AbstractService {
             }
         }
         return interviews;
+    }
+
+    public void attachVacancies(Applicant applicant,
+            List<Vacancy> oldList, List<Vacancy> newList) {
+        if (oldList == null || oldList.isEmpty()) {
+            attachVacancies(applicant, newList);
+        } else {
+            if (!newList.isEmpty()) {
+                InterviewService interviewService = new InterviewService();
+                // Check new vacancy
+                for (Vacancy vacancy : newList) {
+                    if (!oldList.contains(vacancy)) {
+                        interviewService.beginTransaction();
+                        interviewService.addInterview(applicant, vacancy);
+                        interviewService.commitTransaction();
+                    }
+                }
+                // Check remove vacancy
+                for (Vacancy vacancy : oldList) {
+                    if (!newList.contains(vacancy)) {
+                        Interview interview = interviewService.getInterviews(applicant, vacancy, 0);
+                        interviewService.beginTransaction();
+                        interviewService.removeInterview(interview);
+                        interviewService.commitTransaction();
+                    }
+                }
+            }
+        }
+    }
+    public List<Applicant> searchApplicant(String keyword, int status) {
+        List<Applicant> list = applicantDA.search(keyword, status);
+        if (list == null) {
+            list = new ArrayList<Applicant>();
+        }
+        return list;
     }
 }

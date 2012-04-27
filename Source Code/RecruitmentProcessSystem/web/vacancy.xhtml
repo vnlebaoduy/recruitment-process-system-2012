@@ -9,32 +9,32 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
-        <div class="content-box"><!-- Start Content Box -->
-            <div class="content-box-header">
-                <h3>Content box</h3>
-                <div class="clear"></div>
-            </div> <!-- End .content-box-header -->
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <h:form id="frm-vacancy">
+            <div class="content-box column-left">
+                <div class="content-box-header">
+                    <h3>Vacancy Information</h3>
+                </div><!-- End .content-box-header -->
 
-            <div class="content-box-content">
-                <div class="default-tab">
-                    <h:form>
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
                         <fieldset>
                             <p>
                                 <label>Title</label>
                                 <h:inputText value="#{vacancyMB.vacancy.title}"
                                              required="true"
-                                             requiredMessage="you must enter title"
+                                             requiredMessage="You must enter title"
                                              id="title"
-                                             styleClass="text-input small-input"/>
+                                             styleClass="text-input medium-input"/>
                                 <h:message for="title"
                                            infoClass="input-notification success png_bg"
                                            warnClass="input-notification attention png_bg"
                                            errorClass="input-notification error png_bg"/>
                             </p>
                             <p>
-                                <label>Name Department</label>
+                                <label>Department</label>
                                 <h:selectOneMenu value="#{vacancyMB.id}"
-                                                 styleClass="small-input">
+                                                 styleClass="medium-input">
                                     <f:selectItems value="#{vacancyMB.departments}"
                                                    var="dp"
                                                    itemLabel="#{dp.name}"
@@ -45,7 +45,7 @@
                                 <label>Number Requirement</label>
                                 <h:inputText value="#{vacancyMB.vacancy.numberRequirement}"
                                              id="numberRequirement" required="true"
-                                             requiredMessage="you must enter number"
+                                             requiredMessage="You must enter number"
                                              converterMessage="Number Requirement is wrong format"
                                              validator="#{vacancyMB.validateNumberRequirement}"
                                              styleClass="text-input small-input"/>
@@ -58,8 +58,8 @@
                                 <label>Position</label>
                                 <h:inputText value="#{vacancyMB.vacancy.position}"
                                              required="true" id="position"
-                                             requiredMessage="you must enter position"
-                                             styleClass="text-input small-input"/>
+                                             requiredMessage="You must enter position"
+                                             styleClass="text-input medium-input"/>
                                 <h:message for="position"
                                            infoClass="input-notification success png_bg"
                                            warnClass="input-notification attention png_bg"
@@ -68,8 +68,8 @@
                             <p>
                                 <label>Working place</label>
                                 <h:inputText value="#{vacancyMB.vacancy.workingPlace}"
-                                             id="workingplace"                                             
-                                             styleClass="text-input small-input"/>
+                                             id="workingplace"
+                                             styleClass="text-input medium-input"/>
                             </p>
                             <p>
                                 <label>Work type</label>
@@ -80,9 +80,44 @@
                                 </h:selectOneMenu>
                             </p>
                             <p>
+                                <label>Entitlement</label>
+                                <h:inputTextarea value="#{vacancyMB.vacancy.entitlement}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtEntitlement"/>
+                            </p>
+                            <p>
+                                <label>Probationary Period</label>
+                                <h:inputTextarea value="#{vacancyMB.vacancy.probationaryPeriod}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtPeriod"/>
+                            </p>
+                            <p>
+                                <label>Description</label>
+                                <h:inputTextarea value="#{vacancyMB.vacancy.description}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtDescription"/>
+                            </p>
+                            <p>
+                                <label>Deadline</label>
+                                <p:calendar value="#{vacancyMB.vacancy.deadline}"
+                                            styleClass="remove"/>
+                            </p>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box column-right">
+                <div class="content-box-header">
+                    <h3>Requirement Information</h3>
+                </div><!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <fieldset>
+                            <p>
                                 <label> Minimum Salary</label>
                                 <h:inputText id="MininumSalary"
-                                             value="#{vacancyMB.vacancy.minimumSalary}"                                             
+                                             value="#{vacancyMB.vacancy.minimumSalary}"
                                              validator="#{vacancyMB.validateMinSalary}"
                                              converterMessage="You must enter number"
                                              styleClass="text-input small-input">
@@ -101,21 +136,17 @@
                                              validator="#{vacancyMB.validateMaxSalary}"
                                              converterMessage="You must enter number"
                                              styleClass="text-input small-input"/>
-                                <h:message for="MaximumSalary" id="msgMaximumSalary"
-                                           showSummary="true"
+                                <h:message for="MaximumSalary"
+                                           id="msgMaximumSalary"
                                            infoClass="input-notification success png_bg"
                                            warnClass="input-notification attention png_bg"
                                            errorClass="input-notification error png_bg"/>
                             </p>
                             <p>
                                 <label>Skill Requirement</label>
-                                <h:inputText value="#{vacancyMB.vacancy.skillRequirement}"
-                                             styleClass="text-input small-input"/>
-                            </p>
-                            <p>
-                                <label>Entitlement</label>
-                                <h:inputText value="#{vacancyMB.vacancy.entitlement}"
-                                             styleClass="text-input small-input"/>
+                                <h:inputTextarea value="#{vacancyMB.vacancy.skillRequirement}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtSkill"/>
                             </p>
                             <p>
                                 <label>Minimum Age</label>
@@ -133,7 +164,9 @@
                                              styleClass="text-input small-input"
                                              id="maxAge" validator="#{vacancyMB.validateMaxAge}"
                                              converterMessage="Your must enter number"/>
-                                <h:message for="maxAge" infoClass="input-notification success png_bg"
+                                <h:message for="maxAge"
+                                           id="msgMaximumAge"
+                                           infoClass="input-notification success png_bg"
                                            warnClass="input-notification attention png_bg"
                                            errorClass="input-notification error png_bg"/>
                             </p>
@@ -147,8 +180,9 @@
                             </p>
                             <p>
                                 <label>Degree</label>
-                                <h:inputText value="#{vacancyMB.vacancy.degree}"
-                                             styleClass="text-input small-input"/>
+                                <h:inputTextarea value="#{vacancyMB.vacancy.degree}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtDegree"/>
                             </p>
                             <p>
                                 <label>Year Of Experience</label>
@@ -161,54 +195,32 @@
                                            warnClass="input-notification attention png_bg"
                                            errorClass="input-notification error png_bg"/>
                             </p>
-                            <p>
-                                <label>Probationary Period</label>
-                                <h:inputText value="#{vacancyMB.vacancy.probationaryPeriod}"
-                                             styleClass="text-input small-input"/>
-                            </p>
-                            <p>
-                                <label>Description</label>
-                                <h:inputTextarea value="#{vacancyMB.vacancy.description}"
-                                                 styleClass="text-input small-input"/>
-                            </p>
-                            <p>
-                                <label>Deadline</label>
-                                <p:calendar value="#{vacancyMB.vacancy.deadline}"/>
-                            </p>                            
-
-                            <h:panelGroup rendered="#{not empty vacancyMB.vacancy.vacancyID}">
-                                <p>
-                                <label>Status</label>
-                                <h:selectOneMenu value="#{vacancyMB.vacancy.status}"
-                                                 styleClass="text-input small-input">
-                                    <f:selectItem  itemLabel="Open" itemValue="#{vacancyMB.vacancy.status}"/>
-                                    <f:selectItem itemLabel="Suspended" itemValue="#{vacancyMB.vacancy.status}’"/>
-                                    <f:selectItem itemLabel="Close" itemValue="#{vacancyMB.vacancy.status}’"/>
-                                </h:selectOneMenu>
-                            </p>
-                            </h:panelGroup>
-
-                            <h:panelGroup rendered="#{empty vacancyMB.vacancy.vacancyID}">
-                                <p>
-                                    <h:commandButton id="btnNew" styleClass="button" value="Create new" action="#{vacancyMB.insertVacancy}"/>
-                                </p>
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{not empty vacancyMB.vacancy.vacancyID}">
-                                <p>
-                                    <h:commandButton id="btnSave" styleClass="button" value="Save changes" action="#{vacancyMB.editVacancy}"/>
-                                </p>
-                            </h:panelGroup>
                         </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"/>
+            <p>
+                <h:panelGroup rendered="#{empty vacancyMB.vacancy.vacancyID}">
+                    <h:commandButton id="btnNew"
+                                     styleClass="button"
+                                     value="Create new"
+                                     action="#{vacancyMB.insertVacancy}"/>
 
-                        <div class="clear"></div><!-- End .clear -->
-
-                    </h:form>
-
-                </div> <!-- End #tab2 -->
-
-            </div> <!-- End .content-box-content -->
-
-        </div> <!-- End .content-box -->
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty vacancyMB.vacancy.vacancyID}">
+                    <h:commandButton id="btnSave"
+                                     styleClass="button"
+                                     value="Save changes"
+                                     action="#{vacancyMB.editVacancy}">
+                        <f:param name="id" value="#{param.id}"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </p>
+        </h:form>
+        <script type="text/javascript" >
+            $('.remove input').removeClass('ui-inputfield');
+        </script>
     </ui:define>
 
 </ui:composition>

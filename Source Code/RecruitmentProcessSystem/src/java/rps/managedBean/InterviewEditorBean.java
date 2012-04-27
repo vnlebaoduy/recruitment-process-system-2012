@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import rps.business.EmployeeService;
 import rps.business.InterviewService;
+import rps.entities.Account;
 import rps.entities.Applicant;
 import rps.entities.Employee;
 import rps.entities.Interview;
@@ -27,7 +29,7 @@ import rps.entities.Interview;
  */
 @ManagedBean
 @ViewScoped
-public class InterviewEditorBean {
+public class InterviewEditorBean implements Serializable {
 
     private InterviewService interviewService;
 
@@ -296,6 +298,29 @@ public class InterviewEditorBean {
     private void resetForm() {
         setInterview(null);
         setEmployeeID(null);
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="OTHER INTERVIEWS">
+    private List<Interview> otherInterview;
+
+    public List<Interview> getOtherInterviews() {
+        if (otherInterview == null) {
+            otherInterview = new ArrayList<Interview>();
+            if (getInterview() != null) {
+                AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                        getExternalContext().getSessionMap().get("accountMB");
+                if (bean != null) {
+                    if (bean.isInterviewer()) {
+                        otherInterview = interviewService.getCurrentInterviews(
+                                bean.getAccount().getEmployee());
+                    } else if (bean.ishRGroup()) {
+                        otherInterview = interviewService.getRejectedInterviews();
+                    }
+                    otherInterview.remove(getInterview());
+                }
+            }
+        }
+        return otherInterview;
     }
     // </editor-fold>
     // </editor-fold>

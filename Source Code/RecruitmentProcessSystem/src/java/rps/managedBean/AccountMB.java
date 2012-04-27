@@ -9,8 +9,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.primefaces.event.CloseEvent;
 import rps.business.AccountService;
+import rps.business.SystemSettings;
 import rps.entities.Account;
 
 /**
@@ -19,7 +22,7 @@ import rps.entities.Account;
  */
 @ManagedBean
 @SessionScoped
-public class AccountMB implements Serializable{
+public class AccountMB implements Serializable {
 
     private Account account;
     private String password;
@@ -51,7 +54,6 @@ public class AccountMB implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
-
     private AccountService accountService;
 
     /** Creates a new instance of AccountMB */
@@ -64,6 +66,13 @@ public class AccountMB implements Serializable{
         Account acc = accountService.getAccount(account.getUserName(), account.getPassword());
         if (acc != null) {
             this.setAccount(acc);
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            HttpSession session = request.getSession();
+            if (session.getAttribute("account") == null) {
+                session.setAttribute("account", acc);
+            }
+            SystemSettings.getInstance().InitMenuBar(account);
+            SystemSettings.getInstance().InitSideBar(account);
             redirect = "info.xhtml?faces-redirect=true";
         } else {
             FacesMessage msg = new FacesMessage("Username or password is incorrect.");
@@ -81,13 +90,13 @@ public class AccountMB implements Serializable{
             accountService.commitTransaction();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Form closed", "Your password has been changed");
+                    "INFORMATION", "Your password has been changed");
 
             facesContext.addMessage(null, message);
         } catch (Exception ex) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error occured", ex.getMessage());
+                    "ERROR", ex.getMessage());
 
             facesContext.addMessage(null, message);
         }
@@ -101,7 +110,7 @@ public class AccountMB implements Serializable{
             accountService.commitTransaction();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "Form closed", "Your password has not been changed");
+                    "WARNING", "Your password has not been changed");
 
             facesContext.addMessage(null, message);
         }
@@ -111,7 +120,35 @@ public class AccountMB implements Serializable{
         FacesContext facesContext = FacesContext.getCurrentInstance();
         FacesMessage message = new FacesMessage();
         facesContext.addMessage("confirmPassword", message);
+    }
+    private boolean hRGroup;
+    private boolean admin;
+    private boolean interviewer;
 
-        
+    public boolean isAdmin() {
+        admin = accountService.isAdmin(account.getUserName());
+        return admin;
+    }
+
+    public boolean ishRGroup() {
+        hRGroup = accountService.isHRGroup(account.getUserName());
+        return hRGroup;
+    }
+
+    public boolean isInterviewer() {
+        interviewer = accountService.isInterviewer(account.getUserName());
+        return interviewer;
+    }
+
+    public String logout() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpSession session = request.getSession();
+        if (session.getAttribute("account") != null) {
+            session.removeAttribute("account");
+        }
+        account = null;
+        password = "";
+        confirm = "";
+        return "login.xhtml?faces-redirect=true";
     }
 }

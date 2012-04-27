@@ -7,6 +7,7 @@ package rps.business;
 import java.util.List;
 import rps.dataaccess.RoleDA;
 import rps.entities.Account;
+import rps.entities.Role;
 
 /**
  *
@@ -22,5 +23,9 @@ public class RoleService extends AbstractService {
 
     public List<Account> getAccounts(String roleName){
         return roleDA.find(roleName).getAccountList();
+    }
+
+    public Role getRole(String roleName){
+        return roleDA.find(roleName);
     }
 }

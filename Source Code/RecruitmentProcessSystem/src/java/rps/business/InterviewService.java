@@ -53,15 +53,31 @@ public class InterviewService extends AbstractService {
     public List<Interview> getInterviews(Date date) {
         long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
         Date endedDate = new Date(date.getTime() + interval);
-        return interviewDA.searchInterview(date, endedDate, -1);
+        return interviewDA.searchInterview(null, date, endedDate, -1);
+    }
+
+    public List<Interview> getInterviews(Employee employee, Date date) {
+        long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
+        Date endedDate = new Date(date.getTime() + interval);
+        return interviewDA.searchInterview(employee, date, endedDate, -1);
     }
 
     public List<Interview> getInterviews(Date startedDate, Date endedDate) {
-        return interviewDA.searchInterview(startedDate, endedDate, -1);
+        return interviewDA.searchInterview(null, startedDate, endedDate, -1);
+    }
+
+    public List<Interview> getEventInterviews(Employee employee,
+            Date startedDate, Date endedDate) {
+        return interviewDA.searchInterview(employee, startedDate, endedDate, -1);
     }
 
     public List<Interview> getInterviews(Date startedDate, Date endedDate, int status) {
-        return interviewDA.searchInterview(startedDate, endedDate, status);
+        return interviewDA.searchInterview(null, startedDate, endedDate, status);
+    }
+
+    public List<Interview> getInterviews(Employee employee,
+            Date startedDate, Date endedDate, int status) {
+        return interviewDA.searchInterview(employee, startedDate, endedDate, status);
     }
 
     public List<Interview> getInterviews(Employee employee,
@@ -77,7 +93,13 @@ public class InterviewService extends AbstractService {
     public List<Interview> getInterviews(Date date, int status) {
         long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
         Date endedDate = new Date(date.getTime() + interval);
-        return interviewDA.searchInterview(date, endedDate, status);
+        return interviewDA.searchInterview(null, date, endedDate, status);
+    }
+
+    public List<Interview> getInterviews(Employee employee, Date date, int status) {
+        long interval = 24 * 1000 * 60 * 60; // Time 1 day - miliseconds
+        Date endedDate = new Date(date.getTime() + interval);
+        return interviewDA.searchInterview(employee, date, endedDate, status);
     }
 
     public List<Interview> getInterviews(Employee employee, int status) {
@@ -90,6 +112,18 @@ public class InterviewService extends AbstractService {
         List<Interview> list = interviewDA.findAbsolutely(
                 new String[]{"applicant", "vacancy", "status", "aVStatus"},
                 new Object[]{applicant, vacancy, status, aVStatus},
+                null, null, -1, -1);
+        if (list != null && list.size() == 1) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public Interview getInterviews(Applicant applicant, Vacancy vacancy,
+            int status) {
+        List<Interview> list = interviewDA.findAbsolutely(
+                new String[]{"applicant", "vacancy", "status"},
+                new Object[]{applicant, vacancy, status},
                 null, null, -1, -1);
         if (list != null && list.size() == 1) {
             return list.get(0);
@@ -116,12 +150,25 @@ public class InterviewService extends AbstractService {
         return interviewDA.getNotRemoveInterview(employee, 1);
     }
 
+    public List<Interview> getRejectedInterviews() {
+        return interviewDA.searchInterview(null, null, null, -100);
+    }
+
     public Interview getInterview(String id) {
         try {
             return interviewDA.find(id);
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public Interview getInterviewNotRemove(Applicant applicant, Vacancy vacancy,
+            int aVStatus) {
+        List<Interview> list = interviewDA.searchInterviewNotRemove(vacancy, applicant, aVStatus);
+        if (list != null && list.size() == 1) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public List<Applicant> getApplicantsByAVStatus(int avStatus) {
@@ -164,7 +211,14 @@ public class InterviewService extends AbstractService {
         }
         return vacancies;
     }
-    
+
+    public List<Interview> getInterviews(Applicant applicant, int status) {
+        return interviewDA.findAbsolutely(
+                new String[]{"applicant", "status"},
+                new Object[]{applicant, status},
+                null, null, -1, -1);
+    }
+
     public Interview updateInterview(String id, Employee employee, Vacancy vacancy,
             Applicant applicant, Date startedTime, Date endedTime, int status,
             int avStatus)
@@ -182,6 +236,10 @@ public class InterviewService extends AbstractService {
         interview.setAVStatus(avStatus);
         interviewDA.edit(interview);
         return interview;
+    }
+
+    public void removeInterview(Interview interview) {
+        interviewDA.remove(interview);
     }
 
     public void reviewInterview(Interview interview) throws Exception {

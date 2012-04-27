@@ -4,9 +4,11 @@
  */
 package rps.business;
 
+import java.util.List;
 import rps.dataaccess.AccountDA;
 import rps.dataaccess.FindResult;
 import rps.entities.Account;
+import rps.entities.Role;
 
 /**
  *
@@ -37,8 +39,8 @@ public class AccountService extends AbstractService {
         }
         return account;
     }
-    
-    public Account updateAccount(String userName, boolean isChanged){
+
+    public Account updateAccount(String userName, boolean isChanged) {
         Account account = accountDA.find(userName);
         if (account != null) {
             account.setIsChangedPassword(isChanged);
@@ -51,4 +53,25 @@ public class AccountService extends AbstractService {
         return accountDA.find(userName).getIsChangedPassword();
     }
 
+    public boolean isAdmin(String userName) {
+        return checkRole(userName, "Administrator");
+    }
+
+    public boolean isHRGroup(String userName) {
+        return checkRole(userName, "HR Group");
+    }
+
+    public boolean isInterviewer(String userName) {
+        return checkRole(userName, "Interviewer");
+    }
+
+    private boolean checkRole(String userName, String roleName) {
+        List<Role> roles = accountDA.find(userName).getRoleList();
+        for (Role role : roles) {
+            if (role.getRoleName().equalsIgnoreCase(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

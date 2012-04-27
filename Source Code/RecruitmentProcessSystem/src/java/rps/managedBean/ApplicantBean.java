@@ -191,7 +191,7 @@ public class ApplicantBean implements Serializable {
             applicant = applicantService.addApplicant(applicant.getFirstName(), applicant.getLastName(),
                     applicant.getGender(), applicant.getDob(), applicant.getPhoneNumber(),
                     applicant.getEmail(), applicant.getAddress(), applicant.getSalaryRequirement(),
-                    applicant.getLanguage(), applicant.getYearOfExperience(), applicant.getLanguage(),
+                    applicant.getLanguage(), applicant.getYearOfExperience(), applicant.getDegree(),
                     applicant.getSkill(), applicant.getAward(), null);
             applicantService.commitTransaction();
             if (!listVacancies.isEmpty()) {
@@ -269,7 +269,7 @@ public class ApplicantBean implements Serializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return "applicants.html";
+        return "applicants.html?faces-redirect=true";
     }
     // </editor-fold>
     // </editor-fold>
