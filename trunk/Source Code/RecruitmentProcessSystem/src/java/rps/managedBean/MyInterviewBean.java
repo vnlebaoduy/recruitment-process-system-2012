@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
@@ -19,7 +20,7 @@ import rps.entities.Interview;
  */
 @ManagedBean
 @RequestScoped
-public class MyInterviewBean {
+public class MyInterviewBean implements Serializable {
 
     private InterviewService interviewService;
 
@@ -37,8 +38,12 @@ public class MyInterviewBean {
                 AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
                         getExternalContext().getSessionMap().get("accountMB");
                 if (bean != null) {
-                    myCurrentInterviews = interviewService.getCurrentInterviews(
-                            bean.getAccount().getEmployee());
+                    if (bean.isInterviewer()) {
+                        myCurrentInterviews = interviewService.getCurrentInterviews(
+                                bean.getAccount().getEmployee());
+                    } else if (bean.ishRGroup()) {
+                        myCurrentInterviews = interviewService.getRejectedInterviews();
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -56,16 +61,34 @@ public class MyInterviewBean {
 
     public String getMsgNumber() {
         int num = getNumberMyCurrentInterview();
-        switch (num) {
-            case 0:
-                msgNumber = "You have not any currently inteview scheduled.";
-                break;
-            case 1:
-                msgNumber = "You have currently 1 inteview scheduled.";
-                break;
-            default:
-                msgNumber = "You have currently " + num + " inteviews scheduled.";
-                break;
+        AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                getExternalContext().getSessionMap().get("accountMB");
+        if (bean != null) {
+            if (bean.isInterviewer()) {
+                switch (num) {
+                    case 0:
+                        msgNumber = "You have not any currently inteview scheduled.";
+                        break;
+                    case 1:
+                        msgNumber = "You have currently 1 inteview scheduled.";
+                        break;
+                    default:
+                        msgNumber = "You have currently " + num + " inteviews scheduled.";
+                        break;
+                }
+            } else if (bean.ishRGroup()) {
+                switch (num) {
+                    case 0:
+                        msgNumber = "You have not any rejected inteview.";
+                        break;
+                    case 1:
+                        msgNumber = "You have currently 1 rejected inteview.";
+                        break;
+                    default:
+                        msgNumber = "You have currently " + num + " rejected inteviews.";
+                        break;
+                }
+            }
         }
         return msgNumber;
     }

@@ -116,6 +116,7 @@
                                                        var="applicant"
                                                        itemLabel="#{applicant.firstName} #{applicant.lastName}"
                                                        itemValue="#{applicant.applicantID}"/>
+                                        <f:ajax execute="@this" render="@form"/>
                                     </h:selectOneMenu>
                                     <h:commandButton image="resources/images/icons/calendar.png"
                                                      title="View schedules"

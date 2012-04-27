@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import rps.business.ApplicantService;
 import rps.business.InterviewService;
+import rps.business.VacancyService;
 import rps.entities.Applicant;
 import rps.entities.Interview;
 
@@ -22,7 +24,7 @@ import rps.entities.Interview;
  */
 @ManagedBean
 @RequestScoped
-public class ManageInterviewBean {
+public class ManageInterviewBean implements Serializable {
 
     private InterviewService interviewService;
 
@@ -42,14 +44,35 @@ public class ManageInterviewBean {
         try {
             Date date = (Date) obj;
             if (date != null) {
-                if (search) {
-                    if (status == -1) {
-                        interviews = interviewService.getInterviews(date);
-                    } else {
-                        interviews = interviewService.getInterviews(date, status);
+                AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                        getExternalContext().getSessionMap().get("accountMB");
+                if (bean != null) {
+                    if (bean.isInterviewer()) {
+                        if (search) {
+                            if (status == -1) {
+                                interviews = interviewService.getInterviews(
+                                        bean.getAccount().getEmployee(), date);
+                            } else {
+                                interviews = interviewService.getInterviews(
+                                        bean.getAccount().getEmployee(), date, status);
+                            }
+                        } else {
+                            interviews = interviewService.getInterviews(
+                                    bean.getAccount().getEmployee(), date);
+                        }
+
+                    } else if (bean.ishRGroup()) {
+
+                        if (search) {
+                            if (status == -1) {
+                                interviews = interviewService.getInterviews(date);
+                            } else {
+                                interviews = interviewService.getInterviews(date, status);
+                            }
+                        } else {
+                            interviews = interviewService.getInterviews(date);
+                        }
                     }
-                } else {
-                    interviews = interviewService.getInterviews(date);
                 }
                 return interviews;
             }
@@ -65,7 +88,7 @@ public class ManageInterviewBean {
         editInterview(interview);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "Postpone interview", "The interview has been postponed.");
+                "WARNING", "The interview has been postponed");
         facesContext.addMessage(null, message);
     }
 
@@ -75,7 +98,7 @@ public class ManageInterviewBean {
         editInterview(interview);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Remove interview", "The interview has been removed.");
+                "INFORMATION", "The interview has been removed");
         facesContext.addMessage(null, message);
     }
 
@@ -85,7 +108,7 @@ public class ManageInterviewBean {
         editInterview(interview);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Reopen interview", "The interview has been reopened.");
+                "INFORMATION", "The interview has been reopened");
         facesContext.addMessage(null, message);
     }
 
@@ -115,10 +138,9 @@ public class ManageInterviewBean {
         return reviewInterview;
     }
 
-    public void review(String id) {
-        reviewInterview = interviewService.getInterview(id);
-    }
-
+//    public void review(String id) {
+//        reviewInterview = interviewService.getInterview(id);
+//    }
     public void changeStatus() {
         try {
             editInterview(reviewInterview);
@@ -160,6 +182,8 @@ public class ManageInterviewBean {
                     applicant.getAward(), applicant.getInterviewList(),
                     applicant.getCreatedDate(), applicant.getStatus());
             service.commitTransaction();
+            VacancyService vacancyService = new VacancyService();
+            vacancyService.afterHiredApplicant(reviewInterview.getVacancy());
             if (message != null) {
                 facesContext.addMessage(null, message);
             }

@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import rps.business.ApplicantService;
 import rps.business.EmployeeService;
 import rps.business.InterviewService;
@@ -29,7 +31,7 @@ import rps.entities.Vacancy;
  */
 @ManagedBean
 @ViewScoped
-public class InterviewBean {
+public class InterviewBean implements Serializable {
 
     private InterviewService interviewService;
 
@@ -54,6 +56,12 @@ public class InterviewBean {
                 case -100:
                     value = "Rejected";
                     break;
+                case 99:
+                    value = "Postpone";
+                    break;
+                case 1:
+                    value = "Remove";
+                    break;
                 default:
                     break;
             }
@@ -72,7 +80,22 @@ public class InterviewBean {
         try {
             Date date = (Date) obj;
             if (date != null) {
-                return interviewService.getInterviews(date).size();
+                HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                String url = request.getRequestURL().toString();
+                String pageName = url.substring(url.lastIndexOf("/") + 1);
+                if (pageName.equalsIgnoreCase("interviews.xhtml")) {
+                    return interviewService.getInterviews(date).size();
+                }
+                AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                        getExternalContext().getSessionMap().get("accountMB");
+                if (bean != null) {
+                    if (bean.isInterviewer()) {
+                        return interviewService.getInterviews(
+                                bean.getAccount().getEmployee(), date).size();
+                    } else if (bean.ishRGroup()) {
+                        return interviewService.getInterviews(date).size();
+                    }
+                }
             }
             return 0;
         } catch (Exception ex) {
@@ -187,14 +210,12 @@ public class InterviewBean {
 
     public List<Vacancy> getVacancies() {
         try {
-            if (vacancies == null) {
-                ApplicantService applicantService = new ApplicantService();
-                Applicant applicant = applicantService.getApplicant(getApplicantID());
-                if (applicant != null) {
-                    vacancies = interviewService.getVacancies(applicant);
-                } else {
-                    vacancies = new ArrayList<Vacancy>();
-                }
+            ApplicantService applicantService = new ApplicantService();
+            Applicant applicant = applicantService.getApplicant(getApplicantID());
+            if (applicant != null) {
+                vacancies = interviewService.getVacancies(applicant);
+            } else {
+                vacancies = new ArrayList<Vacancy>();
             }
         } catch (Exception ex) {
             ex.printStackTrace();

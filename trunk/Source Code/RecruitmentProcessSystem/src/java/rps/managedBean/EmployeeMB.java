@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import rps.business.EmployeeService;
@@ -15,7 +16,7 @@ import rps.entities.Employee;
  */
 @ManagedBean
 @RequestScoped
-public class EmployeeMB {
+public class EmployeeMB implements Serializable{
 
     private Employee employee;
 

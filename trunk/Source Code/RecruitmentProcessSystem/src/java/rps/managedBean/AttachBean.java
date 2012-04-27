@@ -60,24 +60,33 @@ public class AttachBean implements Serializable {
     public void setListDropped(List<Vacancy> listDropped) {
         this.listDropped = listDropped;
     }
+    private String temURL;
 
     public List<Vacancy> getListAvailable() {
         try {
-            if (listDropped == null) {
-                listAvailable = vacancyService.getAvailableVacancies();
-            } else {
-                if (getApplicantID() != null && !getApplicantID().equals("")) {
-                    try {
-                        Applicant applicant = applicantService.getApplicant(getApplicantID());
-                        if (applicant != null) {
-                            listAvailable = vacancyService.getAvailableVacancies(applicant);
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String currentURL = request.getRequestURL().toString();
+            if (temURL == null) {
+                temURL = currentURL;
+                listAvailable = null;
+            }
+            if (listAvailable == null) {
+                if (listDropped == null) {
+                    listAvailable = vacancyService.getAvailableVacancies();
+                } else {
+                    if (getApplicantID() != null && !getApplicantID().equals("")) {
+                        try {
+                            Applicant applicant = applicantService.getApplicant(getApplicantID());
+                            if (applicant != null) {
+                                listAvailable = vacancyService.getAvailableVacancies(applicant);
+                            }
+                        } catch (Exception ex) {
+                            FacesMessage message = new FacesMessage(
+                                    FacesMessage.SEVERITY_WARN,
+                                    "WARNING",
+                                    "Vacancies not found!");
+                            FacesContext.getCurrentInstance().addMessage(null, message);
                         }
-                    } catch (Exception ex) {
-                        FacesMessage message = new FacesMessage(
-                                FacesMessage.SEVERITY_WARN,
-                                "WARNING",
-                                "Vacancies not found!");
-                        FacesContext.getCurrentInstance().addMessage(null, message);
                     }
                 }
             }
@@ -89,18 +98,30 @@ public class AttachBean implements Serializable {
     }
 
     public List<Vacancy> getListDropped() {
-        if (getApplicantID() != null && !getApplicantID().equals("")) {
-            try {
-                Applicant applicant = applicantService.getApplicant(getApplicantID());
-                if (applicant != null) {
-                    listDropped = vacancyService.getAttachedVacancies(applicant);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String currentURL = request.getRequestURL().toString();
+        if (temURL == null) {
+            temURL = currentURL;
+            listDropped = null;
+        }
+        if (listDropped == null) {
+            if (currentURL.contains("applicant.xhtml")) {
+                listDropped = new ArrayList<Vacancy>();
+            } else if (currentURL.contains("attach.xhtml")) {
+                if (getApplicantID() != null && !getApplicantID().equals("")) {
+                    try {
+                        Applicant applicant = applicantService.getApplicant(getApplicantID());
+                        if (applicant != null) {
+                            listDropped = vacancyService.getAttachedVacancies(applicant);
+                        }
+                    } catch (Exception ex) {
+                        FacesMessage message = new FacesMessage(
+                                FacesMessage.SEVERITY_WARN,
+                                "WARNING",
+                                "Vacancies not found!");
+                        FacesContext.getCurrentInstance().addMessage(null, message);
+                    }
                 }
-            } catch (Exception ex) {
-                FacesMessage message = new FacesMessage(
-                        FacesMessage.SEVERITY_WARN,
-                        "WARNING",
-                        "Vacancies not found!");
-                FacesContext.getCurrentInstance().addMessage(null, message);
             }
         }
         return listDropped;
@@ -167,6 +188,7 @@ public class AttachBean implements Serializable {
         return applicants;
     }
     private String applicantID;
+    private String tempID;
 
     public String getApplicantID() {
         if (applicantID == null) {
@@ -179,6 +201,12 @@ public class AttachBean implements Serializable {
                     applicantID = getApplicants().get(0).getApplicantID();
                 }
             }
+        } else {
+            if (tempID == null || !tempID.equals(applicantID)) {
+                tempID = applicantID;
+                listAvailable = null;
+                listDropped = null;
+            }
         }
         return applicantID;
     }
@@ -189,16 +217,55 @@ public class AttachBean implements Serializable {
 
     public boolean scheduled(String vID) {
         try {
-            Applicant applicant = applicantService.getApplicant(getApplicantID());
-            Vacancy vacancy = vacancyService.getDetailVacancy(vID);
-            Interview interview = interviewService.getInterviews(applicant, vacancy);
-            if(interview.getAVStatus()==99){
-                return true;
+            if (vID != null || !vID.equals("")) {
+                Applicant applicant = applicantService.getApplicant(getApplicantID());
+                Vacancy vacancy = vacancyService.getDetailVacancy(vID);
+                Interview interview = interviewService.getInterviews(applicant, vacancy);
+                if (interview!=null && interview.getAVStatus() == 99) {
+                    return true;
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public void save() {
+        try {
+            Applicant applicant = applicantService.getApplicant(getApplicantID());
+            List<Vacancy> oldList = vacancyService.getAttachedVacancies(applicant);
+            List<Vacancy> newList = listDropped;
+            applicantService.attachVacancies(applicant, oldList, newList);
+            FacesMessage message = new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "INFORMATION",
+                    "All of changes have been saved");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    private Interview interview;
+
+    public Interview getInterview() {
+        if (interview == null) {
+            interview = new Interview();
+        }
+        return interview;
+    }
+
+    public void viewSchedule() {
+        try {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String paramVID = params.get("vid");
+            Vacancy vacancy = vacancyService.getDetailVacancy(paramVID);
+            Applicant applicant = applicantService.getApplicant(getApplicantID());
+            interview = interviewService.getInterviewNotRemove(applicant, vacancy, 99);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     // </editor-fold>
 }

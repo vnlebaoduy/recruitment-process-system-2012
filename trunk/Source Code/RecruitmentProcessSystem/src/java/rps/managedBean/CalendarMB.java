@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -241,10 +239,28 @@ public class CalendarMB implements Serializable {
             List<Date> dates = new ArrayList<Date>();
             List<Interview> list = new ArrayList<Interview>();
             InterviewService service = new InterviewService();
-            if (search) {
-                list = service.getInterviews(getStartTime(), getEndTime(), status);
-            } else {
-                list = service.getInterviews(firstDate, lastDate);
+
+            AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                    getExternalContext().getSessionMap().get("accountMB");
+            if (bean != null) {
+                if (bean.isInterviewer()) {
+
+                    if (search) {
+                        list = service.getInterviews(bean.getAccount().getEmployee(),
+                                getStartTime(), getEndTime(), status);
+                    } else {
+                        list = service.getEventInterviews(bean.getAccount().getEmployee(),
+                                firstDate, lastDate);
+                    }
+
+                } else if (bean.ishRGroup()) {
+
+                    if (search) {
+                        list = service.getInterviews(getStartTime(), getEndTime(), status);
+                    } else {
+                        list = service.getInterviews(firstDate, lastDate);
+                    }
+                }
             }
             for (Interview s : list) {
                 Date current = new Date(Date.parse(dateFormat(s.getStartedTime())));
@@ -267,13 +283,31 @@ public class CalendarMB implements Serializable {
         String time = "";
         String type = "";
         InterviewService service = new InterviewService();
-        if (search) {
-            num = service.getInterviews(getStartTime(), getEndTime(), status).size();
-            time = " from " + dateTimeFormat(getStartTime()) + " to "
-                    + dateTimeFormat(getEndTime());
-        } else {
-            num = service.getInterviews(getFirstDate(), getLastDate()).size();
-            time = " in " + monthFullFormat(getFirstDate());
+        AccountMB bean = (AccountMB) FacesContext.getCurrentInstance().
+                getExternalContext().getSessionMap().get("accountMB");
+        if (bean != null) {
+            if (bean.isInterviewer()) {
+
+                if (search) {
+                    num = service.getInterviews(bean.getAccount().getEmployee(),
+                            getStartTime(), getEndTime(), status).size();
+                    time = " from " + dateTimeFormat(getStartTime()) + " to "
+                            + dateTimeFormat(getEndTime());
+                } else {
+                    num = service.getInterviews(bean.getAccount().getEmployee(),
+                            getFirstDate(), getLastDate()).size();
+                    time = " in " + monthFullFormat(getFirstDate());
+                }
+            } else if (bean.ishRGroup()) {
+                if (search) {
+                    num = service.getInterviews(getStartTime(), getEndTime(), status).size();
+                    time = " from " + dateTimeFormat(getStartTime()) + " to "
+                            + dateTimeFormat(getEndTime());
+                } else {
+                    num = service.getInterviews(getFirstDate(), getLastDate()).size();
+                    time = " in " + monthFullFormat(getFirstDate());
+                }
+            }
         }
         switch (num) {
             case 0:

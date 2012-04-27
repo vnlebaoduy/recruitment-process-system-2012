@@ -4,6 +4,7 @@
  */
 package rps.managedBean;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -15,7 +16,7 @@ import rps.entities.Interview;
  */
 @ManagedBean
 @ViewScoped
-public class ConflictTimeBean {
+public class ConflictTimeBean implements Serializable{
 
     /** Creates a new instance of ConflictTimeBean */
     public ConflictTimeBean() {
