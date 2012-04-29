@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import rps.business.Page;
 import rps.business.PageGroup;
 import rps.business.SystemSettings;
+import rps.entities.Account;
 
 /**
  *
@@ -24,20 +25,25 @@ public class SystemBean implements Serializable{
     private SystemSettings systemSettings;
 
     public SystemSettings getSystemSettings() {
+        if(systemSettings==null){
+            HttpServletRequest request = (HttpServletRequest)
+                FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            systemSettings = (SystemSettings)request.getSession().getAttribute("setting");
+        }
         return systemSettings;
     }
 
     /** Creates a new instance of SystemBean */
     public SystemBean() {
-        systemSettings = SystemSettings.getInstance();
         styleCSS();
     }
 
     private void styleCSS() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest)
+                FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String url = request.getRequestURL().toString();
         String pageName = url.substring(url.lastIndexOf("/")+1);
-        for (PageGroup pageGroup : systemSettings.getListPages()) {
+        for (PageGroup pageGroup : getSystemSettings().getListPages()) {
             boolean currentPageGroup = false;
             for (Page page : pageGroup.getPages()) {
                 if (page.getUrl().equalsIgnoreCase(pageName)) {

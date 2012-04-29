@@ -181,13 +181,30 @@ public class VacancyService extends AbstractService {
         return list;
     }
 
-    public void afterHiredApplicant(Vacancy vacancy) {
-        List<Applicant> list = getApplicantHired(vacancy.getVacancyID());
-        if (list.size() == vacancy.getNumberRequirement()) {
+    public boolean isClosedVacancy(Interview interview) throws Exception {
+        List<Applicant> list = getApplicantHired(interview.getVacancy().getVacancyID());
+        if (list.size() == interview.getVacancy().getNumberRequirement()) {
             beginTransaction();
-            vacancy.setStatus(1);
-            vacancyDA.edit(vacancy);
+            interview.getVacancy().setStatus(1);
+            vacancyDA.edit(interview.getVacancy());
             commitTransaction();
+
+            InterviewService interviewService = new InterviewService();
+            ApplicantService applicantService = new ApplicantService();
+            List<Interview> removeList = interviewService.getInterviews(
+                    interview.getVacancy(), 99);
+            for (Interview i : removeList) {
+                i.setStatus(1);
+                i.setAVStatus(-100);
+                interviewService.beginTransaction();
+                interviewService.updateInterview(i.getInterviewID(),
+                        i.getEmployee(), i.getVacancy(), i.getApplicant(),
+                        i.getStartedTime(), i.getEndedTime(), i.getStatus(), i.getAVStatus());
+                interviewService.commitTransaction();
+                applicantService.checkAvailabeInterviews(i.getApplicant());
+            }
+            return true;
         }
+        return false;
     }
 }

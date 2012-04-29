@@ -107,6 +107,20 @@ public class InterviewService extends AbstractService {
                 new Object[]{employee, status}, null, null, -1, -1);
     }
 
+    public List<Interview> getInterviews(Vacancy vacancy) {
+        return interviewDA.findAbsolutely("vacancy", vacancy);
+    }
+
+    public List<Interview> getInterviews(Applicant applicant) {
+        return interviewDA.findAbsolutely("applicant", applicant);
+    }
+
+    public List<Interview> getInterviews(Vacancy vacancy, int status) {
+        return interviewDA.findAbsolutely(new String[]{"vacancy", "aVStatus"},
+                new Object[]{vacancy, status}, new String[]{"startedTime"},
+                new String[]{"ASC"}, -1, -1);
+    }
+
     public Interview getInterviews(Applicant applicant, Vacancy vacancy,
             int status, int aVStatus) {
         List<Interview> list = interviewDA.findAbsolutely(
@@ -219,6 +233,13 @@ public class InterviewService extends AbstractService {
                 null, null, -1, -1);
     }
 
+    public List<Interview> getAvailableInterviews(Applicant applicant, int aVStatus) {
+        return interviewDA.findAbsolutely(
+                new String[]{"applicant", "aVStatus"},
+                new Object[]{applicant, aVStatus},
+                null, null, -1, -1);
+    }
+
     public Interview updateInterview(String id, Employee employee, Vacancy vacancy,
             Applicant applicant, Date startedTime, Date endedTime, int status,
             int avStatus)
@@ -243,18 +264,16 @@ public class InterviewService extends AbstractService {
     }
 
     public void reviewInterview(Interview interview) throws Exception {
-        List<Interview> list = getInterviewsLate(interview.getApplicant(), interview.getEndedTime());
+        List<Interview> list = getAvailableInterviews(interview.getApplicant(), 99);
         if (list != null && !list.isEmpty()) {
-            int num = 99;
             if (interview.getAVStatus() == 100) {
-                num = 1;
-            }
-            for (Interview i : list) {
-                beginTransaction();
-                updateInterview(i.getInterviewID(),
-                        i.getEmployee(), i.getVacancy(), i.getApplicant(),
-                        i.getStartedTime(), i.getEndedTime(), i.getStatus(), num);
-                commitTransaction();
+                for (Interview i : list) {
+                    beginTransaction();
+                    updateInterview(i.getInterviewID(),
+                            i.getEmployee(), i.getVacancy(), i.getApplicant(),
+                            i.getStartedTime(), i.getEndedTime(), 1, 1);
+                    commitTransaction();
+                }
             }
         }
     }

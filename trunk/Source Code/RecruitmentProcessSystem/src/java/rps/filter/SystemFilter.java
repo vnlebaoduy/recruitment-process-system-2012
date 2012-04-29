@@ -109,35 +109,37 @@ public class SystemFilter implements Filter {
     }
 
     private boolean accessPage(HttpSession session) {
-        String[] hrPages = {"applicant.xhtml", "applicants.xhtml", "attach.xhtml",
+        String[] hrPages = {"applicant-info.xhtml", "applicant.xhtml",
+            "applicants.xhtml", "attach.xhtml",
             "error.xhtml", "info.xhtml", "interview.xhtml", "interviews.xhtml", "login.xhtml",
             "manage-interview.xhtml", "processing-interview.xhtml", "vacancy.xhtml",
-            "vacancies.xhtml"};
-        String[] interviewerPages = {"applicants.xhtml", "error.xhtml", "info.xhtml",
+            "vacancies.xhtml", "vacancy-info.xhtml"};
+        String[] interviewerPages = {"applicant-info.xhtml", "applicants.xhtml",
+            "error.xhtml", "info.xhtml",
             "interviews.xhtml", "login.xhtml", "processing-interview.xhtml",
-            "vacancies.xhtml"};
+            "vacancies.xhtml", "vacancy-info.xhtml"};
         Account account = (Account) session.getAttribute("account");
         AccountService accountService = new AccountService();
-        String page = getRequestURL().substring(getRequestURL().lastIndexOf("/")+1);
-        if(!Arrays.asList(hrPages).contains(page)&&!Arrays.asList(interviewerPages).contains(page)){
+        String page = getRequestURL().substring(getRequestURL().lastIndexOf("/") + 1);
+        if (!Arrays.asList(hrPages).contains(page) && !Arrays.asList(interviewerPages).contains(page)) {
             return true;
         }
         boolean access = false;
-            if (accountService.isHRGroup(account.getUserName())) {
-                for (String p : hrPages) {
-                    if (getRequestURL().contains(page)) {
-                        access = true;
-                        break;
-                    }
-                }
-            } else if (accountService.isInterviewer(account.getUserName())) {
-                for (String p : interviewerPages) {
-                    if (getRequestURL().contains(page)) {
-                        access = true;
-                        break;
-                    }
+        if (accountService.isHRGroup(account.getUserName())) {
+            for (String p : hrPages) {
+                if (getRequestURL().contains(page)) {
+                    access = true;
+                    break;
                 }
             }
+        } else if (accountService.isInterviewer(account.getUserName())) {
+            for (String p : interviewerPages) {
+                if (getRequestURL().contains(page)) {
+                    access = true;
+                    break;
+                }
+            }
+        }
         return access;
     }
 }

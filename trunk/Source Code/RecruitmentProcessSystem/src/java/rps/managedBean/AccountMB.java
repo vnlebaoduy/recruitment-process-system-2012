@@ -8,13 +8,17 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.primefaces.event.CloseEvent;
 import rps.business.AccountService;
 import rps.business.SystemSettings;
 import rps.entities.Account;
+import rps.utility.MD5;
 
 /**
  *
@@ -44,7 +48,7 @@ public class AccountMB implements Serializable {
     }
 
     public void setConfirm(String confirm) {
-        this.confirm = confirm;
+        this.confirm = confirm.replaceAll(" ", "");
     }
 
     public String getPassword() {
@@ -52,7 +56,7 @@ public class AccountMB implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password.replaceAll(" ", "");
     }
     private AccountService accountService;
 
@@ -63,7 +67,8 @@ public class AccountMB implements Serializable {
 
     public String validate() {
         String redirect = "";
-        Account acc = accountService.getAccount(account.getUserName(), account.getPassword());
+        String strMD5 = MD5.getMD5(account.getPassword());
+        Account acc = accountService.getAccount(account.getUserName(), strMD5);
         if (acc != null) {
             this.setAccount(acc);
             HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -71,8 +76,12 @@ public class AccountMB implements Serializable {
             if (session.getAttribute("account") == null) {
                 session.setAttribute("account", acc);
             }
-            SystemSettings.getInstance().InitMenuBar(account);
-            SystemSettings.getInstance().InitSideBar(account);
+            SystemSettings settings = new SystemSettings();
+            settings.InitMenuBar(account);
+            settings.InitSideBar(account);
+            if (session.getAttribute("setting") == null) {
+                session.setAttribute("setting", settings);
+            }
             redirect = "info.xhtml?faces-redirect=true";
         } else {
             FacesMessage msg = new FacesMessage("Username or password is incorrect.");
@@ -85,22 +94,19 @@ public class AccountMB implements Serializable {
 
     public String changePass() {
         try {
+            String strMD5 = MD5.getMD5(password);
             accountService.beginTransaction();
-            this.setAccount(accountService.updateAccount(account.getUserName(), password));
+            this.setAccount(accountService.updateAccount(account.getUserName(), strMD5));
+            this.setAccount(accountService.updateAccount(account.getUserName(), true));
             accountService.commitTransaction();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "INFORMATION", "Your password has been changed");
-
             facesContext.addMessage(null, message);
         } catch (Exception ex) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "ERROR", ex.getMessage());
-
-            facesContext.addMessage(null, message);
+            ex.printStackTrace();
         }
-        return "info.xhtml";
+        return null;
     }
 
     public void handleClose(CloseEvent event) {
@@ -111,15 +117,53 @@ public class AccountMB implements Serializable {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
                     "WARNING", "Your password has not been changed");
-
             facesContext.addMessage(null, message);
         }
     }
 
-    public void validatePassword() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        FacesMessage message = new FacesMessage();
-        facesContext.addMessage("confirmPassword", message);
+    public void validatePassword(
+            FacesContext context,
+            UIComponent componentToValidate,
+            Object value)
+            throws ValidatorException {
+
+        UIInput uiInput = (UIInput) componentToValidate;
+        if (uiInput.isValid()) {
+            String str = (String) value;
+            if (str.length() < 6) {
+                FacesMessage message = new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Password must have at least 6 characters",
+                        "Password must have at least 6 characters");
+                throw new ValidatorException(message);
+            }
+            if (account.getPassword().equalsIgnoreCase(str)) {
+                FacesMessage message = new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "New password must be different with old password",
+                        "New password must be different with old password");
+                throw new ValidatorException(message);
+            }
+        }
+    }
+
+    public void validateConfirmPassword(
+            FacesContext context,
+            UIComponent componentToValidate,
+            Object value)
+            throws ValidatorException {
+        UIInput passwordComponent = (UIInput) componentToValidate.getAttributes().get("passwordComponent");
+        if (passwordComponent.isRequired() && passwordComponent.isValid()) {
+            String passwordValue = (String) passwordComponent.getValue();
+            String confirmPasswordValue = (String) value;
+            if (!passwordValue.equals(confirmPasswordValue)) {
+                FacesMessage message = new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "Confirm password is not match",
+                        "Confirm password is not match");
+                throw new ValidatorException(message);
+            }
+        }
     }
     private boolean hRGroup;
     private boolean admin;
@@ -145,6 +189,9 @@ public class AccountMB implements Serializable {
         HttpSession session = request.getSession();
         if (session.getAttribute("account") != null) {
             session.removeAttribute("account");
+        }
+        if (session.getAttribute("setting") != null) {
+            session.removeAttribute("setting");
         }
         account = null;
         password = "";

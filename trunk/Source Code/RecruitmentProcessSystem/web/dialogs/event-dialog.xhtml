@@ -25,31 +25,37 @@
                                 <div class="title">
                                     <h3>#{interview.employee.firstName} #{interview.employee.lastName} -
                                         #{interview.employee.employeeID}</h3>
-                                    <h:panelGroup rendered="#{interview.status!=1}">
-                                        <h:panelGroup rendered="#{accountMB.interviewer}">
-                                            <h:outputLink value="info.xhtml">
-                                                <h:commandButton image="resources/images/icons/info.png"
-                                                                 title="Information"/>
-                                            </h:outputLink>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{accountMB.hRGroup and
-                                                                  interview.status==-100}">
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/refresh.png"
-                                                                 title="Reschedule"/>
+                                    <h:link outcome="manage-interview.xhtml"
+                                            title="Review"
+                                            styleClass="icon-review size-32"
+                                            rendered="#{interview.AVStatus!=99}"/>
+                                    <h:panelGroup rendered="#{interview.AVStatus==99}">
+                                        <h:panelGroup rendered="#{accountMB.hRGroup}"><!-- HR GROUP -->
+                                            <h:link outcome="processing-interview.xhtml"
+                                                    title="Reschedule"
+                                                    styleClass="icon-refresh size-32"
+                                                    rendered="#{interview.status==-100}">
                                                 <f:param name="id" value="#{interview.interviewID}"/>
                                                 <f:param name="type" value="info"/>
-                                            </h:outputLink>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{accountMB.interviewer
-                                                                  || (accountMB.hRGroup and
-                                                                  interview.status!=-100)}">
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/clock.png"
-                                                                 title="Change time"/>
+                                            </h:link>
+                                            <h:link outcome="processing-interview.xhtml"
+                                                    title="Change time"
+                                                    styleClass="icon-clock size-32"
+                                                    rendered="#{interview.status!=-100}">
                                                 <f:param name="id" value="#{interview.interviewID}"/>
                                                 <f:param name="type" value="time"/>
-                                            </h:outputLink>
+                                            </h:link>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{accountMB.interviewer}"><!-- INTERVIEWER -->
+                                            <h:link outcome="info.xhtml"
+                                                    title="Information"
+                                                    styleClass="icon-info size-32"/>
+                                            <h:link outcome="processing-interview.xhtml"
+                                                    title="Change time"
+                                                    styleClass="icon-clock size-32">
+                                                <f:param name="id" value="#{interview.interviewID}"/>
+                                                <f:param name="type" value="time"/>
+                                            </h:link>
                                         </h:panelGroup>
                                     </h:panelGroup>
                                 </div>

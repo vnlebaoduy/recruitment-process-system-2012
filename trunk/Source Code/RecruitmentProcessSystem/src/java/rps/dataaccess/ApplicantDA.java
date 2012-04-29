@@ -53,7 +53,7 @@ public class ApplicantDA extends AbstractDataAccess<Applicant> {
             predicate = cb.or(predicate, cb.like(root.get("skill"), "%" + keyword + "%"));
             predicate = cb.or(predicate, cb.like(root.get("award"), "%" + keyword + "%"));
         }
-        if (status != -1) {
+        if (status != -99) {
             if (predicate == null) {
                 predicate = cb.equal(root.get("status"), status);
             } else {

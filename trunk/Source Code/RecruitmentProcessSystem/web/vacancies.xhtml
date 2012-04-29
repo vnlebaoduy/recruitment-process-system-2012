@@ -69,7 +69,7 @@
                             <div class="article">
                                 <h:dataTable value="#{manageVacancyBean.vacancies}"
                                              var="vacancy"
-                                             columnClasses="col-30,col-250,col-200,col-150,col-170 col-center,col-30 col-center,col-center">
+                                             columnClasses="col-30,col-200,col-180,col-100,col-170 col-center,col-30 col-center,col-center">
                                     <h:column>
                                         <h:graphicImage value="resources/images/other/select.png"
                                                         rendered="#{vacancy.status == 0}"
@@ -103,18 +103,18 @@
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">Action</f:facet>
+                                        <h:button outcome="vacancy-info.xhtml"
+                                                title="Information"
+                                                image="resources/images/icons/info.png">
+                                            <f:param name="id" value="#{vacancy.vacancyID}"/>
+                                        </h:button>
                                         <h:panelGroup rendered="#{vacancy.status != 1}">
-                                            <h:outputLink value="vacancy-info.xhtml">
-                                                <h:commandButton image="resources/images/icons/info.png"
-                                                                 title="Information"/>
-                                                <f:param name="id" value="#{vacancy.vacancyID}"/>
-                                            </h:outputLink>
                                             <h:panelGroup rendered="#{accountMB.hRGroup}">
-                                                <h:outputLink value="vacancy.xhtml">
-                                                    <h:commandButton image="resources/images/icons/edit.png"
-                                                                     title="Edit Information"/>
+                                                <h:button outcome="vacancy.xhtml"
+                                                        title="Edit information"
+                                                        image="resources/images/icons/edit.png">
                                                     <f:param name="id" value="#{vacancy.vacancyID}"/>
-                                                </h:outputLink>
+                                                </h:button>
                                                 <h:commandButton image="resources/images/icons/unlock.png"
                                                                  title="Reopen"
                                                                  rendered="#{vacancy.status == 99}"

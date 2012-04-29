@@ -7,12 +7,14 @@ package rps.managedBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import rps.business.ApplicantService;
+import rps.business.InterviewService;
 import rps.business.VacancyService;
+import rps.entities.Interview;
 import rps.entities.Vacancy;
 
 /**
@@ -113,13 +115,35 @@ public class ManageVacancyBean implements Serializable {
     }
 
     public void close(String id) {
-        Vacancy vacancy = vacancyService.getDetailVacancy(id);
-        vacancy.setStatus(1);
-        editVacancy(vacancy);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "INFORMATION", "The vacancy has been closed");
-        facesContext.addMessage(null, message);
+        try {
+            Vacancy vacancy = vacancyService.getDetailVacancy(id);
+            vacancy.setStatus(1);
+            editVacancy(vacancy);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "INFORMATION", "The vacancy has been closed");
+            facesContext.addMessage(null, message);
+            InterviewService interviewService = new InterviewService();
+            ApplicantService applicantService = new ApplicantService();
+            List<Interview> removeList = interviewService.getInterviews(
+                    vacancy, 99);
+            for (Interview i : removeList) {
+                i.setStatus(1);
+                i.setAVStatus(-100);
+                interviewService.beginTransaction();
+                interviewService.updateInterview(i.getInterviewID(),
+                        i.getEmployee(), i.getVacancy(), i.getApplicant(),
+                        i.getStartedTime(), i.getEndedTime(), i.getStatus(), i.getAVStatus());
+                interviewService.commitTransaction();
+                applicantService.checkAvailabeInterviews(i.getApplicant());
+            }
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "INFORMATION", "All of the related interviews have been REMOVED");
+            facesContext.addMessage(null, message);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void reopen(String id) {

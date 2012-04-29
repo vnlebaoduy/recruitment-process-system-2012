@@ -9,7 +9,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="content">
-        <p:growl id="growl" showDetail="true"/>
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
         <ui:include src="dialogs/password-dialog.xhtml"/>
         <ui:include src="dialogs/progress-interview-dialog.xhtml"/>
         <h:form id="frm-interview">
@@ -28,28 +28,35 @@
                                 <div class="event padding-b-t">
                                     <div class="title">
                                         <h3>#{calendarMB.titleFormat(interview.startedTime)}</h3>
-                                        <h:panelGroup rendered="#{accountMB.interviewer}">
-                                            <h:commandButton image="resources/images/icons/info.png"
-                                                             actionListener="#{myInterviewBean.progressStatus}"
-                                                             onclick="dlg_interview.show();"
-                                                             title="Information">
-                                                <f:param name="edit" value="#{interview.interviewID}" />
-                                                <f:ajax execute="@this" render=":frm-progress-interview"/>
-                                            </h:commandButton>
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/clock.png"
-                                                                 title="Change time"/>
-                                                <f:param name="id" value="#{interview.interviewID}"/>
-                                                <f:param name="type" value="time"/>
-                                            </h:outputLink>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{accountMB.hRGroup}">
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/refresh.png"
-                                                                 title="Reschedule"/>
-                                                <f:param name="id" value="#{interview.interviewID}"/>
-                                                <f:param name="type" value="info"/>
-                                            </h:outputLink>
+                                        <h:link outcome="manage-interview.xhtml"
+                                                title="Review"
+                                                styleClass="icon-review size-32"
+                                                rendered="#{interview.AVStatus!=99}"/>
+                                        <h:panelGroup rendered="#{interview.AVStatus==99}">
+                                            <h:panelGroup rendered="#{accountMB.interviewer}">
+                                                <h:commandButton image="resources/images/icons/info.png"
+                                                                 actionListener="#{myInterviewBean.progressStatus}"
+                                                                 onclick="dlg_interview.show();"
+                                                                 title="Information">
+                                                    <f:param name="edit" value="#{interview.interviewID}" />
+                                                    <f:ajax execute="@this" render=":frm-progress-interview"/>
+                                                </h:commandButton>
+                                                <h:link outcome="processing-interview.xhtml"
+                                                        title="Change time"
+                                                        styleClass="icon-clock size-32">
+                                                    <f:param name="id" value="#{interview.interviewID}"/>
+                                                    <f:param name="type" value="time"/>
+                                                </h:link>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{accountMB.hRGroup}">
+                                                <h:link outcome="processing-interview.xhtml"
+                                                        title="Reschedule"
+                                                        styleClass="icon-refresh size-32"
+                                                        rendered="#{interview.status==-100}">
+                                                    <f:param name="id" value="#{interview.interviewID}"/>
+                                                    <f:param name="type" value="info"/>
+                                                </h:link>
+                                            </h:panelGroup>
                                         </h:panelGroup>
                                     </div>
                                     <div class="event_body">

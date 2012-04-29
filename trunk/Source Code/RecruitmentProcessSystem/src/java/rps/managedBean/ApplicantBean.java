@@ -263,7 +263,7 @@ public class ApplicantBean implements Serializable {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "INFORMATION",
-                    "Update information successful");
+                    "All of informations have been saved");
             facesContext.addMessage(null, message);
             applicant = null;
         } catch (Exception ex) {

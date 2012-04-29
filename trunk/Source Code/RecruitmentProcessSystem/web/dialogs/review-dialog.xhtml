@@ -46,7 +46,7 @@
                             <div class="article-main">
                                 <h:dataTable value="#{manageInterviewBean.reviewInterview}"
                                              var="interview"
-                                    columnClasses="status-col,col-2,col-3,col-4,col-5,action-col">
+                                    columnClasses="col-30,col-100,col-150,col-150,col-150,col-200">
                                     <h:column>
                                         <h:graphicImage value="resources/images/other/not_in_progress.png"
                                                         rendered="#{interview.status == 0}"
@@ -92,14 +92,20 @@
                                             <f:selectItem itemLabel="In Progress" itemValue="99"/>
                                             <f:selectItem itemLabel="Selected" itemValue="100" />
                                             <f:selectItem itemLabel="Rejected" itemValue="-100" />
-                                            <f:selectItem itemLabel="Not Required" itemValue="1" />
-                                            <p:ajax process="@this"
-                                                    listener="#{manageInterviewBean.changeStatus}"
-                                                    update="@form :frm-manage-interview :growl"/>
+                                            <p:ajax process="@this" update="@form"/>
                                             <f:param name="id" value="#{interview.interviewID}"/>
                                         </h:selectOneMenu>
-                                        <h:outputText rendered="#{interview.AVStatus == 1}"
-                                                      value="Not Required"/>
+                                    </h:column>
+                                    <h:column>
+                                        <h:commandButton styleClass="button"
+                                                         value="Review"
+                                                         onclick="return review();"
+                                                         actionListener="#{manageInterviewBean.changeStatus()}"
+                                                         rendered="#{interview.AVStatus!=99}">
+                                            <p:ajax process="@this" oncomplete="dlg.hide();"
+                                                    update="@form :frm-manage-interview :growl"/>
+                                            <f:param name="id" value="#{interview.interviewID}"/>
+                                        </h:commandButton>
                                     </h:column>
                                 </h:dataTable>
                             </div>
@@ -108,5 +114,12 @@
                 </div> <!-- End #tab3 -->
             </div> <!-- End .content-box-content -->
         </h:form>
+        <script type="text/javascript">
+                function review(){
+                    return confirm("If the interview be reviewed, you will not review again by anyway.\n\
+\n\
+Are you sure about the interview's result?");
+                }
+            </script>
     </p:dialog>
 </ui:composition>

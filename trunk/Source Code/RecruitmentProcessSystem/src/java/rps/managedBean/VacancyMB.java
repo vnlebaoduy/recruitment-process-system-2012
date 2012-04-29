@@ -99,7 +99,6 @@ public class VacancyMB implements Serializable {
     public void setVacancy(Vacancy vacancy) {
         this.vacancy = vacancy;
     }
-
     private List<Vacancy> list;
 
     public List<Vacancy> getList() {
@@ -132,6 +131,9 @@ public class VacancyMB implements Serializable {
                 "INFORMATION",
                 "Create a new vacancy successful");
         FacesContext.getCurrentInstance().addMessage(null, message);
+        vacancy = null;
+        vacancyID = "";
+        id = "";
         return null;
     }
 
@@ -205,7 +207,7 @@ public class VacancyMB implements Serializable {
                     "Number is greater than minimum salary");
             context.addMessage("msgMaximumSalary", message);
             result = false;
-        }else if(vacancy.getMaximumAge() < vacancy.getMinimumAge()) {
+        } else if (vacancy.getMaximumAge() < vacancy.getMinimumAge()) {
             FacesMessage message = new FacesMessage(
                     FacesMessage.SEVERITY_WARN,
                     "Age is greater than minimum age",

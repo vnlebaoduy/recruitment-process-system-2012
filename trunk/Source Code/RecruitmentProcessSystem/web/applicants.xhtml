@@ -28,10 +28,11 @@
                                 <h:selectOneMenu id="cboStatus"
                                                  value="#{manageApplicantBean.status}"
                                                  styleClass="text-input small-input">
-                                    <f:selectItem itemLabel="All vacancies"  itemValue="-1"/>
-                                    <f:selectItem itemLabel="Open" itemValue="0"/>
-                                    <f:selectItem itemLabel="Suspend" itemValue="99" />
-                                    <f:selectItem itemLabel="Close" itemValue="1" />
+                                    <f:selectItem itemLabel="All applicants"  itemValue="-99"/>
+                                    <f:selectItem itemLabel="Not In Progress" itemValue="0"/>
+                                    <f:selectItem itemLabel="In Progress" itemValue="99" />
+                                    <f:selectItem itemLabel="Hired" itemValue="1" />
+                                    <f:selectItem itemLabel="Banned" itemValue="-1" />
                                 </h:selectOneMenu>
                                 <h:commandButton value="Search"
                                                  actionListener="#{manageApplicantBean.search()}"
@@ -46,7 +47,7 @@
                             <div class="article">
                                 <h:dataTable value="#{manageApplicantBean.applicants}"
                                              var="applicant"
-                                             columnClasses="col-30,col-250,col-200,col-150,col-170 col-center,col-30 col-center,col-center">
+                                             columnClasses="col-30,col-180,col-100,col-180,col-120,col-150,col-center">
                                     <h:column>
                                         <h:graphicImage value="resources/images/other/not_in_progress.png"
                                                         rendered="#{applicant.status == 0}"
@@ -83,17 +84,23 @@
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">Action</f:facet>
-                                        <h:outputLink value="applicant-info.xhtml">
-                                            <h:commandButton image="resources/images/icons/info.png"
-                                                             title="Information"/>
+                                        <h:button outcome="applicant-info.xhtml"
+                                                  title="Applicant information"
+                                                  image="resources/images/icons/info.png">
                                             <f:param name="id" value="#{applicant.applicantID}"/>
-                                        </h:outputLink>
+                                        </h:button>
                                         <h:panelGroup rendered="#{accountMB.hRGroup}">
-                                            <h:outputLink value="applicant.xhtml">
-                                                <h:commandButton image="resources/images/icons/edit.png"
-                                                                 title="Edit Information"/>
+                                            <h:button outcome="applicant.xhtml"
+                                                      title="Edit information"
+                                                      image="resources/images/icons/edit.png">
                                                 <f:param name="id" value="#{applicant.applicantID}"/>
-                                            </h:outputLink>
+                                            </h:button>
+                                            <h:button outcome="attach.xhtml"
+                                                      title="Attach vacancies"
+                                                      image="resources/images/icons/attach.png"
+                                                      rendered="#{applicant.status==0}">
+                                                <f:param name="id" value="#{applicant.applicantID}"/>
+                                            </h:button>
                                             <h:commandButton image="resources/images/icons/remove.png"
                                                              title="Banned"
                                                              onclick="return remove();"
@@ -111,7 +118,7 @@
             </div>
             <script type="text/javascript">
                 function remove(){
-                    return confirm("The applicant will be banned.\n\
+                    return confirm("The applicant will be BANNED.\n\
 \n\
 Are you sure to banned this applicant?");
                 }
