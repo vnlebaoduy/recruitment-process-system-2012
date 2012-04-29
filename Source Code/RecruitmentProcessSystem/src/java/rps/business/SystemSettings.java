@@ -14,17 +14,9 @@ import rps.entities.Account;
  */
 public class SystemSettings {
 
-    private static SystemSettings instance;
-
-    public static SystemSettings getInstance() {
-        if (instance == null) {
-            instance = new SystemSettings();
-        }
-        return instance;
+    public SystemSettings() {
     }
-
-    private SystemSettings() {
-    }
+    
     private List<PageGroup> listPages;
 
     public List<PageGroup> getListPages() {
@@ -37,7 +29,7 @@ public class SystemSettings {
     public void InitSideBar(Account account) {
         listPages = null;
         List<Page> pages = new ArrayList<Page>();
-        Page page = new Page("Dashboard", "#", false, "", "all");
+        Page page = new Page("Dashboard", "#", false, "", "hr");
         PageGroup pageGroup = new PageGroup(page, pages);
         getListPages().add(pageGroup);
 
@@ -97,7 +89,7 @@ public class SystemSettings {
             for (PageGroup group : getListPages()) {
                 PageGroup groupTemp = new PageGroup();
                 if (group.getPage().getRole().equalsIgnoreCase(remove)) {
-                    break;
+                    continue;
                 }
                 groupTemp.setPage(group.getPage());
                 groupTemp.setPages(new ArrayList<Page>());
@@ -123,17 +115,17 @@ public class SystemSettings {
     public void InitMenuBar(Account account) {
         listMenu = null;
         List<Page> pages = new ArrayList<Page>();
-        Page page = new Page("Create Vacancy", "vacancy.xhtml", false, "", "hr");
+        Page page = new Page("Create Vacancy", "vacancy.xhtml", false, "resources/images/other/add_job_img.png", "hr");
         pages.add(page);
-        page = new Page("Create Applicant", "applicant.xhtml", false, "", "hr");
+        page = new Page("Create Applicant", "applicant.xhtml", false, "resources/images/other/add_app_img.png", "hr");
         pages.add(page);
-        page = new Page("Attach Vacancies", "attach.xhtml", false, "", "hr");
+        page = new Page("Attach Vacancies", "attach.xhtml", false, "resources/images/other/attach_job_img.png", "hr");
         pages.add(page);
-        page = new Page("Create Interview", "interview.xhtml", false, "", "hr");
+        page = new Page("Create Interview", "interview.xhtml", false, "resources/images/other/add_interview_img.png", "hr");
         pages.add(page);
-        page = new Page("Schedule Interviews", "interviews.xhtml", false, "", "all");
+        page = new Page("Schedule Interviews", "interviews.xhtml", false, "resources/images/other/interview_img.png", "all");
         pages.add(page);
-        page = new Page("Review", "manage-interview.xhtml", false, "", "interviewer");
+        page = new Page("Review", "manage-interview.xhtml", false, "resources/images/other/review_img.png", "interviewer");
         pages.add(page);
         page = new Page("", "#", false, "", "all");
         PageGroup pageGroup = new PageGroup(page, pages);

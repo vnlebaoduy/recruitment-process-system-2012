@@ -251,75 +251,77 @@
                         <h:panelGroup rendered="#{not empty interviewEditorBean.otherInterviews}">
                             <ui:repeat value="#{interviewEditorBean.otherInterviews}"
                                        var="interview">
-                                <div class="event" >
-                                    <div class="title">
-                                        <h3>#{calendarMB.titleFormat(interview.startedTime)}
-                                        </h3>
-                                        <h:panelGroup rendered="#{accountMB.interviewer}">
-                                            <h:outputLink value="info.xhtml">
-                                                <h:commandButton image="resources/images/icons/info.png"
-                                                                 title="Information"/>
-                                            </h:outputLink>
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/clock.png"
-                                                                 title="Change time"/>
-                                                <f:param name="id" value="#{interview.interviewID}"/>
-                                                <f:param name="type" value="time"/>
-                                            </h:outputLink>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{accountMB.hRGroup}">
-                                            <h:outputLink value="processing-interview.xhtml">
-                                                <h:commandButton image="resources/images/icons/refresh.png"
-                                                                 title="Reschedule"/>
-                                                <f:param name="id" value="#{interview.interviewID}"/>
-                                                <f:param name="type" value="info"/>
-                                            </h:outputLink>
-                                        </h:panelGroup>
-                                    </div>
-                                    <div class="event_body">
-                                        <div class="middle">
-                                            <h:panelGroup rendered="#{interview.status == 0}">
-                                                <div class="cal_day day_red">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
-                                                </div>
+                                <h:panelGroup rendered="#{interview.AVStatus==99}">
+                                    <div class="event" >
+                                        <div class="title">
+                                            <h3>#{calendarMB.titleFormat(interview.startedTime)}
+                                            </h3>
+                                            <h:panelGroup rendered="#{accountMB.interviewer}">
+                                                <h:link outcome="info.xhtml"
+                                                        title="Information"
+                                                        styleClass="icon-info size-32"/>
+                                                <h:link outcome="processing-interview.xhtml"
+                                                        title="Change time"
+                                                        styleClass="icon-clock size-32">
+                                                    <f:param name="id" value="#{interview.interviewID}"/>
+                                                    <f:param name="type" value="time"/>
+                                                </h:link>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{interview.status == 100}">
-                                                <div class="cal_day day_green">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
-                                                </div>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{interview.status == -100}">
-                                                <div class="cal_day day_blue">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
-                                                </div>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{interview.status == 99}">
-                                                <div class="cal_day day_yellow">
-                                                    <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
-                                                    <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
-                                                </div>
+                                            <h:panelGroup rendered="#{accountMB.hRGroup}">
+                                                <h:link outcome="processing-interview.xhtml"
+                                                        title="Reschedule"
+                                                        styleClass="icon-refresh size-32"
+                                                        rendered="#{interview.status==-100}">
+                                                    <f:param name="id" value="#{interview.interviewID}"/>
+                                                    <f:param name="type" value="info"/>
+                                                </h:link>
                                             </h:panelGroup>
                                         </div>
-                                        <div class="event_content">
-                                            <p><strong>Time: </strong>
-                                                #{calendarMB.timeFormat(interview.startedTime)}
-                                                to #{calendarMB.timeFormat(interview.endedTime)}</p>
-                                            <p><strong>Interviewer: </strong>
-                                                #{interview.employee.firstName}
-                                                #{interview.employee.lastName}</p>
-                                            <p><strong>Applicant name: </strong>
-                                                #{interview.applicant.firstName}
-                                                #{interview.applicant.lastName}
-                                            </p>
-                                            <p><strong>Vacancy: </strong>
-                                                #{interview.vacancy.title}</p>
+                                        <div class="event_body">
+                                            <div class="middle">
+                                                <h:panelGroup rendered="#{interview.status == 0}">
+                                                    <div class="cal_day day_red">
+                                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                        <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{interview.status == 100}">
+                                                    <div class="cal_day day_green">
+                                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                        <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{interview.status == -100}">
+                                                    <div class="cal_day day_blue">
+                                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                        <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{interview.status == 99}">
+                                                    <div class="cal_day day_yellow">
+                                                        <div class="day_heading">#{calendarMB.dayInWeekFormat(interview.startedTime)}</div>
+                                                        <div class="day_number">#{calendarMB.dayFormat(interview.startedTime)}</div>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </div>
+                                            <div class="event_content">
+                                                <p><strong>Time: </strong>
+                                                    #{calendarMB.timeFormat(interview.startedTime)}
+                                                    to #{calendarMB.timeFormat(interview.endedTime)}</p>
+                                                <p><strong>Interviewer: </strong>
+                                                    #{interview.employee.firstName}
+                                                    #{interview.employee.lastName}</p>
+                                                <p><strong>Applicant name: </strong>
+                                                    #{interview.applicant.firstName}
+                                                    #{interview.applicant.lastName}
+                                                </p>
+                                                <p><strong>Vacancy: </strong>
+                                                    #{interview.vacancy.title}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <p class="dotted"/>
+                                    <p class="dotted"/>
+                                </h:panelGroup>
                             </ui:repeat>
                         </h:panelGroup>
                     </div>

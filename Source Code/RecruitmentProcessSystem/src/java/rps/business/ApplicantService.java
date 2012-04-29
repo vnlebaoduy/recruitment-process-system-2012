@@ -121,6 +121,16 @@ public class ApplicantService extends AbstractService {
                 new Object[]{99, 0}, null, null, -1, -1);
     }
 
+    public List<Applicant> getListApplicant(Vacancy vacancy) {
+        List<Applicant> list = new ArrayList<Applicant>();
+        InterviewService interviewService = new InterviewService();
+        List<Interview> interviews = interviewService.getInterviews(vacancy);
+        for (Interview interview : interviews) {
+            list.add(interview.getApplicant());
+        }
+        return list;
+    }
+
     public List<Interview> attachVacancies(Applicant applicant, List<Vacancy> list) {
         List<Interview> interviews = new ArrayList<Interview>();
         if (!list.isEmpty()) {
@@ -137,10 +147,11 @@ public class ApplicantService extends AbstractService {
 
     public void attachVacancies(Applicant applicant,
             List<Vacancy> oldList, List<Vacancy> newList) {
-        if (oldList == null || oldList.isEmpty()) {
-            attachVacancies(applicant, newList);
-        } else {
-            if (!newList.isEmpty()) {
+        int status = 0;
+        if (!newList.isEmpty()) {
+            if (oldList.isEmpty()) {
+                attachVacancies(applicant, newList);
+            } else {
                 InterviewService interviewService = new InterviewService();
                 // Check new vacancy
                 for (Vacancy vacancy : newList) {
@@ -160,13 +171,46 @@ public class ApplicantService extends AbstractService {
                     }
                 }
             }
+            status = 99;
+        } else {
+            if (!oldList.isEmpty()) {
+                InterviewService interviewService = new InterviewService();
+                // Check remove vacancy
+                for (Vacancy vacancy : oldList) {
+                    if (!newList.contains(vacancy)) {
+                        Interview interview = interviewService.getInterviews(applicant, vacancy, 0);
+                        interviewService.beginTransaction();
+                        interviewService.removeInterview(interview);
+                        interviewService.commitTransaction();
+                    }
+                }
+            }
+            status = 0;
         }
+        beginTransaction();
+        applicant.setStatus(status);
+        applicantDA.edit(applicant);
+        commitTransaction();
     }
+
     public List<Applicant> searchApplicant(String keyword, int status) {
         List<Applicant> list = applicantDA.search(keyword, status);
         if (list == null) {
             list = new ArrayList<Applicant>();
         }
         return list;
+    }
+
+    public void checkAvailabeInterviews(Applicant applicant) {
+        InterviewService interviewService = new InterviewService();
+        List<Interview> list = interviewService.getAvailableInterviews(applicant, 99);
+        if (list != null && !list.isEmpty()) {
+            applicant.setStatus(99);
+        } else {
+            applicant.setStatus(0);
+        }
+        beginTransaction();
+        applicantDA.edit(applicant);
+        commitTransaction();
     }
 }

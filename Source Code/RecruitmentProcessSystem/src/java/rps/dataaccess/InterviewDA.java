@@ -274,4 +274,44 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
 
         return results;
     }
+
+    public FindResult<Interview> searchInterview(Vacancy vacancy, Date endedTime) {
+
+        FindResult<Interview> results;
+        CriteriaBuilder cb;
+        CriteriaQuery<Interview> cq;
+        CriteriaQuery<Long> countCq;
+        Root root;
+        Predicate predicate;
+
+        //Create CriteraBuilder
+        cb = getEntityManager().getCriteriaBuilder();
+        //Create CriteraQuery
+        cq = cb.createQuery(Interview.class);
+        countCq = cb.createQuery(Long.class);
+        //Create results
+        results = new FindResult<Interview>();
+        //Create root
+        root = cq.from(Interview.class);
+
+        //Create Predicate
+        List<Predicate> predicates = new ArrayList<Predicate>();
+
+        predicates.add(cb.equal(root.get("vacancy"), vacancy));
+        predicates.add(cb.greaterThanOrEqualTo(root.get("startedTime"), endedTime));
+
+        predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        cq.select(root).where(predicate).orderBy(cb.asc(root.get("startedTime")));
+        countCq.select(cb.count(root)).where(predicate);
+
+        Query q = getEntityManager().createQuery(cq);
+        Query countQ = getEntityManager().createQuery(countCq);
+
+        int count = ((Long) countQ.getSingleResult()).intValue();
+
+        results.addAll(q.getResultList());
+        results.setCount(count);
+
+        return results;
+    }
 }

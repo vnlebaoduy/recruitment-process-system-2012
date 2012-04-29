@@ -221,7 +221,7 @@ public class AttachBean implements Serializable {
                 Applicant applicant = applicantService.getApplicant(getApplicantID());
                 Vacancy vacancy = vacancyService.getDetailVacancy(vID);
                 Interview interview = interviewService.getInterviews(applicant, vacancy);
-                if (interview!=null && interview.getAVStatus() == 99) {
+                if (interview != null && interview.getAVStatus() == 99) {
                     return true;
                 }
             }
@@ -257,12 +257,18 @@ public class AttachBean implements Serializable {
 
     public void viewSchedule() {
         try {
-            Map<String, String> params =
-                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-            String paramVID = params.get("vid");
-            Vacancy vacancy = vacancyService.getDetailVacancy(paramVID);
-            Applicant applicant = applicantService.getApplicant(getApplicantID());
-            interview = interviewService.getInterviewNotRemove(applicant, vacancy, 99);
+            Map<String, Object> params =
+                    FacesContext.getCurrentInstance().getViewRoot().getViewMap();
+            ScheduleBean bean = (ScheduleBean) params.get("scheduleBean");
+            if (bean != null) {
+                Map<String, String> params2 =
+                        FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+                String paramVID = params2.get("vid");
+                Vacancy vacancy = vacancyService.getDetailVacancy(paramVID);
+                Applicant applicant = applicantService.getApplicant(getApplicantID());
+                interview = interviewService.getInterviewNotRemove(applicant, vacancy, 99);
+                bean.setInterview(interview);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

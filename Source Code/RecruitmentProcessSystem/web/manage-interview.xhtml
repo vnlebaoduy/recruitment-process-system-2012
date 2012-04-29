@@ -119,7 +119,7 @@
                                                             calendarMB.search, date, calendarMB.status)}">
                                                 <h:dataTable value="#{manageInterviewBean.interviews}"
                                                              var="interview"
-                                                             columnClasses="col-30,col-100,col-150,col-200,col-150,col-30 col-center,col-center">
+                                                             columnClasses="col-30,col-100,col-120,col-150,col-120,col-30 col-center,col-center">
                                                     <h:column>
                                                         <h:graphicImage value="resources/images/other/not_in_progress.png"
                                                                         rendered="#{interview.status == 0}"
@@ -156,54 +156,51 @@
                                                     </h:column>
                                                     <h:column>
                                                         <f:facet name="header">Review</f:facet>
-                                                        <h:graphicImage value="resources/images/other/not_in_progress.png"
-                                                                        rendered="#{interview.AVStatus == 0}"
-                                                                        title="Not In Progress"/>
-                                                        <h:graphicImage value="resources/images/other/select.png"
+                                                        <h:graphicImage value="resources/images/other/selected.png"
                                                                         rendered="#{interview.AVStatus == 100}"
                                                                         title="Selected"/>
-                                                        <h:graphicImage value="resources/images/other/reject.png"
+                                                        <h:graphicImage value="resources/images/other/rejected.png"
                                                                         rendered="#{interview.AVStatus == -100}"
                                                                         title="Rejected"/>
-                                                        <h:graphicImage value="resources/images/other/1.png"
+                                                        <h:graphicImage value="resources/images/other/in_progress.png"
                                                                         rendered="#{interview.AVStatus == 99}"
-                                                                        title="In Progress"
-                                                                        width="48" height="48"/>
-                                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                                        title="In Progress"/>
+                                                        <h:graphicImage value="resources/images/other/not_required.png"
                                                                         rendered="#{interview.AVStatus == 1}"
                                                                         title="Not required"/>
-
                                                     </h:column>
                                                     <h:column>
                                                         <f:facet name="header">Action</f:facet>
                                                         <h:panelGroup rendered="#{interview.status != 1}">
                                                             <h:panelGroup rendered="#{accountMB.hRGroup}">
-                                                                <h:outputLink value="processing-interview.xhtml">
-                                                                    <h:commandButton image="resources/images/icons/clock.png"
-                                                                                     title="Change Time"
-                                                                                     rendered="#{interview.status != -100}"/>
-                                                                    <f:param name="id" value="#{interview.interviewID}"/>
-                                                                    <f:param name="type" value="time"/>
-                                                                </h:outputLink>
-                                                                <h:outputLink value="processing-interview.xhtml">
-                                                                    <h:commandButton image="resources/images/icons/refresh.png"
-                                                                                     title="Reschedule"
-                                                                                     rendered="#{interview.status == -100}"/>
-                                                                    <f:param name="id" value="#{interview.interviewID}"/>
-                                                                    <f:param name="type" value="info"/>
-                                                                </h:outputLink>
-                                                                <h:commandButton image="resources/images/icons/unlock.png"
-                                                                                 title="Reopen"
-                                                                                 rendered="#{interview.status == 99}"
-                                                                                 actionListener="#{manageInterviewBean.reopen(interview.interviewID)}">
-                                                                    <f:ajax execute="@this" render="@form :growl"/>
-                                                                </h:commandButton>
-                                                                <h:commandButton image="resources/images/icons/lock.png"
-                                                                                 title="Postpone"
-                                                                                 rendered="#{interview.status != 99}"
-                                                                                 actionListener="#{manageInterviewBean.postpone(interview.interviewID)}">
-                                                                    <f:ajax execute="@this" render="@form :growl"/>
-                                                                </h:commandButton>
+                                                                <h:panelGroup rendered="#{interview.AVStatus == 99}">
+                                                                    <h:outputLink value="processing-interview.xhtml">
+                                                                        <h:commandButton image="resources/images/icons/clock.png"
+                                                                                         title="Change Time"
+                                                                                         rendered="#{interview.status != -100}"/>
+                                                                        <f:param name="id" value="#{interview.interviewID}"/>
+                                                                        <f:param name="type" value="time"/>
+                                                                    </h:outputLink>
+                                                                    <h:outputLink value="processing-interview.xhtml">
+                                                                        <h:commandButton image="resources/images/icons/refresh.png"
+                                                                                         title="Reschedule"
+                                                                                         rendered="#{interview.status == -100}"/>
+                                                                        <f:param name="id" value="#{interview.interviewID}"/>
+                                                                        <f:param name="type" value="info"/>
+                                                                    </h:outputLink>
+                                                                    <h:commandButton image="resources/images/icons/unlock.png"
+                                                                                     title="Reopen"
+                                                                                     rendered="#{interview.status == 99}"
+                                                                                     actionListener="#{manageInterviewBean.reopen(interview.interviewID)}">
+                                                                        <f:ajax execute="@this" render="@form :growl"/>
+                                                                    </h:commandButton>
+                                                                    <h:commandButton image="resources/images/icons/lock.png"
+                                                                                     title="Postpone"
+                                                                                     rendered="#{interview.status != 99}"
+                                                                                     actionListener="#{manageInterviewBean.postpone(interview.interviewID)}">
+                                                                        <f:ajax execute="@this" render="@form :growl"/>
+                                                                    </h:commandButton>
+                                                                </h:panelGroup>
                                                                 <h:commandButton image="resources/images/icons/trash.png"
                                                                                  title="Remove"
                                                                                  onclick="return remove();"
@@ -211,7 +208,7 @@
                                                                     <f:ajax execute="@this" render="@form :growl"/>
                                                                 </h:commandButton>
                                                             </h:panelGroup>
-                                                            <h:panelGroup rendered="#{accountMB.interviewer}">
+                                                            <h:panelGroup rendered="#{accountMB.interviewer and interview.AVStatus==99}">
                                                                 <h:outputLink value="processing-interview.xhtml">
                                                                     <h:commandButton image="resources/images/icons/clock.png"
                                                                                      title="Change Time"/>
@@ -224,7 +221,8 @@
                                                                 </h:outputLink>
                                                                 <h:commandButton image="resources/images/icons/review.png"
                                                                                  onclick="dlg.show();"
-                                                                                 title="Review">
+                                                                                 title="Review"
+                                                                                 rendered="#{interview.status==100}">
                                                                     <f:param name="id" value="#{interview.interviewID}"/>
                                                                     <f:ajax execute="@this" render=":frm-review"/>
                                                                 </h:commandButton>

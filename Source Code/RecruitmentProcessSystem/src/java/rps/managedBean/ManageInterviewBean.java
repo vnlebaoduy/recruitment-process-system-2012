@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import rps.business.ApplicantService;
 import rps.business.InterviewService;
@@ -23,7 +23,7 @@ import rps.entities.Interview;
  * @author user
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ManageInterviewBean implements Serializable {
 
     private InterviewService interviewService;
@@ -60,9 +60,7 @@ public class ManageInterviewBean implements Serializable {
                             interviews = interviewService.getInterviews(
                                     bean.getAccount().getEmployee(), date);
                         }
-
                     } else if (bean.ishRGroup()) {
-
                         if (search) {
                             if (status == -1) {
                                 interviews = interviewService.getInterviews(date);
@@ -129,18 +127,13 @@ public class ManageInterviewBean implements Serializable {
     private Interview reviewInterview;
 
     public Interview getReviewInterview() {
-        if (reviewInterview == null) {
-            Map<String, String> params =
-                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-            String id = params.get("id");
-            reviewInterview = interviewService.getInterview(id);
-        }
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
+        reviewInterview = interviewService.getInterview(id);
         return reviewInterview;
     }
 
-//    public void review(String id) {
-//        reviewInterview = interviewService.getInterview(id);
-//    }
     public void changeStatus() {
         try {
             editInterview(reviewInterview);
@@ -165,10 +158,13 @@ public class ManageInterviewBean implements Serializable {
                 case -100:
                     applicant.setStatus(0);
                     message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                            "WARNING", "This applicant will be rejected.");
+                            "WARNING", "This applicant will be rejected");
                     break;
                 default:
                     break;
+            }
+            if (message != null) {
+                facesContext.addMessage(null, message);
             }
             interviewService.reviewInterview(reviewInterview);
             service.beginTransaction();
@@ -182,11 +178,17 @@ public class ManageInterviewBean implements Serializable {
                     applicant.getAward(), applicant.getInterviewList(),
                     applicant.getCreatedDate(), applicant.getStatus());
             service.commitTransaction();
-            VacancyService vacancyService = new VacancyService();
-            vacancyService.afterHiredApplicant(reviewInterview.getVacancy());
-            if (message != null) {
-                facesContext.addMessage(null, message);
+            if (applicant.getStatus() == 1) {
+                VacancyService vacancyService = new VacancyService();
+                boolean result = vacancyService.isClosedVacancy(reviewInterview);
+                if (result) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "INFORMATION", "The number requirement is filled, the vacancy has been CLOSED");
+                    facesContext.addMessage(null, message);
+                }
             }
+            reviewInterview = null;
+            interviewService = new InterviewService();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

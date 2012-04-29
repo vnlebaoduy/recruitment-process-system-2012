@@ -244,7 +244,6 @@ public class CalendarMB implements Serializable {
                     getExternalContext().getSessionMap().get("accountMB");
             if (bean != null) {
                 if (bean.isInterviewer()) {
-
                     if (search) {
                         list = service.getInterviews(bean.getAccount().getEmployee(),
                                 getStartTime(), getEndTime(), status);
@@ -252,9 +251,7 @@ public class CalendarMB implements Serializable {
                         list = service.getEventInterviews(bean.getAccount().getEmployee(),
                                 firstDate, lastDate);
                     }
-
                 } else if (bean.ishRGroup()) {
-
                     if (search) {
                         list = service.getInterviews(getStartTime(), getEndTime(), status);
                     } else {

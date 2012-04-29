@@ -17,33 +17,33 @@
             <div class="content" style="margin: 0px auto;">
                 <div class="default-tab">
                     <div id="calendar_wrap" class="manage">
-                        <h3>#{attachBean.interview.applicant.firstName}
-                        #{attachBean.interview.applicant.lastName}'s schedule</h3>
+                        <h3>#{scheduleBean.interview.applicant.firstName}
+                        #{scheduleBean.interview.applicant.lastName}'s schedule</h3>
                         <div class="article">
                             <div class="article-left">
                                 <p:commandLink title="#{calendarMB.titleFormat(
-                                                        attachBean.interview.startedTime)}">
+                                                        scheduleBean.interview.startedTime)}">
                                     <div class="cal_day day_red">
                                         <div class="day_heading">
                                             #{calendarMB.dayInWeekFormat(
-                                              attachBean.interview.startedTime)}</div>
+                                              scheduleBean.interview.startedTime)}</div>
                                         <h:panelGroup rendered="#{calendarMB.today(
-                                                                  attachBean.interview.startedTime)}">
+                                                                  scheduleBean.interview.startedTime)}">
                                             <div class="day_number today">
                                                 #{calendarMB.dayFormat(
-                                                  attachBean.interview.startedTime)}</div>
+                                                  scheduleBean.interview.startedTime)}</div>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{!calendarMB.today(
-                                                                  attachBean.interview.startedTime)}">
+                                                                  scheduleBean.interview.startedTime)}">
                                             <div class="day_number">
                                                 #{calendarMB.dayFormat(
-                                                  attachBean.interview.startedTime)}</div>
+                                                  scheduleBean.interview.startedTime)}</div>
                                         </h:panelGroup>
                                     </div>
                                 </p:commandLink>
                             </div>
                             <div class="article-main">
-                                <h:dataTable value="#{attachBean.interview}"
+                                <h:dataTable value="#{scheduleBean.interview}"
                                              var="interview"
                                              columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col">
                                     <h:column>

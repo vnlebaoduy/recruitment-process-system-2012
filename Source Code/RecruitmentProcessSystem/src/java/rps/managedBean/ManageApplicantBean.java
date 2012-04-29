@@ -11,9 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import rps.business.ApplicantService;
-import rps.business.InterviewService;
 import rps.entities.Applicant;
-import rps.entities.Interview;
 
 /**
  *
@@ -43,7 +41,7 @@ public class ManageApplicantBean {
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
-    private int status = -1;
+    private int status = -99;
 
     public int getStatus() {
         return status;
