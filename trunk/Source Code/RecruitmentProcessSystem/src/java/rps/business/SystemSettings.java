@@ -29,7 +29,7 @@ public class SystemSettings {
     public void InitSideBar(Account account) {
         listPages = null;
         List<Page> pages = new ArrayList<Page>();
-        Page page = new Page("Dashboard", "#", false, "", "hr");
+        Page page = new Page("Dashboard", "dashboard.xhtml", false, "", "hr");
         PageGroup pageGroup = new PageGroup(page, pages);
         getListPages().add(pageGroup);
 

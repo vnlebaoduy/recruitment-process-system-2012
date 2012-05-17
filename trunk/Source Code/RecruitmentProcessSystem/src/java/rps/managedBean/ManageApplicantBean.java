@@ -6,6 +6,7 @@ package rps.managedBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -91,8 +92,11 @@ public class ManageApplicantBean {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="MANAGE APPLICANT">
-    public void banned(String id) {
+    public void banned() {
         try {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String id = params.get("id");
             Applicant applicant = applicantService.getApplicant(id);
             applicant.setStatus(-1);
             editApplicant(applicant);

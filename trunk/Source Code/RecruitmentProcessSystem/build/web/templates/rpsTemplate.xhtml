@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <title>Administrator Panel | Recruitment Process System</title>
+
+        <link rel="stylesheet" href="resources/css/reset.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="resources/css/style.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="resources/css/invalid.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="resources/css/customize.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="resources/scripts/simpla.jquery.configuration.js"></script>
+    </h:head>
+
+    <h:body>
+
+        <body><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+                <div id="sidebar"><div id="sidebar-wrapper"> <!-- Sidebar with logo and menu -->
+                        <h1 id="sidebar-title"><a href="#">RPS</a></h1>
+
+                        <!-- Logo (221px wide) -->
+                        <a href="#"><img id="logo" src="resources/images/logo.png" alt="Simpla Admin logo" /></a>
+
+                        <!-- Sidebar Profile links -->
+                        <div id="profile-links">
+				Hello, <a href="info.xhtml" title="Edit your profile">
+                                #{accountMB.account.employee.firstName}
+                                #{accountMB.account.employee.lastName}
+                            </a>
+                            <br /><br />
+                            <h:form>
+                                <a href="#" title="View the Site">View the Site</a> |
+                                <h:commandLink value="Sign out" action="#{accountMB.logout}"/>
+                            </h:form>
+                        </div>
+
+                        <ul id="main-nav">  <!-- Accordion Menu -->
+                            <ui:repeat value="#{systemBean.systemSettings.listPages}"
+                                       var="pageGroup">
+                                <li>
+                                    <h:panelGroup rendered="#{not empty pageGroup.pages}">
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item current"
+                                                      rendered="#{pageGroup.page.current}"><!-- Add the class "current" to current menu item -->
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item"
+                                                      rendered="#{not pageGroup.page.current}">
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <ul>
+                                            <ui:repeat value="#{pageGroup.pages}" var="page">
+                                                <li>
+                                                    <h:outputLink value="#{page.url}"
+                                                                  styleClass="current"
+                                                                  rendered="#{page.current}">
+                                                        #{page.title}
+                                                    </h:outputLink>
+                                                    <h:outputLink value="#{page.url}"
+                                                                  rendered="#{not page.current}">
+                                                        #{page.title}
+                                                    </h:outputLink>
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{empty pageGroup.pages}">
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item current no-submenu"
+                                                      rendered="#{pageGroup.page.current}"><!-- Add the class "current" to current menu item -->
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                        <h:outputLink value="#{pageGroup.page.url}"
+                                                      styleClass="nav-top-item no-submenu"
+                                                      rendered="#{not pageGroup.page.current}">
+                                            #{pageGroup.page.title}
+                                        </h:outputLink>
+                                    </h:panelGroup>
+                                </li>
+                            </ui:repeat>
+                        </ul> <!-- End #main-nav -->
+                    </div></div> <!-- End #sidebar -->
+
+                <div id="main-content"> <!-- Main Content Section with everything -->
+                    <noscript> <!-- Show a notification if the user has disabled javascript -->
+                        <div class="notification error png_bg">
+                            <div>
+						Javascript is disabled or is not supported by your browser. Please <a href="http://browsehappy.com/" title="Upgrade to a better browser">upgrade</a> your browser or <a href="http://www.google.com/support/bin/answer.py?answer=23852" title="Enable Javascript in your browser">enable</a> Javascript to navigate the interface properly.
+                            </div>
+                        </div>
+                    </noscript>
+                    <!-- Page Head -->
+                    <h2>Welcome #{accountMB.account.employee.firstName}
+                        #{accountMB.account.employee.lastName}</h2>
+                    <p id="page-intro">What would you like to do?</p>
+
+                    <ul class="shortcut-buttons-set">
+                        <ui:repeat value="#{systemBean.systemSettings.listMenu}"
+                                   var="pageGroup2">
+                            <ui:repeat value="#{pageGroup2.pages}"
+                                       var="page2">
+                                <li>
+                                    <h:outputLink value="#{page2.url}"
+                                                  styleClass="shortcut-button">
+                                        <span>
+                                            <img src="#{page2.image}" alt="icon" />
+                                            <br />
+                                            #{page2.title}
+                                        </span>
+                                    </h:outputLink>
+                                </li>
+                            </ui:repeat>
+                        </ui:repeat>
+                    </ul><!-- End .shortcut-buttons-set -->
+                    <div class="clear"></div> <!-- End .clear -->
+
+                    <ui:insert name="content"/>
+
+                    <div class="clear"></div> <!-- End .clear -->
+
+                    <div id="footer">
+                        <small> <!-- Remove this notice or replace it with whatever you want -->
+                            &#169; Copyright 2012 Recruitment Process System | Powered by <a href="http://themeforest.net/item/simpla-admin-flexible-user-friendly-admin-skin/46073">Simpla Admin</a> | <a href="#">Top</a>
+                        </small>
+                    </div><!-- End #footer -->
+
+                </div> <!-- End #main-content -->
+            </div></body>
+    </h:body>
+</html>

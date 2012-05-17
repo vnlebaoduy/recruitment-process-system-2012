@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <ui:include src="dialogs/schedule-dialog.xhtml"/>
+        <h:form id="frm-applicant-info">
+            <div class="content-box column-left">
+                <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
+                    <h3>Applicant information</h3>
+                </div> <!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <h:panelGroup rendered="#{empty applicantInfoBean.applicant}">
+                            <h3>Have no any selected applicant.</h3>
+                            <p>Go to <a href="applicants.xhtml">list applicants</a>
+                                page to view all applicants</p>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty applicantInfoBean.applicant}">
+                            <h:panelGroup rendered="#{not applicantInfoBean.applicant.gender}">
+                                <div class="female"/>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{applicantInfoBean.applicant.gender}">
+                                <div class="male"/>
+                            </h:panelGroup>
+                            <div class="personal-info">
+                                <h4>#{applicantInfoBean.applicant.firstName}
+                                    #{applicantInfoBean.applicant.lastName}
+                                    - #{applicantInfoBean.applicant.applicantID}</h4>
+                                <p>
+                                    <strong>Gender: </strong>
+                                    #{applicantBean.gender(applicantInfoBean.applicant)}
+                                </p>
+                                <p>
+                                    <strong>Date Of Birth: </strong>
+                                    #{calendarMB.titleFormat(applicantInfoBean.applicant.dob)}
+                                </p>
+                            </div>
+                            <div class="contact-info">
+                                <p>
+                                    <strong>Phone Number: </strong>
+                                    #{applicantInfoBean.applicant.phoneNumber}
+                                </p>
+                                <p>
+                                    <strong>Email: </strong>
+                                    #{applicantInfoBean.applicant.email}
+                                </p>
+                                <p>
+                                    <strong>Address: </strong>
+                                    #{applicantInfoBean.applicant.address}
+                                </p>
+                            </div>
+                            <div class="recruitment-info">
+                                <p>
+                                    <strong>Salary Requirement: </strong>
+                                    $ #{applicantInfoBean.applicant.salaryRequirement}
+                                </p>
+                                <p>
+                                    <strong>Language: </strong>
+                                    #{applicantInfoBean.applicant.language}
+                                </p>
+                                <p>
+                                    <strong>Year Of Experience: </strong>
+                                    #{applicantInfoBean.applicant.yearOfExperience}
+                                </p>
+                                <p>
+                                    <strong>Degree: </strong>
+                                    #{applicantInfoBean.applicant.degree}
+                                </p>
+                                <p>
+                                    <strong>Skill: </strong>
+                                    #{applicantInfoBean.applicant.skill}
+                                </p>
+                                <p>
+                                    <strong>Award: </strong>
+                                    #{applicantInfoBean.applicant.award}
+                                </p>
+                            </div>
+                        </h:panelGroup>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+
+            <div class="content-box column-right"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>List of vacancies</h3>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content">
+                    <div class="default-tab">
+                        <h:panelGroup rendered="#{empty applicantInfoBean.interviews}">
+                            <h3>Have no any attached vacancy for this applicant.</h3>
+                             <p>Go to <a href="attach.xhtml">attach vacancies</a>
+                                page to attach some vacancies for this applicants</p>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty applicantInfoBean.interviews}">
+                            <ui:repeat value="#{applicantInfoBean.interviews}"
+                                       var="interview">
+                                <div class="event" >
+                                    <div class="title" style="padding-bottom: 10px;">
+                                        <h:graphicImage value="resources/images/other/in_progress.png"
+                                                        rendered="#{interview.AVStatus==99}"
+                                                        title="In progress"/>
+                                        <h:graphicImage value="resources/images/other/selected.png"
+                                                        rendered="#{interview.AVStatus==100}"
+                                                        title="Selected"/>
+                                        <h:graphicImage value="resources/images/other/rejected.png"
+                                                        rendered="#{interview.AVStatus==-100}"
+                                                        title="Rejected"/>
+                                        <h:graphicImage value="resources/images/other/not_required.png"
+                                                        rendered="#{interview.AVStatus==1}"
+                                                        title="Not required"/>
+                                        <h3>
+                                            #{interview.vacancy.title} -
+                                            #{interview.vacancy.vacancyID}
+                                        </h3>
+                                        <h:commandButton title="View schedule"
+                                                         onclick="dlg.show();"
+                                                         image="resources/images/icons/calendar.png"
+                                                         rendered="#{interview.AVStatus==99}"
+                                                         actionListener="#{applicantInfoBean.viewSchedule()}">
+                                            <f:param name="id" value="#{param.id}"/>
+                                            <f:param name="iid" value="#{interview.interviewID}"/>
+                                            <f:ajax execute="@this" render=":frm-schedule"/>
+                                        </h:commandButton>
+                                        <h:link outcome="vacancy.xhtml"
+                                                title="Edit information"
+                                                styleClass="icon-edit size-32"
+                                                rendered="#{accountMB.hRGroup}">
+                                            <f:param name="id" value="#{interview.vacancy.vacancyID}"/>
+                                        </h:link>
+                                        <h:link outcome="vacancy-info.xhtml"
+                                                title="Vacancy information"
+                                                styleClass="icon-info size-32">
+                                            <f:param name="id" value="#{interview.vacancy.vacancyID}"/>
+                                        </h:link>
+                                    </div>
+                                    <div class="event_body" style="padding-bottom: 20px;">
+                                        <div class="middle">
+                                            <h:graphicImage value="resources/images/other/job.png"/>
+                                        </div>
+                                        <div class="event_content">
+                                            <p><strong>Department: </strong>
+                                                #{interview.vacancy.department.name}</p>
+                                            <p><strong>Position: </strong>
+                                                #{interview.vacancy.position}</p>
+                                            <p><strong>Hired: </strong>
+                                                #{attachBean.numberHired(interview.vacancy.vacancyID)}/
+                                                                #{interview.vacancy.numberRequirement}</p>
+                                            <p><strong>Deadline: </strong>
+                                                #{calendarMB.dateFormat(interview.vacancy.deadline)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="dotted"/>
+                            </ui:repeat>
+                        </h:panelGroup>
+                    </div>
+                </div></div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -7,6 +7,7 @@ package rps.managedBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -104,7 +105,10 @@ public class ManageVacancyBean implements Serializable {
         return -1;
     }
 
-    public void suspend(String id) {
+    public void suspend() {
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
         Vacancy vacancy = vacancyService.getDetailVacancy(id);
         vacancy.setStatus(99);
         editVacancy(vacancy);
@@ -114,8 +118,11 @@ public class ManageVacancyBean implements Serializable {
         facesContext.addMessage(null, message);
     }
 
-    public void close(String id) {
+    public void close() {
         try {
+            Map<String, String> params =
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String id = params.get("id");
             Vacancy vacancy = vacancyService.getDetailVacancy(id);
             vacancy.setStatus(1);
             editVacancy(vacancy);
@@ -146,7 +153,10 @@ public class ManageVacancyBean implements Serializable {
         }
     }
 
-    public void reopen(String id) {
+    public void reopen() {
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
         Vacancy vacancy = vacancyService.getDetailVacancy(id);
         vacancy.setStatus(0);
         editVacancy(vacancy);

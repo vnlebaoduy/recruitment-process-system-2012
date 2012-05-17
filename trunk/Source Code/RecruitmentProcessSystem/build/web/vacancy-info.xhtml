@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <ui:include src="dialogs/schedule-dialog.xhtml"/>
+        <h:form id="frm-vacancy-info">
+            <div class="content-box column-left">
+                <div class="content-box-header"> <!-- Add the class "closed" to the Content box header to have it closed by default -->
+                    <h3>Vacancy information</h3>
+                </div> <!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <h:panelGroup rendered="#{empty vacancyInfoBean.vacancy}">
+                            <h3>Have no any selected vacancy.</h3>
+                            <p>Go to <a href="vacancies.xhtml">list vacancies</a>
+                                page to view all vacancies</p>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty vacancyInfoBean.vacancy}">
+                            <h4 class="vacancy-title">#{vacancyInfoBean.vacancy.title} -
+                                #{vacancyInfoBean.vacancy.vacancyID}</h4>
+                            <div class="block">
+                                <p>
+                                    <strong>Department: </strong>
+                                    #{vacancyInfoBean.vacancy.department.name}
+                                </p>
+                                <p>
+                                    <strong>Number Requirement: </strong>
+                                    #{vacancyInfoBean.vacancy.numberRequirement}
+                                </p>
+                                <p>
+                                    <strong>Position: </strong>
+                                    #{vacancyInfoBean.vacancy.position}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Working Place: </strong>
+                                    #{vacancyInfoBean.vacancy.workingPlace}
+                                </p>
+                                <p>
+                                    <strong>Work Type: </strong>
+                                    #{vacancyInfoBean.vacancy.workType}
+                                </p>
+                                <p>
+                                    <strong>Minimum Salary: </strong>
+                                    $ #{vacancyInfoBean.vacancy.minimumSalary}
+                                </p>
+                                <p>
+                                    <strong>Maximum Salary: </strong>
+                                    $ #{vacancyInfoBean.vacancy.maximumSalary}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Description: </strong>
+                                    #{vacancyInfoBean.vacancy.description}
+                                </p>
+                                <p>
+                                    <strong>Skill Requirement: </strong>
+                                    #{vacancyInfoBean.vacancy.skillRequirement}
+                                </p>
+                                <p>
+                                    <strong>Entitlement: </strong>
+                                    #{vacancyInfoBean.vacancy.entitlement}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Minimum Age: </strong>
+                                    #{vacancyInfoBean.vacancy.minimumAge}
+                                </p>
+                                <p>
+                                    <strong>Maximum Age: </strong>
+                                    #{vacancyInfoBean.vacancy.maximumAge}
+                                </p>
+                                <p>
+                                    <strong>Gender: </strong>
+                                    #{vacancyInfoBean.vacancy.gender}
+                                </p>
+                            </div>
+                            <div class="block">
+                                <p>
+                                    <strong>Degree: </strong>
+                                    #{vacancyInfoBean.vacancy.degree}
+                                </p>
+                                <p>
+                                    <strong>Year Of Experience: </strong>
+                                    #{vacancyInfoBean.vacancy.yearOfExperience}
+                                </p>
+                                <p>
+                                    <strong>Probationary Period: </strong>
+                                    #{vacancyInfoBean.vacancy.probationaryPeriod}
+                                </p>
+                                <p>
+                                    <strong>Deadline: </strong>
+                                    #{calendarMB.dateFormat(vacancyInfoBean.vacancy.deadline)}
+                                </p>
+                            </div>
+                        </h:panelGroup>
+                    </div> <!-- End #tab3 -->
+                </div> <!-- End .content-box-content -->
+            </div> <!-- End .content-box -->
+
+            <div class="content-box column-right"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>List of applicants</h3>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content">
+                    <div class="default-tab">
+                        <h:panelGroup rendered="#{empty vacancyInfoBean.interviews}">
+                            <h3>Have no any applicant apply for this vacancy.</h3>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty vacancyInfoBean.interviews}">
+                            <ui:repeat value="#{vacancyInfoBean.interviews}"
+                                       var="interview">
+                                <div class="event" >
+                                    <div class="title" style="padding-bottom: 10px;">
+                                        <h:graphicImage value="resources/images/other/in_progress.png"
+                                                        rendered="#{interview.AVStatus==99}"
+                                                        title="In progress"/>
+                                        <h:graphicImage value="resources/images/other/selected.png"
+                                                        rendered="#{interview.AVStatus==100}"
+                                                        title="Selected"/>
+                                        <h:graphicImage value="resources/images/other/rejected.png"
+                                                        rendered="#{interview.AVStatus==-100}"
+                                                        title="Rejected"/>
+                                        <h:graphicImage value="resources/images/other/not_required.png"
+                                                        rendered="#{interview.AVStatus==1}"
+                                                        title="Not required"/>
+                                        <h3>
+                                            #{interview.applicant.firstName}
+                                            #{interview.applicant.lastName} -
+                                            #{interview.applicant.applicantID}
+                                        </h3>
+                                        <h:commandButton title="View schedule"
+                                                         onclick="dlg.show();"
+                                                         image="resources/images/icons/calendar.png"
+                                                         rendered="#{interview.AVStatus==99}"
+                                                         actionListener="#{vacancyInfoBean.viewSchedule()}">
+                                            <f:param name="id" value="#{param.id}"/>
+                                            <f:param name="iid" value="#{interview.interviewID}"/>
+                                            <f:ajax execute="@this" render=":frm-schedule"/>
+                                        </h:commandButton>
+                                        <h:link outcome="applicant.xhtml"
+                                                title="Edit information"
+                                                styleClass="icon-edit size-32"
+                                                rendered="#{accountMB.hRGroup}">
+                                            <f:param name="id" value="#{interview.applicant.applicantID}"/>
+                                        </h:link>
+                                        <h:link outcome="applicant-info.xhtml"
+                                                title="Applicant information"
+                                                styleClass="icon-info size-32">
+                                            <f:param name="id" value="#{interview.applicant.applicantID}"/>
+                                        </h:link>
+                                    </div>
+                                    <div class="event_body" style="padding-bottom: 20px;">
+                                        <div class="middle">
+                                            <h:graphicImage value="resources/images/other/female.png"
+                                                            rendered="#{not interview.applicant.gender}"/>
+                                            <h:graphicImage value="resources/images/other/male.png"
+                                                            rendered="#{interview.applicant.gender}"/>
+                                        </div>
+                                        <div class="event_content">
+                                            <p><strong>Gender: </strong>
+                                                #{applicantBean.gender(interview.applicant)}</p>
+                                            <p><strong>DOB: </strong>
+                                                #{calendarMB.dateFormat(interview.applicant.dob)}</p>
+                                            <p><strong>Phone Number: </strong>
+                                                #{interview.applicant.phoneNumber}</p>
+                                            <p><strong>Email: </strong>
+                                                #{interview.applicant.email}
+                                            </p>
+                                            <p><strong>Address: </strong>
+                                                #{interview.applicant.address}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="dotted"/>
+                            </ui:repeat>
+                        </h:panelGroup>
+                    </div>
+                </div></div>
+        </h:form>
+    </ui:define>
+</ui:composition>

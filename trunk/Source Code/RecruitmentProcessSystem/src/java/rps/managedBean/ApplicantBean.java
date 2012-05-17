@@ -172,7 +172,6 @@ public class ApplicantBean implements Serializable {
             }
         }
     }
-    
     private List<Vacancy> listVacancies;
 
     public void setListVacancies(List<Vacancy> listVacancies) {
@@ -194,7 +193,7 @@ public class ApplicantBean implements Serializable {
                     applicant.getLanguage(), applicant.getYearOfExperience(), applicant.getDegree(),
                     applicant.getSkill(), applicant.getAward(), null);
             applicantService.commitTransaction();
-            if (!listVacancies.isEmpty()) {
+            if (listVacancies != null && !listVacancies.isEmpty()) {
                 attach();
             }
             resetAttachForm();

@@ -1,0 +1,606 @@
+/* 
+    Document   : customize
+    Created on : Apr 12, 2012, 1:36:13 PM
+    Author     : user
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+/***** VACANCY *****/
+div#vacancy{
+    width:100%;
+    position:relative;
+}
+
+div#vacancy table{
+    width: 100%;
+}
+
+div#vacancy input{
+    margin:10px auto 10px auto;
+    float:right;
+}
+
+div.attach-scroll{
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 540px;
+}
+
+div.attach-scroll:hover{
+    overflow-y: auto;
+}
+/***** CUSTOMIZE PRIMEFACES *****/
+form span input[type="text"]{
+    padding: 6px;
+    font-size: 13px;
+    background: #fff url('../images/bg-form-field.gif') top left repeat-x;
+    border: 1px solid #d5d5d5;
+    color: #333;
+    width: 50% !important;
+}
+
+fieldset.ui-widget-content{
+    border:none;
+}
+
+/***** SCHEDULE *****/
+div#calendar_wrap {
+    margin: 10px auto;
+    overflow: hidden;
+    text-align: left;
+}
+
+div.calendar {
+    width: 924px;
+    margin: 10px auto;
+    overflow: hidden;
+    text-align: left;
+}
+
+div#calendar_wrap .title_bar {
+    font-weight: bold;
+    color: #1C1C1C;
+    text-align: center;
+    border:1px solid #fff;
+    margin-bottom:15px;
+}
+
+div#calendar_wrap .title_bar .previous { 
+    float: left;
+    display: block;
+    width: 25px;
+    height: 20px;
+    background: url(../images/icons/previous_month.gif) left top no-repeat;
+    margin-top:10px;
+    margin-left:10px;
+}
+
+div#calendar_wrap .title_bar .next { 
+    float: right;
+    display: block;
+    width: 25px;
+    height: 20px;
+    background: url(../images/icons/next_month.gif) right top no-repeat;
+    margin-top:10px;
+    margin-right:10px;
+}
+
+div#calendar_wrap .title_bar .month {
+    width: 800px;
+    margin:10px auto;
+    padding-bottom:0 !important;
+    padding-bottom:10px;
+}
+
+div#calendar_wrap .title_bar h2 { 
+    font-size: 16px;
+}
+
+div.cal_day {
+    position: relative;
+    float: left;
+    margin: 0 4px 4px 0 !important;
+    margin:0 4px -24px 0;
+    width: 128px;
+    height: 95px;
+}
+
+div.day_red{
+    background: url('../images/other/day_red.png') top no-repeat;
+}
+
+div.day_blue{
+    background: url('../images/other/day_blue.png') top no-repeat;
+}
+
+div.day_green{
+    background: url('../images/other/day_green.png') top no-repeat;
+}
+
+div.day_gray{
+    background: url('../images/other/day_grey.png') top no-repeat;
+}
+
+div.day_yellow{
+    background: url('../images/other/day_yellow.png') top no-repeat;
+}
+
+div.cal_day .day_heading {
+    position: relative;
+    float: left;
+    width: 40px;
+    height: 16px;
+    padding: 6px;
+    text-transform: uppercase;
+    font: 14px Arial;
+    color: #FFF;
+}
+
+div.cal_day .day_count {
+    position: relative;
+    float: right;
+    width: 64px;
+    text-align: right;
+    height: 16px;
+    padding: 6px;
+    font: 11px Arial, sans-serif;
+    color: #FFF;
+}
+
+div.cal_day .day_number {
+    width: 100%;
+    font: 52px Arial;
+    font-weight: bold;
+    color: #2b2b2b;
+    height:95px;
+    text-align: center;
+    z-index:999;
+    clear:left;
+}
+
+div.cal_day .day_number.today {
+    color: #08c;
+}
+
+.last_month, .next_month {
+    filter:alpha(opacity=20);
+    -moz-opacity:0.2;
+    -khtml-opacity: 0.2;
+    opacity: 0.2;
+}
+
+div.cal_day .day_count span.event {
+    width:55px;
+    margin-top: -1px;
+    padding:2px 0 !important;
+    padding:1px 0 1px;
+    display:inline-block;
+    text-align:center;
+    background-color: #000;
+    opacity:0.4;
+    filter:alpha(opacity=40);
+    -moz-border-radius: 8px;
+    -webkit-border-radius:8px;
+}
+
+div.content-box-header .schedule{
+    float:right;
+    margin: 3px 15px;
+}
+
+div.middle{
+    padding: 5px 0px 10px 0px;
+    float: left;
+}
+div.middle img{
+    width: 128px;
+}
+div.title{
+    position: relative;
+    width: 100%;
+    height: 32px;
+}
+div.title img{
+    float: left;
+    padding-right: 15px;
+    width: 32px;
+    height: 32px;
+}
+div.title h3{
+    padding: 0px;
+    float:left;
+    line-height: 32px;
+}
+
+div.title input{
+    float: right;
+    padding: 0px 2px;
+}
+div.title a{
+    float: right;
+    padding: 0px 2px;
+}
+div.event_body{
+    position: relative;
+    width: 100%;
+}
+/***** EVENT DIALOG *****/
+div.border{
+    border-top: 1px dotted #CCC;
+}
+div.event{
+    position:relative;
+    display: block;
+    border: none;
+}
+div.padding-b-t{
+    padding: 15px 0px 15px 0px;
+}
+div.padding-b{
+    padding-bottom: 15px;
+}
+div.other{
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
+div.event div.cal_day{
+    line-height:150px;
+}
+
+div.event div.event_content{
+    margin-left: 140px;
+}
+
+div.event div.event_content p{
+    line-height:1em;
+}
+
+div.event div.event_content a{
+    margin-left:200px;
+}
+
+div.event div.event_content a {
+    color: #57a000;
+    text-decoration: none;
+}
+div.event div.event_content a:hover {
+    color: #000;
+}
+div.event div.event_content a:active {
+    color: #777;
+}
+div.event div.event_content a:focus { 
+    outline: 1px;
+}
+
+/***** EMPLOYEE INFO *****/
+div.content-box-header input{
+    float:right;
+    padding: 3px 15px 3px 0px;
+}
+
+.female{
+    background: url('../images/other/female.png') no-repeat top left;
+    height: 128px;
+    width: 128px;
+    float:left;
+}
+
+.male{
+    background: url('../images/other/male.png') no-repeat top left;
+    height: 128px;
+    width: 128px;
+    float:left;
+}
+
+div.personal-info{
+    margin-left:138px;
+    height: 138px;
+}
+
+div.personal-info h4{
+    padding-top: 10px;
+    line-height: 1.6em;
+}
+
+div.contact-info{
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1px dotted #CCC;
+    border-top: 1px dotted #CCC;
+    padding-left:138px;
+    background: url('../images/other/contact.png')no-repeat top left;
+}
+
+div.work-info{
+    padding: 10px 0px 0px 0px;
+    padding-left:138px;
+    background: url('../images/other/work.png')no-repeat top left;
+}
+
+div.recruitment-info{
+    padding: 10px 0px 0px 0px;
+    padding-left:138px;
+    background: url('../images/other/recruitment.png')no-repeat top left;
+}
+/***** PROGRESS SCHEDULE *****/
+div#combobox{
+    position: relative;
+    height: 50px;
+}
+div#combobox p{
+    width: 440px;
+    float:left;
+}
+div#combobox p.p-left{
+    padding-right:45px;
+}
+div#combobox label{
+    display: inline;
+    padding-right: 10px;
+    font-size:14px;
+}
+
+form .cbo-schedule{
+    width: 80% !important;
+}
+
+div.v-scroll{
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 460px;
+}
+
+div.v-scroll:hover{
+    overflow-y: auto;
+}
+
+h4.vacancy-title{
+    padding: 10px 0px 15px 0px;
+    line-height: 1.6em;
+}
+
+div.block{
+    border-top: 1px dotted #CCC;
+    padding: 10px 0px 10px 0px;
+}
+
+/***** MANAGE SCHEDULE *****/
+div.manage {
+    width: 95%;
+}
+
+div.article{
+    height:auto;
+    padding:10px 0px;
+    border-top:1px dotted #CCC;
+    min-height: 100px;
+    position:relative;
+}
+div.article-left{
+    float:left;
+    padding: 5px 0px;
+}
+div.article-main{
+    padding-left: 138px;
+}
+div.article table {
+    width: 100%;
+    border-collapse: collapse;
+}
+div.article table thead th {
+    font-weight: bold;
+    font-size: 15px;
+}
+div.article tbody {
+
+}
+div.article tbody tr {
+    background: #fff;
+}
+
+div.article tbody tr.alt-row {
+    background: #f3f3f3;
+}
+
+div.article table td{
+    vertical-align: middle;
+    padding: 10px;
+    line-height: 1.3em;
+    border-top: 1px solid #ddd;
+}
+div.article table td div.text-center{
+    width: 100%;
+    text-align: center;
+}
+div.article table th {
+    padding: 0px 10px 10px 10px;
+    line-height: 1.3em;
+}
+div.article table th:last-child {
+    text-align: center;
+}
+div.article table tfoot td .bulk-actions {
+    padding: 15px 0 5px 0;
+}
+
+div.article table tfoot td .bulk-actions select {
+    padding: 4px;
+    border: 1px solid #ccc;
+}
+
+.col-30{
+    width: 30px;
+}
+.col-100{/* TIME */
+       width: 100px;
+}
+.col-120{
+       width: 120px;
+}
+.col-150{/* Interviewer */
+       width: 150px;
+}
+.col-170{
+       width: 170px;
+}
+.col-180{
+       width: 180px;
+}
+.col-200{/* Vacancy */
+       width: 200px;
+}
+.col-250{
+       width: 250px;
+}
+.col-center{
+    text-align: center;
+}
+.col-center input{
+    padding: 2px;
+}
+
+/***** ADD INTERVIEW *****/
+div#add-interview p select, input{
+    vertical-align: middle;
+}
+
+div#add-interview p select{
+    margin-right: 10px;
+}
+
+#frm-conflict div.content{
+    border: none;
+    padding: 10px 20px;
+}
+
+/***** SEARCH INTERVIEW *****/
+div#search-interview{
+    border: 1px dotted #CCC;
+    margin-bottom: 10px;
+}
+
+div#search-interview *{
+    display: inline;
+    vertical-align: middle;
+}
+
+div#search-interview fieldset{
+    width: 100%;
+    padding: 10px;
+}
+
+.small-date input[type="text"], select.small-date {
+    margin: 0px 10px;
+    width: 20% !important;
+}
+
+/***** EDIT INTERVIEW *****/
+
+fieldset#edit-interview h4{
+    line-height: 1.6em;
+}
+
+div.border p label span{
+    font-size: 16px;
+    color: #222;
+    margin-right: 10px;
+}
+fieldset#edit-interview label.conflict{
+    padding: 0px;
+}
+
+/***** OTHER *****/
+p.inline label{
+    display: inline;
+    margin-right: 10px;
+}
+p.dotted{
+    margin: 15px 0px;
+    border-top: 1px dotted #CCC;
+    line-height: 0px;
+    padding: 0px;
+}
+h3.msg{
+    border-top: 1px dotted #CCC;
+    padding-top: 10px;
+}
+div.chart table{
+    border-spacing: 4px;
+}
+/***** SEARCH VACANCY *****/
+div#search-vacancy{
+    margin-bottom: 10px;
+}
+
+div#search-vacancy *{
+    display: inline;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+div#search-vacancy fieldset{
+    width: 100%;
+    padding: 10px;
+}
+
+/***** ICON *****/
+.icon-accept{
+    background: url('../images/icons/accept.png') no-repeat top left;
+}
+.icon-add{
+    background: url('../images/icons/add.png') no-repeat top left;
+}
+.icon-attach{
+    background: url('../images/icons/attach.png') no-repeat top left;
+}
+.icon-calendar{
+    background: url('../images/icons/calendar.png') no-repeat top left;
+}
+.icon-clock{
+    background: url('../images/icons/clock.png') no-repeat top left;
+}
+.icon-delete{
+    background: url('../images/icons/delete.png') no-repeat top left;
+}
+.icon-edit{
+    background: url('../images/icons/edit.png') no-repeat top left;
+}
+.icon-info{
+    background: url('../images/icons/info.png') no-repeat top left;
+}
+.icon-lock{
+    background: url('../images/icons/lock.png') no-repeat top left;
+}
+.icon-refresh{
+    background: url('../images/icons/refresh.png') no-repeat top left;
+}
+.icon-remove{
+    background: url('../images/icons/remove.png') no-repeat top left;
+}
+.icon-review{
+    background: url('../images/icons/review.png') no-repeat top left;
+}
+.icon-search{
+    background: url('../images/icons/search.png') no-repeat top left;
+}
+.icon-trash{
+    background: url('../images/icons/trash.png') no-repeat top left;
+}
+.icon-unlock{
+    background: url('../images/icons/unlock.png') no-repeat top left;
+}
+.size-32{
+    width: 32px;
+    height: 32px;
+}
