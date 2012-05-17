@@ -167,6 +167,10 @@ public class CalendarMB implements Serializable {
         return format(obj, "MM/dd/yyyy HH:mm");
     }
 
+    public String yearFormat(Object obj) {
+        return format(obj, "yyyy");
+    }
+
     private String format(Object obj, String pattern) {
         try {
             Date d = (Date) obj;

@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <h:form id="frm-statistic">            
+            <div class="content-box">
+                <div class="content-box-header">
+                    <h3>Statistics about vacancy</h3>
+                </div><!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <p:barChart id="basic" value="#{statisticBean.vacancyModel}" legendPosition="ne"
+                                    title="Top 5 Favorite Vacancies"
+                                    xaxisLabel="Vacancy"
+                                    yaxisLabel="Number of registered applicants"
+                                    style="height:300px"
+                                    styleClass="chart"/>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"/>
+            <div class="content-box">
+                <div class="content-box-header">
+                    <h3>Statistics about applicant</h3>
+                </div><!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <p:lineChart id="line" value="#{statisticBean.applicantModel}"
+                                     legendPosition="ne"
+                                     title="Number of registered applicants in
+                                     #{calendarMB.yearFormat(calendarMB.currentDate)}"
+                                     xaxisLabel="Month"
+                                     yaxisLabel="Number of registered applicants"
+                                     style="height:300px"
+                                     styleClass="chart"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

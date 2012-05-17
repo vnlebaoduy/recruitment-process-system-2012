@@ -1,0 +1,91 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog
+        id="messages"
+        header="Schedule Dialog"
+        widgetVar="dlg"
+        modal="true"
+        resizable="false"
+        width="960">
+
+        <h:form id="frm-schedule">
+            <div class="content" style="margin: 0px auto;">
+                <div class="default-tab">
+                    <div id="calendar_wrap" class="manage">
+                        <h3>#{scheduleBean.interview.applicant.firstName}
+                        #{scheduleBean.interview.applicant.lastName}'s schedule</h3>
+                        <div class="article">
+                            <div class="article-left">
+                                <p:commandLink title="#{calendarMB.titleFormat(
+                                                        scheduleBean.interview.startedTime)}">
+                                    <div class="cal_day day_red">
+                                        <div class="day_heading">
+                                            #{calendarMB.dayInWeekFormat(
+                                              scheduleBean.interview.startedTime)}</div>
+                                        <h:panelGroup rendered="#{calendarMB.today(
+                                                                  scheduleBean.interview.startedTime)}">
+                                            <div class="day_number today">
+                                                #{calendarMB.dayFormat(
+                                                  scheduleBean.interview.startedTime)}</div>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!calendarMB.today(
+                                                                  scheduleBean.interview.startedTime)}">
+                                            <div class="day_number">
+                                                #{calendarMB.dayFormat(
+                                                  scheduleBean.interview.startedTime)}</div>
+                                        </h:panelGroup>
+                                    </div>
+                                </p:commandLink>
+                            </div>
+                            <div class="article-main">
+                                <h:dataTable value="#{scheduleBean.interview}"
+                                             var="interview"
+                                             columnClasses="status-col,col-2,col-3,col-4,col-5,app-status-col">
+                                    <h:column>
+                                        <h:graphicImage value="resources/images/other/not_in_progress.png"
+                                                        rendered="#{interview.status == 0}"
+                                                        title="Not In Progress"/>
+                                        <h:graphicImage value="resources/images/other/select.png"
+                                                        rendered="#{interview.status == 100}"
+                                                        title="Selected"/>
+                                        <h:graphicImage value="resources/images/other/reject.png"
+                                                        rendered="#{interview.status == -100}"
+                                                        title="Rejected"/>
+                                        <h:graphicImage value="resources/images/other/postpone.png"
+                                                        rendered="#{interview.status == 99}"
+                                                        title="Postpone"/>
+                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                        rendered="#{interview.status == 1}"
+                                                        title="Remove"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Time</f:facet>
+                                        #{calendarMB.timeFormat(interview.startedTime)}
+                                        to #{calendarMB.timeFormat(interview.endedTime)}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Interviewer</f:facet>
+                                        #{interview.employee.firstName} #{interview.employee.lastName}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Vacancy</f:facet>
+                                        #{interview.vacancy.title}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Applicant</f:facet>
+                                        #{interview.applicant.firstName} #{interview.applicant.lastName}
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End #tab3 -->
+            </div> <!-- End .content-box-content -->
+        </h:form>
+    </p:dialog>
+</ui:composition>

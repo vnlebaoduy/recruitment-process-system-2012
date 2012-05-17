@@ -1,0 +1,241 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="./templates/rpsTemplate.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="true" globalOnly="true"/>
+        <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+            <ui:include src="dialogs/attach-dialog.xhtml"/>
+        </h:panelGroup>
+        <h:form id="frm-applicant">
+            <div class="content-box column-left">
+                <div class="content-box-header">
+                    <h3>Personal Information</h3>
+                </div><!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <fieldset>
+                            <h4>Introduction by Admin</h4>
+                            <p>
+                                When you create new an applicant, you need to enter his/her information. His/her personal information contains first name, last name, gender, date of birth, etc...
+                                The first name, last name field must be entered, not blank, the other is recommended.
+                            </p>
+                            <p>
+                                <label>First Name</label>
+                                <h:inputText value="#{applicantBean.applicant.firstName}"
+                                             styleClass="text-input medium-input" id="firstName"
+                                             required="true"
+                                             requiredMessage="You must enter first name."/>
+                                <h:message for="firstName"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                                <!-- Classes for input-notification: success, error, information, attention -->
+                            </p>
+                            <p>
+                                <label>Last Name</label>
+                                <h:inputText value="#{applicantBean.applicant.lastName}"
+                                             styleClass="text-input medium-input" id="lastName"
+                                             required="true"
+                                             requiredMessage="You must enter last name."/>
+                                <h:message for="lastName"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                            </p>
+                            <p>
+                                <label>Gender</label>
+                                <h:selectOneMenu id="gender"
+                                                 value="#{applicantBean.applicant.gender}"
+                                                 styleClass="text-input medium-input">
+                                    <f:selectItem itemLabel="Male" itemValue="true"/>
+                                    <f:selectItem itemLabel="Female" itemValue="false" />
+                                </h:selectOneMenu>
+                            </p>
+                            <p>
+                                <label>Date Of Birth</label>
+                                <p:calendar value="#{applicantBean.applicant.dob}"
+                                            id="dob"
+                                            navigator="true"
+                                            yearRange="c-50:c+50"
+                                            mindate="1/1/62"
+                                            maxdate="#{calendarMB.currentDate}"
+                                            pattern="EEE, dd MMM, yyyy"
+                                            styleClass="remove"
+                                            required="true"
+                                            requiredMessage="You must enter date of birth."
+                                            validator="#{applicantBean.validateDOB}">
+                                </p:calendar>
+                                <h:message for="dob" id="msgDOB"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+
+                            </p>
+                        </fieldset>
+                    </div><!-- End #tab3 -->
+                </div><!-- End .content-box-content -->
+            </div><!-- End .content-box -->
+
+            <div class="content-box column-right">
+                <div class="content-box-header">
+                    <h3>Contact Information</h3>
+                </div><!-- End .content-box-header -->
+
+                <div class="content-box-content">
+                    <div class="tab-content default-tab">
+                        <fieldset>
+                            <h4>Introduction by Admin</h4>
+                            <p>
+                                When you create new an applicant, you need to enter his/her information. His/her contact information contains phone number, email, address, etc...
+                                The email field must be entered, not blank and it is accepted when it was existed and unregistered, the other is recommended.
+                            </p>
+                            <p>
+                                <label>Phone Number</label>
+                                <h:inputText value="#{applicantBean.applicant.phoneNumber}"
+                                             styleClass="text-input medium-input" id="phone"
+                                             validator="#{applicantBean.validatePhoneNumber}">
+                                    <p:ajax update="msgPhone" event="keyup"/>
+                                    <p:ajax update="msgPhone" event="blur"/>
+                                </h:inputText>
+                                <h:message for="phone" id="msgPhone"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                                <br /><small>For example: 0123456789</small>
+                            </p>
+                            <p>
+                                <label>Email</label>
+                                <h:inputText value="#{applicantBean.applicant.email}"
+                                             styleClass="text-input medium-input"
+                                             id="email"
+                                             required="true"
+                                             requiredMessage="You must enter email address."
+                                             validator="#{applicantBean.validateEmail}">
+                                    <p:ajax update="msgEmail" event="keyup"/>
+                                    <p:ajax update="msgEmail" event="blur"/>
+                                </h:inputText>
+                                <h:message for="email" id="msgEmail"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                                <br /><small>For example: recruitment@gmail.com</small>
+                            </p>
+                            <p>
+                                <label>Address</label>
+                                <h:inputTextarea value="#{applicantBean.applicant.address}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtAddress"/>
+                            </p>
+                        </fieldset>
+                    </div><!-- End #tab3 -->
+                </div><!-- End .content-box-content -->
+            </div><!-- End .content-box -->
+
+            <div class="clear"></div>
+
+            <div class="content-box"><!-- Start Content Box -->
+                <div class="content-box-header">
+                    <h3>Recruitment Information</h3>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="content-box-content">
+                    <div class="default-tab">
+                        <fieldset class="column-left">
+                            <h4>Introduction by Admin</h4>
+                            <p>
+                                When you create new an applicant, you need to enter his/her information. His/her recruitment information will be used for recruitment process by
+                                HR Group, all of fields should be completed.
+                            </p>
+                            <p>
+                                <label>Salary Requirement</label>
+                                <h:inputText value="#{applicantBean.applicant.salaryRequirement}"
+                                             styleClass="text-input medium-input" id="salary"
+                                             converterMessage="Input is wrong format"
+                                             validator="#{applicantBean.validateSalary}">
+                                    <p:ajax update="msgSalary" event="keyup"/>
+                                    <p:ajax update="msgSalary" event="blur"/>
+                                </h:inputText>
+                                <h:message for="salary" id="msgSalary"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                            </p>
+                            <p>
+                                <label>Year Of Experience</label>
+                                <h:inputText value="#{applicantBean.applicant.yearOfExperience}"
+                                             styleClass="text-input medium-input" id="year"
+                                             converterMessage="Input is wrong format"
+                                             validator="#{applicantBean.validateYear}">
+                                    <p:ajax update="msgYear" event="keyup"/>
+                                    <p:ajax update="msgYear" event="blur"/>
+                                </h:inputText>
+                                <h:message for="year" id="msgYear"
+                                           infoClass="input-notification success png_bg"
+                                           warnClass="input-notification attention png_bg"
+                                           errorClass="input-notification error png_bg"/>
+                            </p>
+                            <p>
+                                <label>Language</label>
+                                <h:inputTextarea value="#{applicantBean.applicant.language}"
+                                                 styleClass="text-input medium-input"
+                                                 cols="80" rows="5" id="txtLanguage"/>
+                            </p>
+                            <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+                                <p>
+                                    <p:commandLink oncomplete="dlg.show();" 
+                                                   value="Attach vacancy to new applicant"
+                                                   update=":frm-attach"/>
+                                    <small><h:outputText id="msgAttach" value="#{attachBean.msgAttached}"/></small>
+                                </p>
+                            </h:panelGroup>
+                        </fieldset>
+                        <fieldset class="column-right">
+                            <p>
+                                <label>Degree</label>
+                                <h:inputTextarea value="#{applicantBean.applicant.degree}"
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtDegree"/>
+                            </p>
+                            <p>
+                                <label>Skill</label>
+                                <h:inputTextarea value="#{applicantBean.applicant.skill}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtSkill"/>
+                            </p>
+                            <p>
+                                <label>Award</label>
+                                <h:inputTextarea value="#{applicantBean.applicant.award}" 
+                                                 styleClass="text-input textarea medium-input"
+                                                 cols="80" rows="5" id="txtAward"/>
+                            </p>
+                        </fieldset>
+                        <div class="clear"></div><!-- End .clear -->
+                    </div><!-- End #tab2 -->
+                </div><!-- End .content-box-content -->
+            </div>
+
+            <p>
+                <h:panelGroup rendered="#{empty applicantBean.applicant.applicantID}">
+                    <h:commandButton value="Create new" styleClass="button" actionListener="#{applicantBean.add}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty applicantBean.applicant.applicantID}">
+                    <h:commandButton value="Save changes" styleClass="button" action="#{applicantBean.edit}">
+                        <f:param name="id" value="#{param.id}"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </p>
+        </h:form>        
+        <script type="text/javascript" >
+            $('.remove input').removeClass('ui-inputfield');
+        </script>
+    </ui:define>
+</ui:composition>

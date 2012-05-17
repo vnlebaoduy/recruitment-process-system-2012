@@ -80,7 +80,10 @@ public class ManageInterviewBean implements Serializable {
         return null;
     }
 
-    public void postpone(String id) {
+    public void postpone() {
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
         Interview interview = interviewService.getInterview(id);
         interview.setStatus(99);
         editInterview(interview);
@@ -90,7 +93,10 @@ public class ManageInterviewBean implements Serializable {
         facesContext.addMessage(null, message);
     }
 
-    public void remove(String id) {
+    public void remove() {
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
         Interview interview = interviewService.getInterview(id);
         interview.setStatus(1);
         editInterview(interview);
@@ -100,7 +106,10 @@ public class ManageInterviewBean implements Serializable {
         facesContext.addMessage(null, message);
     }
 
-    public void reopen(String id) {
+    public void reopen() {
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String id = params.get("id");
         Interview interview = interviewService.getInterview(id);
         interview.setStatus(0);
         editInterview(interview);

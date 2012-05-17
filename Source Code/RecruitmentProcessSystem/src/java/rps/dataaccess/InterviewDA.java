@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -17,6 +19,7 @@ import rps.entities.Applicant;
 import rps.entities.Employee;
 import rps.entities.Interview;
 import rps.entities.Vacancy;
+import rps.entities.statistic.VacancyStatistic;
 
 /**
  *
@@ -24,8 +27,11 @@ import rps.entities.Vacancy;
  */
 public class InterviewDA extends AbstractDataAccess<Interview> {
 
+    private EntityManager em;
+
     public InterviewDA(EntityManager em) {
         super(Interview.class, em);
+        this.em = em;
     }
 
     public FindResult<Interview> searchInterview(Employee employee, Date startedTime,
@@ -313,5 +319,46 @@ public class InterviewDA extends AbstractDataAccess<Interview> {
         results.setCount(count);
 
         return results;
+    }
+
+    public List<VacancyStatistic> findFavoriteVacancy(int num) {
+        List<VacancyStatistic> result = new ArrayList<VacancyStatistic>();
+        if (num > 0) {
+            TypedQuery<VacancyStatistic> query = em.createQuery(
+                    "SELECT i.vacancy, COUNT(i.vacancy) AS Num"
+                    + " FROM Interview i"
+                    + " GROUP BY i.vacancy"
+                    + " ORDER BY Num DESC",
+                    VacancyStatistic.class);
+            List<VacancyStatistic> list = query.getResultList();
+            if (list.size() > num) {
+                list = list.subList(0, num);
+            }
+            for (Object obj : list) {
+                Object[] objs = (Object[]) obj;
+                VacancyStatistic vs = new VacancyStatistic();
+                vs.setVacancy((Vacancy) objs[0]);
+                vs.setNumberApplicants(Long.parseLong(objs[1].toString()));
+                result.add(vs);
+            }
+        }
+        return result;
+    }
+
+    public int findNumberRegisteredApplicant(Date start, Date end) {
+        int result = -1;
+        TypedQuery<Integer> query = em.createQuery(
+                "SELECT COUNT(i.applicant) AS Num"
+                + " FROM Interview i"
+                + " WHERE i.startedTime BETWEEN :start AND :end",
+                Integer.class)
+                .setParameter("start", start, TemporalType.DATE)
+                .setParameter("end", end, TemporalType.DATE);
+        List<Integer> list = query.getResultList();
+        for (Object obj : list) {
+            Long value = (Long) obj;
+            result = Integer.parseInt(value.toString());
+        }
+        return result;
     }
 }

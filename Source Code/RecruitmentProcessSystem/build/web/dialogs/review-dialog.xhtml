@@ -1,0 +1,125 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dialog
+        id="messages"
+        header="Review Dialog"
+        widgetVar="dlg"
+        modal="true"
+        resizable="false"
+        width="1200">
+
+        <h:form id="frm-review">
+            <div class="content" style="margin: 0px auto;">
+                <div class="default-tab">
+                    <div id="calendar_wrap" class="manage">
+                        <h3>You need to select status to review the interview's
+                            result for #{manageInterviewBean.reviewInterview.applicant.firstName}
+                            #{manageInterviewBean.reviewInterview.applicant.lastName}</h3>
+                        <div class="article">
+                            <div class="article-left">
+                                <p:commandLink title="#{calendarMB.titleFormat(
+                                                        manageInterviewBean.reviewInterview.startedTime)}">
+                                    <div class="cal_day day_red">
+                                        <div class="day_heading">
+                                            #{calendarMB.dayInWeekFormat(
+                                              manageInterviewBean.reviewInterview.startedTime)}</div>
+                                        <h:panelGroup rendered="#{calendarMB.today(
+                                                                  manageInterviewBean.reviewInterview.startedTime)}">
+                                            <div class="day_number today">
+                                                #{calendarMB.dayFormat(
+                                                  manageInterviewBean.reviewInterview.startedTime)}</div>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!calendarMB.today(
+                                                                  manageInterviewBean.reviewInterview.startedTime)}">
+                                            <div class="day_number">
+                                                #{calendarMB.dayFormat(
+                                                  manageInterviewBean.reviewInterview.startedTime)}</div>
+                                        </h:panelGroup>
+                                    </div>
+                                </p:commandLink>
+                            </div>
+                            <div class="article-main">
+                                <h:dataTable value="#{manageInterviewBean.reviewInterview}"
+                                             var="interview"
+                                    columnClasses="col-30,col-100,col-150,col-150,col-150,col-200">
+                                    <h:column>
+                                        <h:graphicImage value="resources/images/other/not_in_progress.png"
+                                                        rendered="#{interview.status == 0}"
+                                                        title="Not In Progress"/>
+                                        <h:graphicImage value="resources/images/other/select.png"
+                                                        rendered="#{interview.status == 100}"
+                                                        title="Selected"/>
+                                        <h:graphicImage value="resources/images/other/reject.png"
+                                                        rendered="#{interview.status == -100}"
+                                                        title="Rejected"/>
+                                        <h:graphicImage value="resources/images/other/postpone.png"
+                                                        rendered="#{interview.status == 99}"
+                                                        title="Postpone"/>
+                                        <h:graphicImage value="resources/images/other/remove.png"
+                                                        rendered="#{interview.status == 1}"
+                                                        title="Remove"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Time</f:facet>
+                                        #{calendarMB.timeFormat(interview.startedTime)}
+                                        to #{calendarMB.timeFormat(interview.endedTime)}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Interviewer</f:facet>
+                                        #{interview.employee.firstName}
+                                        #{interview.employee.lastName}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Vacancy</f:facet>
+                                        #{interview.vacancy.title}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Applicant</f:facet>
+                                        #{interview.applicant.firstName}
+                                        #{interview.applicant.lastName}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Status</f:facet>
+                                        <h:selectOneMenu id="cbo-status"
+                                                         value="#{interview.AVStatus}"
+                                                         styleClass="text-input large-input"
+                                                         rendered="#{interview.AVStatus != 1}">
+                                            <f:selectItem itemLabel="In Progress" itemValue="99"/>
+                                            <f:selectItem itemLabel="Selected" itemValue="100" />
+                                            <f:selectItem itemLabel="Rejected" itemValue="-100" />
+                                            <p:ajax process="@this" update="@form"/>
+                                            <f:param name="id" value="#{interview.interviewID}"/>
+                                        </h:selectOneMenu>
+                                    </h:column>
+                                    <h:column>
+                                        <h:commandButton styleClass="button"
+                                                         value="Review"
+                                                         onclick="return review();"
+                                                         actionListener="#{manageInterviewBean.changeStatus()}"
+                                                         rendered="#{interview.AVStatus!=99}">
+                                            <p:ajax process="@this" oncomplete="dlg.hide();"
+                                                    update="@form :frm-manage-interview :growl"/>
+                                            <f:param name="id" value="#{interview.interviewID}"/>
+                                        </h:commandButton>
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End #tab3 -->
+            </div> <!-- End .content-box-content -->
+        </h:form>
+        <script type="text/javascript">
+                function review(){
+                    return confirm("If the interview be reviewed, you will not review again by anyway.\n\
+\n\
+Are you sure about the interview's result?");
+                }
+            </script>
+    </p:dialog>
+</ui:composition>
